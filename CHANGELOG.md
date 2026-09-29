@@ -102,6 +102,30 @@ test on device: delete the app, install, launch:
 - relaunch → no onboarding;
 - largest accessibility text size: every page scrolls and nothing is clipped.
 
+### 69.4 — UI pass on the existing screens
+
+The screens were already built on the design system (a UI audit on Sep 13 moved them onto
+`CKCard` / `CKToggleRow`). They keep the `NavigationStack` + four-tab structure, which fits a walk-first
+app, and every XCUITest label is unchanged. What changed:
+
+| Screen | Change | Why |
+|---|---|---|
+| Details → status card | The raw engine strings are now a plain title plus one sentence (`DepthStatusText`, 8 tests) with a check / hourglass / warning glyph. Before: "Depth OK", "No LiDAR / sceneDepth on this device", "AR error: …". | They read as debug output. A denied camera now points to Settings, not "reopen". The raw strings are untouched in the engine and the trip log. |
+| Details → Hazards | An empty state: "Nothing found yet …". | The card said nothing until a first detection, which reads as broken. |
+| Settings | "Testing tools" is now "Check your kit". | It read as a developer menu. |
+| Settings | The "App self-check" row is gone (and `logicPackageOK`). | A link check with no meaning to a walker. |
+| Settings | New **About** group: version, Privacy Policy, Terms of Use, source code (`AppInfo`, 4 tests), MIT line. | Brief's Settings list; App Review needs the links. |
+| Profile | The avatar is the walker's initials. | Every walker's Medical ID showed one teammate's bundled photo, which is placeholder UI. The asset stays in the catalog, unused. |
+| Project | `MARKETING_VERSION` 0.1 → 1.0. | The submission build. |
+
+Subscription status, Restore Purchases and Manage Subscription arrive with RevenueCat in 69.5.
+
+test on device:
+- Details with the cane still → "Obstacle detection is on".
+- Deny the camera in Settings → "needs the camera".
+- Settings → About: every link opens Safari; the version reads "Version 1.0 (1)".
+- Profile shows your initials.
+
 ## Steps 67–68 review round (Codex, Muse, Antigravity) (Sun Sep 13)
 
 Reviews: Antigravity (6 findings), Codex (4), Muse (11) on the Steps 67–68 diff. Every finding was checked

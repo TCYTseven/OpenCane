@@ -972,7 +972,7 @@ or emergency phone number until the walker/helper enters it.
 
 ```
 ┌ EMERGENCY MEDICAL ID ──────────────────────┐
-│ (◯ 56 pt photo)  <name or Not set> [ Edit ] │  photo: bundled `AritroProfile`, accent ring; else person.crop.circle.fill
+│ (◯ 56 pt AB)     <name or Not set> [ Edit ] │  initials on an accent circle (Step 69.4); person.crop.circle.fill while "Not set"
 │                  ✚ EMERGENCY ID             │  `pill` font, danger red
 │ ┌ ⛨ WHITE CANE USER / BLIND ─────────────┐  │  banner: raised surface, danger glyph + `pill` word,
 │ │   <emergencyNotes>                      │  │  then the notes in `secondary`
@@ -1019,7 +1019,7 @@ or emergency phone number until the walker/helper enters it.
 | # | Element | VoiceOver label | Value / hint | Traits |
 |---|---|---|---|---|
 | 1 | Card title | "EMERGENCY MEDICAL ID" | — | `.isHeader` |
-| 2 | Photo | "Profile photo of <name>" (the SF Symbol fallback is unlabelled) | — | image |
+| 2 | Avatar | hidden (initials or a person symbol; the name beside it is read) | — | — |
 | 3 | Name, "EMERGENCY ID", banner and notes | the texts themselves | — | static text |
 | 4 | Edit | "Edit Medical ID" | — | button; presents the sheet |
 | 5 | Info rows | "<label>" then "<value>" (two elements per row, in order) | — | static text |
@@ -1053,6 +1053,17 @@ tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
   the root tabs, where direction carries no meaning; here the order is real. Reduce Motion removes
   the animated slide on Next.
 - **Never** a paywall, a price or the word Premium in onboarding.
+
+### 6.10 Step 69.4 UI pass (what changed and why)
+
+- **Details status card**: plain title + one sentence from `DepthStatusText` ("Obstacle detection is
+  on — LiDAR is watching for obstacles at waist and head height."), a check / hourglass / warning glyph
+  by tone. The raw engine strings stay in the trip log.
+- **Hazards card**: an empty state ("Nothing found yet …") instead of silence.
+- **Settings**: "Testing tools" → "Check your kit"; the developer "App self-check" row is gone; a new
+  last group "About" with the version, Privacy Policy, Terms of Use and source-code links (`AppInfo`),
+  and the license line. 69.5 adds the "OpenCane Premium" card at the top.
+- **Profile**: the avatar is the walker's initials, not a teammate's bundled photo.
 
 ## 7. Do not
 

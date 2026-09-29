@@ -87,7 +87,8 @@ settings:
     WATCHOS_DEPLOYMENT_TARGET: "26.0"
     # Feed CFBundleVersion / CFBundleShortVersionString in every target's Info.plist below.
     CURRENT_PROJECT_VERSION: "1"
-    MARKETING_VERSION: "0.1"
+    # Step 69: 1.0 for the Shipaton submission (the About card and the App Store read it).
+    MARKETING_VERSION: "1.0"
 
 targets:
 

@@ -113,6 +113,12 @@ struct HazardsCard: View {
             if let g = model.lastGroundHazard { detection("LiDAR", g) }
             if let s = model.hazards.lastSign { detection("Sign", s) }
             if let c = model.hazards.lastCaution { detection("Watch", c) }
+            // Step 69.4 empty state: before anything is found the card said nothing at all, which
+            // reads as broken. Words, so VoiceOver hears it too.
+            if model.lastGroundHazard == nil, model.hazards.lastSign == nil,
+               model.hazards.lastCaution == nil, model.hazardLog.records.isEmpty {
+                liveCaption("Nothing found yet. What OpenCane warns about will show here.")
+            }
             if let err = model.hazards.lastError ?? model.hazardLog.lastError {
                 Text(err).font(CKFont.secondary).foregroundStyle(CKColor.laneUrgent)
             }
