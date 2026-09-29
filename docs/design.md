@@ -213,7 +213,7 @@ when the screen is a gauge.
 
 ## 4. Motion
 
-Motion never carries information. The app owns two animations, and both honour Reduce Motion
+Motion never carries information. The app owns these animations, and every one honours Reduce Motion
 (`accessibilityReduceMotion`):
 
 | Event | Normal | Reduce Motion |
@@ -221,6 +221,7 @@ Motion never carries information. The app owns two animations, and both honour R
 | Depth grid update (30 Hz) | **None.** Fill, word and number change instantly. | Same |
 | Big button press (`CKBigButtonStyle`, also Go and the test buttons) | Scale 0.97 on a 0.12 s spring; `.sensoryFeedback(.impact(weight: .light))` on **press-down** (`trigger: isPressed` with the condition `$0 == false && $1`, i.e. the not-pressed → pressed edge; an earlier revision of this file said "on release" — the code is the truth) | Opacity 0.85 only; haptic kept |
 | Root tab switch (`CKTabBar` + `ContentView` page) | Incoming page **fades in** over 0.16 s (`.transition(.asymmetric(insertion: .opacity, removal: .identity))`); the accent capsule slides between icons (`matchedGeometryEffect`, 0.16 s spring) so pill and page land together; `.sensoryFeedback(.selection)` | Instant page swap; capsule jumps; selection haptic kept |
+| Splash (`SplashView`, Step 69.2; timing is `LaunchFlow`) | Launch logo holds 0.6 s while the wordmark fades and rises 8 pt in (0.3 s), then the splash fades out over 0.25 s (0.85 s total, ceiling 1 s) | A still 0.4 s hold, then a cut. **VoiceOver or automation: no splash at all** |
 | Everything else (pills, distance, instruction, cards appearing) | Instant | Instant |
 
 Never animate layout of the grid. Never animate colour of a lane tile (a fade through orange

@@ -37,6 +37,27 @@ Muse and Antigravity were not available here; the review round was a multi-agent
 
 test on device: none for 69.1 on its own (no screen uses the new pieces yet); `make sim` must build.
 
+### 69.2 — Launch screen and splash
+
+- **Launch screen** (`ios/project.yml` → `UILaunchScreen`, mirrored in `CaneKit/Info.plist`): the app
+  icon as a 120 pt rounded tile (`LaunchLogo`) centred on the brand navy (`LaunchBackground`, the
+  same hex as `CKColor.brand`, deeper under Increase Contrast). Both are rendered by the new
+  `ios/scripts/launchlogo.py` from `Icon-1024.png` (run by hand; outputs committed).
+- **`SplashView`** repeats that picture exactly, then brings in the "OpenCane" wordmark under the logo.
+- **`RootView`** is the new window root. Test first: `LaunchFlowTests` (8) failed to compile until
+  `LaunchFlow` existed. The plan:
+  - 0.6 s hold + 0.25 s fade (0.85 s; ceiling 1 s, swept over every input).
+  - Under Reduce Motion: a still 0.4 s cut.
+  - **No splash under VoiceOver** (a view swap mid-read moves focus) **or automation**, so XCUITests,
+    e2e and `--demo-route` see `ContentView` at once, as before.
+- **The engines do not wait for the splash.** `ContentView` and `model.start()` run beneath it from the
+  first frame. `model.start()` moved from `CaneKitApp`'s `.task` to `RootView`, so 69.3 can hold it
+  until onboarding ends. Nothing else about `start()` changed.
+
+test on device: cold launch → navy + logo, then the wordmark, then Guide in under a second, with the
+"OpenCane ready." line unaffected; Reduce Motion on → a cut, no fade; VoiceOver on → straight to
+Guide, focus on the first element.
+
 ## Steps 67–68 review round (Codex, Muse, Antigravity) (Sun Sep 13)
 
 Reviews: Antigravity (6 findings), Codex (4), Muse (11) on the Steps 67–68 diff. Every finding was checked

@@ -3,7 +3,9 @@
 //  CaneKit
 //
 //  App entry point. Owns the single `AppModel`, keeps the screen awake (ARKit dies when the
-//  screen locks) and forwards scene-phase changes so the engines can pause/resume.
+//  screen locks) and forwards scene-phase changes so the engines can pause/resume. Step 69: the
+//  window's root is `RootView` (splash → first-launch onboarding → `ContentView`), which calls
+//  `model.start()` when the main screen appears.
 //
 //  Why it exists: SwiftUI needs one `@main` type. Keeping it this small means every behaviour
 //  (engines, settings, the route sequence) lives in `AppModel`, where App Intents can reach it
@@ -19,7 +21,9 @@
 //    · Exactly one `AppModel` per process (`@State`), injected with `.environment(model)`.
 //    · ⚠ Do not remove `isIdleTimerDisabled = true` without a device walk test — the camera
 //      (hence LiDAR obstacle detection) stops the moment the screen locks.
-//    · `model.start()` is idempotent, so `.task` re-running is safe.
+//    · `model.start()` is idempotent, so `.task` re-running is safe. It is called by `RootView`
+//      when the main screen appears (Step 69), not here: on a first launch the engines (and the
+//      launch line / microphone) wait until onboarding is finished.
 //
 //  Tests: no unit tests (nothing numeric lives here). Launch and `start()` run under every
 //  XCUITest (`ios/CaneKitUITests/CaneKitUITests.swift`, `CaneKitVisualTour.swift`) and every
@@ -28,7 +32,7 @@
 
 import SwiftUI
 
-/// `@main` entry: one window showing `ContentView`, backed by the single `AppModel`.
+/// `@main` entry: one window showing `RootView` (then `ContentView`), backed by the single `AppModel`.
 @main
 struct CaneKitApp: App {
     /// The one model that owns every engine. Created once for the app's lifetime.
@@ -36,19 +40,18 @@ struct CaneKitApp: App {
     /// Foreground / inactive / background; forwarded to `AppModel.scenePhaseChanged(_:)`.
     @Environment(\.scenePhase) private var scenePhase
 
-    /// Root scene: disables the idle timer and starts the engines on first appearance.
-    /// `.task` can run again when the window's view identity is rebuilt; both of its statements
-    /// are safe to repeat (`start()` guards on `started`). `.onChange(of: scenePhase)` does not
-    /// fire for the initial phase, which is fine: `scenePhaseChanged` is a no-op until `start()`.
+    /// Root scene: disables the idle timer on first appearance; `RootView` starts the engines when
+    /// the main screen appears. `.task` can run again when the window's view identity is rebuilt;
+    /// its statement is safe to repeat. `.onChange(of: scenePhase)` does not fire for the initial
+    /// phase, which is fine: `scenePhaseChanged` is a no-op until `start()`.
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
                 .environment(model)
                 .task {
                     // Keep the display on: the camera (and therefore LiDAR) stops the moment the
                     // screen locks, and the app has no background mode that could rescue it.
                     UIApplication.shared.isIdleTimerDisabled = true
-                    model.start()
                 }
                 .onChange(of: scenePhase) { _, phase in
                     model.scenePhaseChanged(phase)

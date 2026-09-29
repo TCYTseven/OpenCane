@@ -142,7 +142,14 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: com.aritro.canekit
             CFBundleURLSchemes: [opencane]
-        UILaunchScreen: {}
+        # Step 69.2: the static launch screen is the app icon as a rounded tile (`LaunchLogo`,
+        # 120 pt) centred on the brand navy (`LaunchBackground` = CKColor.brand's hex). Both are
+        # rendered by ios/scripts/launchlogo.py. `SplashView` repeats the same picture, so the
+        # launch screen → splash handoff does not flash.
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+          UIImageName: LaunchLogo
+          UIImageRespectsSafeAreaInsets: true
         # The phone is clamped to the cane in portrait; the UI and the lane math assume it.
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         # ARKit is required to install. LiDAR is not: a phone without it installs and says so

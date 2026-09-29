@@ -2,7 +2,7 @@
 
 - [ ] Step 69 — Shipaton polish pass + RevenueCat Premium (CHANGELOG "Step 69"; owner: "make it look and feel like a real, shipped mobile app")
   - [x] 69.1 Design system: brand tokens + `highlight` accent, `CKFont.display` / `title`, `CKMetrics.minimumTarget`, `CKFeatureRow`, `CKTextButton`, `CKPremiumBadge`, `CKStateMessage` (extends Theme.swift; nothing existing changed)
-  - [ ] 69.2 Launch screen (navy + logo) + SwiftUI splash (< 1 s, none under Reduce Motion / VoiceOver / automation)
+  - [x] 69.2 Launch screen (navy + logo) + SwiftUI splash (< 1 s, none under Reduce Motion / VoiceOver / automation)
   - [ ] 69.3 First-launch onboarding (4 pages, Next on every page, Skip, permissions in context); engines start after it
   - [ ] 69.4 UI pass: Settings About card (version, privacy, terms), friendly depth status, Profile avatar without a teammate's photo, section naming
   - [ ] 69.5 RevenueCat: `purchases-ios` via project.yml, `EntitlementManager`, `PremiumGate` (Logic, tested), paywall, Settings subscription card, StoreKit config
