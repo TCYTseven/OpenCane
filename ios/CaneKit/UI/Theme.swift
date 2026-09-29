@@ -602,6 +602,9 @@ struct CKToggleRow: View {
     @Binding var isOn: Bool
     /// VoiceOver hint; defaults to the subtitle.
     var hint: String? = nil
+    /// Step 69.5: draws `CKPremiumBadge` after the title (a switch that needs OpenCane Premium).
+    /// Visual only — the caller's hint says it in words. The label stays exactly `title`.
+    var premium: Bool = false
 
     /// A system `Toggle` whose label is the badge + title + subtitle.
     var body: some View {
@@ -613,6 +616,7 @@ struct CKToggleRow: View {
                         .font(CKFont.body)
                         .foregroundStyle(CKColor.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
+                    if premium { CKPremiumBadge() }
                     if let subtitle {
                         Text(subtitle)
                             .font(CKFont.secondary)

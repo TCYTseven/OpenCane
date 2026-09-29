@@ -9,7 +9,7 @@ shipped code disagree, the code is the truth: fix this file (and say so in `CHAN
 
 ## What this is
 
-OpenCane is a native iOS 26 app (Swift 6, SwiftUI, no third-party packages) that guides a blind cane
+OpenCane is a native iOS 26 app (Swift 6, SwiftUI; one third-party package, RevenueCat, since Step 69) that guides a blind cane
 user along GPS waypoints and warns about waist-to-head obstacles. The **phone is the only computer**:
 an iPhone 17 Pro Max (iOS 27) clamped to a non-metal cane shaft — for the prototype a 27.65 mm broom
 handle, measured by the bore-ring coupons (CHANGELOG hardware "Step 21 — The bore rings were printed"; the old 28.75 figure is retired) —
@@ -55,7 +55,8 @@ target, path, scheme or bundle id, it is CaneKit. Two traps worth knowing:
 | Path | What lives there |
 |---|---|
 | `ios/Logic/` | `CaneKitLogic` SwiftPM package: pure, Foundation-only decisions (lane math, cue state machine, geofences, route schema, watch message codec, VLM request/response codec) + Swift Testing tests |
-| `ios/CaneKit/` | The iOS app: `App/` (AppModel = owner of every engine), `Depth/`, `Haptics/`, `Speech/`, `Watch/`, `Navigation/`, `Audio/`, `Scene/`, `Conversation/` (voice assistant: `ConversationCoordinator`, `VoiceInputEngine`, `PostStore`), `Alerts/` (family alerts, Steps 39/43: `FamilyAlerts`, `GrokBotClient`, `FallWatcher`, `AlertSummarizer`), `Cloud/` (`CloudSync`, `SupabaseClient` — Step 60 MVP), `Trip/` (trip log + tracker, `LiveActivityController`, `MedicalProfileStore` (Step 44)), `UI/` (incl. `ProfilePage`, the 4th tab), `Resources/` |
+| `ios/CaneKit/` | The iOS app: `App/` (AppModel = owner of every engine; `AppModel+Premium` = the Premium gate glue, Step 69), `Store/` (`EntitlementManager`, RevenueCat — Step 69), `Depth/`, `Haptics/`, `Speech/`, `Watch/`, `Navigation/`, `Audio/`, `Scene/`, `Conversation/` (voice assistant: `ConversationCoordinator`, `VoiceInputEngine`, `PostStore`), `Alerts/` (family alerts, Steps 39/43: `FamilyAlerts`, `GrokBotClient`, `FallWatcher`, `AlertSummarizer`), `Cloud/` (`CloudSync`, `SupabaseClient` — Step 60 MVP), `Trip/` (trip log + tracker, `LiveActivityController`, `MedicalProfileStore` (Step 44)), `UI/` (incl. `ProfilePage`, the 4th tab), `Resources/` |
+| `ios/StoreKit/` | `OpenCane.storekit`: the local StoreKit configuration (annual $49.99 `opencane_premium_annual`), selected by the CaneKit scheme's Run action; in no build phase (Step 69.5) |
 | `ios/CaneKitWatch/` | watchOS app |
 | `ios/CaneKitWidget/` | Live Activity widget (Dynamic Island / lock screen) |
 | `ios/Shared/` | Types compiled into more than one target (Live Activity attributes) |
@@ -82,7 +83,11 @@ target, path, scheme or bundle id, it is CaneKit. Two traps worth knowing:
    inside closures provably on main (`NotificationCenter … queue: .main`, `CMMotionManager … to: .main`).
    Never add `@unchecked Sendable` to a main-actor class to silence the compiler.
 2. **iOS 26 / watchOS 26 APIs only.** The phone runs iOS 27 but the deployment target is 26; no iOS 27-only
-   API. No third-party packages, ever.
+   API. No third-party packages — with **one owner-approved exception** (Step 69.5, RevenueCat
+   Shipaton): RevenueCat `purchases-ios` (via the `purchases-ios-spm` mirror, `ios/project.yml`),
+   linked by the app target only and imported only by `ios/CaneKit/Store/EntitlementManager.swift`.
+   It never touches the cue path, the audio session, the haptics or the depth pipeline. Adding any
+   other package still needs the owner.
 3. **Decisions go in `ios/Logic`, effects go in the app.** If a rule has a number in it (metres, seconds,
    degrees, Hz) it belongs in `CaneKitLogic` with a test. `NavigationEngine`, `SpeechQueue`, `HapticPlayer`
    are thin owners of state + timing around those pure types.
@@ -470,6 +475,16 @@ bench has *disproved* must never sit in the file as though it were settled — m
   stale activity show "Sensing unknown". Do not "simplify" the default back to live, do not let the
   widget draw the green check from `obstacleStatus` alone, and do not start an idle "guarding"
   activity. Pinned by `showsClearOnlyWhenLive`, `backgroundWithRouteIsPaused`.
+
+- **OpenCane Premium gates exactly three switches, and never during a walk** (Step 69.5,
+  `PremiumGate`): Hazard watch and Name people ahead (advanced AI object detection) and Alert my
+  family (Grok Bot + Family Alerts). Every warning channel, obstacle detection, haptics, audio,
+  navigation and emergency calling stay free. The paywall only opens through
+  `AppModel.requestPaywall(for:)`, which refuses while `isWalkActive`; `RootView` closes an open
+  paywall when a walk starts; a lapse detected mid-walk waits for the walk to end. A build without
+  `REVENUECAT_API_KEY` is `.notConfigured` and **unlocks everything** — that is what keeps the
+  XCUITests, e2e and a fresh clone behaving exactly as before; do not "fix" it into locked.
+  Pinned by `PremiumGateTests`.
 
 ### Steps 34–37 and the rotation fix (Sat 2026-09-12) — do not "simplify" these
 

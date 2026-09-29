@@ -490,6 +490,8 @@ private struct SettingsPage: View {
     var body: some View {
         @Bindable var model = model
         pageScroll {
+            // Step 69.5: subscription status, Restore Purchases, Manage Subscription, the paywall.
+            PremiumSettingsCard()
             CKSectionHeader(title: "Everyday")
             cueSettings($model)
             voiceSettings($model)
@@ -721,10 +723,49 @@ private struct SettingsPage: View {
         // contract above still holds — nothing here says the family *was* notified.
         CKCard(title: "Family alerts", systemImage: "person.2.fill",
                caption: "Let family know if something goes wrong on a walk.") {
+            // Step 69.5: Grok Bot + Family Alerts is OpenCane Premium. The switch writes through
+            // `setPremiumFeature` (paywall on a free tap, never mid-walk). While locked, the card
+            // shows only the switch, one line of what Premium adds and "See OpenCane Premium";
+            // the contacts, fall switch, summary and test send appear once unlocked. Emergency
+            // calling (Profile tab) is not part of this and stays free.
+            let locked = !self.model.store.unlocksPremium
             CKToggleRow(title: "Alert my family", subtitle: "Falls, close calls and low battery",
-                        isOn: model.familyAlertsEnabled,
-                        hint: "Sends falls, close obstacles, low battery and your position every few minutes to the OpenCane alert service, which decides whether to text your family")
-                .disabled(!self.model.family.isConfigured)
+                        isOn: Binding(get: { self.model.familyAlertsEnabled },
+                                      set: { self.model.setPremiumFeature(.familyAlerts, on: $0) }),
+                        hint: locked
+                            ? "Sends falls, close obstacles, low battery and your position to the OpenCane alert service, which decides whether to text your family. Part of OpenCane Premium."
+                            : "Sends falls, close obstacles, low battery and your position every few minutes to the OpenCane alert service, which decides whether to text your family",
+                        premium: locked)
+                .disabled(!self.model.family.isConfigured && !locked)
+            if locked {
+                familyAlertsLocked
+            } else {
+                familyAlertsDetails(model)
+            }
+        }
+        .font(CKFont.body)
+        .foregroundStyle(CKColor.textPrimary)
+    }
+
+    /// The Family alerts card on the free plan: what Premium adds here, and the way to it.
+    @ViewBuilder
+    private var familyAlertsLocked: some View {
+        Text("Family alerts and the Grok Bot are part of OpenCane Premium. Emergency calling on the Profile tab is always free.")
+            .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
+            .fixedSize(horizontal: false, vertical: true)
+        if let notice = model.premiumNotice {
+            Text(notice).font(CKFont.secondary).foregroundStyle(CKColor.textPrimary)
+        }
+        CKBigButton(title: "See OpenCane Premium", systemImage: "star.fill", role: .secondary,
+                    hint: "Shows what Premium adds and its price") {
+            model.requestPaywall(for: .familyAlerts)
+        }
+    }
+
+    /// The Family alerts card's rows once Premium is unlocked (the card as it was before Step 69.5).
+    /// - Parameter model: the `@Bindable` model from `body`.
+    @ViewBuilder
+    private func familyAlertsDetails(_ model: Bindable<AppModel>) -> some View {
             if !self.model.family.isConfigured {
                 Text("Family alerts aren't set up on this phone yet.")
                     .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
@@ -760,9 +801,6 @@ private struct SettingsPage: View {
                 Text(status).font(CKFont.secondary).foregroundStyle(CKColor.textPrimary)
                     .accessibilityLabel("Last family alert: \(status)")
             }
-        }
-        .font(CKFont.body)
-        .foregroundStyle(CKColor.textPrimary)
     }
 
     /// "This phone" card: which hardware features this device actually has, so a helper can tell

@@ -1065,6 +1065,24 @@ tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
   and the license line. 69.5 adds the "OpenCane Premium" card at the top.
 - **Profile**: the avatar is the walker's initials, not a teammate's bundled photo.
 
+### 6.11 OpenCane Premium: paywall and gated switches (Step 69.5)
+
+- **What is gated**: Hazard watch, Name people ahead, Alert my family. Their switches carry a
+  `CKPremiumBadge` (star + PREMIUM on `highlight`) only while locked; the hint ends "Part of OpenCane
+  Premium." The Family alerts card collapses to the switch, one line and "See OpenCane Premium"
+  while locked. Nothing else in the app shows a badge.
+- **Paywall** (`PaywallView`, a sheet): floating Close (44 pt navy disc); navy header with the gold
+  star, "OpenCane Premium" (`display`, heading); two benefit rows; price block "$49.99/year" (`title`)
+  over "Just $4.16 a month, billed yearly" — one VoiceOver sentence; **Subscribe** (primary
+  `CKBigButton`); the renewal terms; "Navigation and obstacle detection are always free"; the
+  affordability note in a card; Restore Purchases · Terms of Use · Privacy Policy (44 pt text
+  buttons). Loading / error / no-store states use `CKStateMessage`.
+- **Never during a walk.** A tap on a gated switch mid-walk is refused with "Premium features can be
+  turned on after this walk." under the switch and at `.scene` (the lowest speech band); an open
+  paywall closes the moment a walk starts. The paywall itself makes no sound and no haptic.
+- **Settings** starts with the OpenCane Premium card: status, benefits + "See OpenCane Premium" on
+  the free plan, renewal date on Premium, Restore Purchases and Manage Subscription.
+
 ## 7. Do not
 
 - No colour-only meaning. Every lane state has a level word and a number; every pill has a word.

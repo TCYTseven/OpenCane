@@ -126,6 +126,83 @@ test on device:
 - Settings → About: every link opens Safari; the version reads "Version 1.0 (1)".
 - Profile shows your initials.
 
+### 69.5 — RevenueCat: OpenCane Premium
+
+**What is gated.** The owner's two benefits map to three switches:
+- **Advanced AI object detection**: Hazard watch (the vision model's cones / barriers / scooters
+  check) and Name people ahead.
+- **Grok Bot + Family Alerts**: Alert my family, which carries the fall watcher, contacts, summary
+  and test send with it.
+
+Everything else is free: LiDAR obstacle detection, haptics, spatial audio, speech, drop-off / sign
+/ siren warnings, navigation, "Where am I", and emergency calling. Both detection switches were
+already off by default, so a free walker's walk is unchanged.
+
+**Tests first.** `PremiumGateTests` (10) + `PaywallPricingTests` (5) failed to compile until
+`Premium.swift` existed. They pin:
+- the identifiers (`premium`, `opencane_premium_annual`, `default`);
+- no warning option maps to a Premium feature;
+- a build without a key unlocks everything;
+- **never a paywall during a walk**;
+- voice requests are told, not shown;
+- off is never gated;
+- a lapse mid-walk waits for the walk to end;
+- per-month rounds down (49.99 / 12 → 4.16);
+- the spoken offer has no slash;
+- the renewal terms carry price, period, 24 hours and Settings;
+- the owner's affordability note, verbatim.
+
+**Setup.**
+- `purchases-ios` 5.91.0 via the `purchases-ios-spm` mirror in `ios/project.yml`, linked by the app
+  target only. This is the one owner-approved exception to hard rule 2; AGENTS.md says so.
+  RevenueCatUI is not used: a custom SwiftUI paywall lets every VoiceOver label and the spoken price
+  be ours, and it matches the design system.
+- The key is `REVENUECAT_API_KEY` in the git-ignored `Secrets.plist`, with a template entry in
+  `Secrets.example.plist`. The app already keeps every key there (hard rule 4), so the brief's
+  "Secrets.xcconfig" example became this instead of a second secrets mechanism.
+- `ios/StoreKit/OpenCane.storekit` defines the annual $49.99 product (group "OpenCane Premium").
+  The CaneKit scheme's Run action selects it; it is in no build phase.
+
+**Code.**
+- `EntitlementManager` (the only RevenueCat importer):
+  - configures `Purchases` at launch;
+  - listens to `customerInfoStream`;
+  - exposes `access` (checking / free / premium / notConfigured);
+  - handles the offering (the "default" offering, falling back to `current`), purchase and restore;
+  - `CANEKIT_PREMIUM=free|premium` forces a state for UI tests.
+- `AppModel+Premium` holds the gate glue. The three properties' `didSet`s refuse a Premium-less
+  false→true write, which also covers Siri, voice and anything added later. `setOption` tells a
+  voice request why.
+- `PaywallView` has a loading / failed + Try again / unavailable state, a price block spoken as
+  sentences, Subscribe, the renewal terms, the free reminder, the affordability note, and Restore /
+  Terms / Privacy. It unlocks at once on success, turns on the switch that opened it, and closes.
+- `PremiumSettingsCard` shows status and renewal date, with Restore Purchases and Manage
+  Subscription.
+
+**The walk rule.**
+- `isWalkActive` means a route is guiding, starting or being built, or an indoor or simulated walk is
+  running.
+- `requestPaywall` refuses while a walk is active and says why at `.scene`, the lowest band, so it
+  never cuts a warning or a direction.
+- `RootView` closes an open paywall the moment a walk starts, and reconciles a deferred lapse when
+  the walk ends.
+
+**No key = no lock.** With no RevenueCat key the app is `.notConfigured`, and every feature works as
+it did before this step. That keeps the XCUITests, e2e and a fresh clone unchanged. With a key,
+access is `.checking` until RevenueCat's cached answer arrives, usually well under a second.
+
+test on device (with a key and the StoreKit config, Debug from Xcode):
+- Details → Hazard watch → paywall shows $49.99/year and the per-month line; VoiceOver reads the
+  price as sentences.
+- Subscribe → StoreKit sheet → the paywall closes and Hazard watch is on.
+- Settings shows "Renews on …".
+- Restore works on a second install.
+- Start a route, then tap Family alerts → no paywall; you hear "Premium features can be turned on
+  after this walk."
+- "Turn hazard watch on in OpenCane" on the free plan → the spoken Premium line.
+- Expire the subscription in Xcode's transaction manager → the features switch off, not
+  mid-walk.
+
 ## Steps 67–68 review round (Codex, Muse, Antigravity) (Sun Sep 13)
 
 Reviews: Antigravity (6 findings), Codex (4), Muse (11) on the Steps 67–68 diff. Every finding was checked

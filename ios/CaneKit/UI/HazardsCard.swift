@@ -43,6 +43,10 @@
 //  the only proof a blind walker has that their head direction is being followed.
 //
 //  Owner / caller: `SensePage` in ContentView.swift (last card, after the obstacle grid).
+//  Step 69.5: "Hazard watch" and "Name people ahead" are OpenCane Premium (advanced AI object
+//  detection): their switches write through `AppModel.setPremiumFeature` and carry the Premium
+//  badge while locked. Every other switch here — drop-offs, signs, sirens, the cameras — is free.
+//
 //  Tests: the view decisions are pure — `LiveViewTests` (`LiveView.state`, `BothCameras.state`,
 //  `FaceTrackingChange`, `BothCamerasLayout`), `HazardTests` (signs, hazard watch),
 //  `SoundAlertsTests`, `HeadNodDetectorTests`. No XCUITest queries this card's strings yet, so
@@ -93,13 +97,21 @@ struct HazardsCard: View {
             CKToggleRow(title: "Read signs", subtitle: "Like “Sidewalk closed” or “Detour”",
                         isOn: $model.signsEnabled,
                         hint: "Reads signs like sidewalk closed or detour, on the phone, offline")
+            // Step 69.5: the two advanced AI detectors are OpenCane Premium. The switch goes through
+            // `setPremiumFeature` (paywall for a free tap; refused in words mid-walk); off is
+            // always allowed. The labels are unchanged; the hint says Premium in words.
             CKToggleRow(title: "Hazard watch", subtitle: "Looks for cones, barriers and scooters on a route",
-                        isOn: $model.hazardWatchEnabled,
-                        hint: "While walking a route, checks the path for cones, barriers and scooters every 8 seconds")
+                        isOn: premiumBinding(.hazardWatch),
+                        hint: premiumHint("While walking a route, checks the path for cones, barriers and scooters every 8 seconds"),
+                        premium: showsPremiumBadge)
             CKToggleRow(title: "Name people ahead", subtitle: "Experimental — counts people when you ask Where am I",
-                        isOn: $model.namePeopleEnabled,
-                        hint: "Experimental and not yet tested on the cane. When you ask where am I, says how many people are ahead, which way and how far")
+                        isOn: premiumBinding(.namePeople),
+                        hint: premiumHint("Experimental and not yet tested on the cane. When you ask where am I, says how many people are ahead, which way and how far"),
+                        premium: showsPremiumBadge)
             liveCaption(PeopleDetection.state(enabled: model.namePeopleEnabled).userFacingDescription)
+            if let notice = model.premiumNotice {
+                liveCaption(notice)
+            }
 
             CKRowDivider()
             HStack(spacing: CKSpacing.sm) {
@@ -333,6 +345,21 @@ struct HazardsCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: CKRadius.button, style: .continuous))
                 .accessibilityHidden(true)
         }
+    }
+
+    /// A gated switch's binding: reads the model, writes through `AppModel.setPremiumFeature`.
+    private func premiumBinding(_ feature: PremiumFeature) -> Binding<Bool> {
+        Binding(get: { model.gatedValue(feature) },
+                set: { model.setPremiumFeature(feature, on: $0) })
+    }
+
+    /// The Premium badge shows only while the switch is actually locked (free or still checking),
+    /// never for a subscriber or a build without a store.
+    private var showsPremiumBadge: Bool { !model.store.unlocksPremium }
+
+    /// The switch's hint, plus "Part of OpenCane Premium." while it is locked.
+    private func premiumHint(_ hint: String) -> String {
+        showsPremiumBadge ? "\(hint). Part of OpenCane Premium." : hint
     }
 
     /// Small grey line explaining why a camera mode shows nothing: the live view while hot or with

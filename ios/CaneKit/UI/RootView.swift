@@ -67,6 +67,11 @@ struct RootView: View {
                     // `start()` is idempotent (guards on `started`), so a re-run is safe.
                     .task { model.start() }
                     .transition(.opacity)
+                    // Step 69.5: the Premium paywall. Only `AppModel.requestPaywall(for:)` sets the
+                    // request, and it refuses during a walk.
+                    .sheet(item: paywallRequest) { request in
+                        PaywallView(request: request)
+                    }
             }
             if splashVisible {
                 SplashView(animates: splash.animates)
@@ -75,6 +80,23 @@ struct RootView: View {
             }
         }
         .task { await dismissSplash() }
+        // Step 69.5: RevenueCat is configured at launch (before onboarding ends, so the cached
+        // subscription is known early). It starts no engine and makes no sound.
+        .task { model.configurePremium() }
+        // A walk starting closes an open paywall at once (a Siri "Take me to …" while it is up);
+        // a walk ending lets a deferred lapse switch its features off and clears the walk notice.
+        .onChange(of: model.isWalkActive) { _, walking in
+            if walking {
+                model.paywallRequest = nil
+            } else {
+                model.reconcilePremium()
+            }
+        }
+    }
+
+    /// `AppModel.paywallRequest` as the sheet's binding (the sheet clears it on dismiss).
+    private var paywallRequest: Binding<PaywallRequest?> {
+        Binding(get: { model.paywallRequest }, set: { model.paywallRequest = $0 })
     }
 
     /// Get Started or Skip: remember it, then show the app (whose appearance starts the engines).
