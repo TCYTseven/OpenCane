@@ -162,28 +162,54 @@ private struct SensePage: View {
 
     /// Big, high-contrast status line — readable at arm's length on a cane.
     ///
-    /// Shows the depth engine's status sentence with a LiDAR-supported check / octagon glyph
-    /// (glyph hidden from VoiceOver). Accessibility: one combined element labelled
-    /// "Status: <status>", trait `.updatesFrequently` so a touch re-reads the live value.
+    /// Step 69.4: the depth engine's raw status ("Depth OK", "No LiDAR / sceneDepth on this
+    /// device", "AR error: …") is shown through `DepthStatusText` (CaneKitLogic, tested) as a plain
+    /// title and one sentence of what it means; the raw string itself is unchanged in the engine
+    /// and the trip log. Glyph by tone (check / hourglass / warning), hidden from VoiceOver.
+    /// Accessibility: one element labelled "Status: <title>. <detail>", trait `.updatesFrequently`
+    /// so a touch re-reads the live value.
     private var statusCard: some View {
-        CKCard {
-            HStack(spacing: CKSpacing.md) {
-                Image(systemName: model.lidarSupported ? "checkmark.circle.fill" : "xmark.octagon.fill")
+        let text = DepthStatusText.display(model.status)
+        return CKCard {
+            HStack(alignment: .top, spacing: CKSpacing.md) {
+                Image(systemName: Self.glyph(text.tone))
                     .font(.title2.weight(.bold))
-                    .foregroundStyle(model.lidarSupported ? CKColor.laneClear : CKColor.laneUrgent)
+                    .foregroundStyle(Self.tint(text.tone))
                     .accessibilityHidden(true)
-                // UI audit 2026-09-13: body-sized headline, not the 22 pt instruction face — this
-                // is a status line, and at 22 pt "No LiDAR / sceneDepth on this device" filled
-                // the first screen. The sentence itself comes from DepthEngine (unchanged).
-                Text(model.status)
-                    .font(CKFont.label)
-                    .foregroundStyle(CKColor.textPrimary)
-                    .fixedSize(horizontal: false, vertical: true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(text.title)
+                        .font(CKFont.label)
+                        .foregroundStyle(CKColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(text.detail)
+                        .font(CKFont.secondary)
+                        .foregroundStyle(CKColor.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Status: \(model.status)")
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Status: \(text.spoken)")
         .accessibilityAddTraits(.updatesFrequently)
+    }
+
+    /// Status glyph per tone: healthy, in progress, needs attention.
+    private static func glyph(_ tone: DepthStatusText.Tone) -> String {
+        switch tone {
+        case .ok: "checkmark.circle.fill"
+        case .waiting: "hourglass.circle.fill"
+        case .problem: "exclamationmark.triangle.fill"
+        }
+    }
+
+    /// Status tint per tone: the lane ladder's clear green, the warning amber, the danger red.
+    private static func tint(_ tone: DepthStatusText.Tone) -> Color {
+        switch tone {
+        case .ok: CKColor.laneClear
+        case .waiting: CKColor.warning
+        case .problem: CKColor.laneUrgent
+        }
     }
 }
 
@@ -455,23 +481,78 @@ private struct SettingsPage: View {
     /// Family alerts, Record indoor route (Step 62), This phone.
     ///
     /// UI audit 2026-09-13: two labelled groups. "Everyday" holds what a walker or family member
-    /// changes (Alerts, Voice, Phone on cane, Family alerts); "Testing tools" holds the
-    /// team's check buttons (Vibration, Watch, Record an indoor route, This phone). The
+    /// changes (Alerts, Voice, Phone on cane, Family alerts); the second group holds the kit
+    /// checks (Vibration, Watch, Record an indoor route, This phone). The
     /// XCUITest labels are unchanged; `testHapticTestButtonsAndSilenceToggle` taps elements (which
     /// scroll themselves into view), so moving Vibration down the page does not affect it.
+    /// Step 69.4: the second group is "Check your kit" (it was "Testing tools", which read as a
+    /// developer menu), and a last "About" group holds the version, privacy policy, terms and source.
     var body: some View {
         @Bindable var model = model
         pageScroll {
+            // Step 69.5: subscription status, Restore Purchases, Manage Subscription, the paywall.
+            PremiumSettingsCard()
             CKSectionHeader(title: "Everyday")
             cueSettings($model)
             voiceSettings($model)
             mountSettings($model)
             familyAlertsCard($model)
-            CKSectionHeader(title: "Testing tools")
+            CKSectionHeader(title: "Check your kit")
             HapticsCard()
             WatchCard()
             IndoorRecordCard()
             capabilityCard
+            CKSectionHeader(title: "About")
+            aboutCard
+        }
+    }
+
+    /// "About OpenCane" (Step 69.4): the version a tester reads back, then the privacy policy,
+    /// terms of use and source code as links (each opens Safari; `AppInfo` holds the URLs, shared
+    /// with the paywall), then the license line.
+    private var aboutCard: some View {
+        let info = Bundle.main.infoDictionary
+        let version = AppInfo.versionLine(short: info?["CFBundleShortVersionString"] as? String,
+                                          build: info?["CFBundleVersion"] as? String)
+        return CKCard(title: "About OpenCane", systemImage: "info.circle") {
+            Text(version)
+                .font(CKFont.body)
+                .foregroundStyle(CKColor.textPrimary)
+            CKRowDivider()
+            linkRow("Privacy Policy", systemImage: "hand.raised.fill", url: AppInfo.privacyPolicyURL)
+            linkRow("Terms of Use", systemImage: "doc.text.fill", url: AppInfo.termsOfUseURL)
+            linkRow("Source code on GitHub", systemImage: "chevron.left.forwardslash.chevron.right",
+                    url: AppInfo.sourceCodeURL)
+            Text("OpenCane is open source under the MIT License.")
+                .font(CKFont.secondary)
+                .foregroundStyle(CKColor.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    /// One settings row that opens a web page: badge, title, an "opens outside" arrow; ≥ 44 pt.
+    /// `Link` carries the link trait; the hint says where it goes.
+    @ViewBuilder
+    private func linkRow(_ title: String, systemImage: String, url: String) -> some View {
+        if let destination = URL(string: url) {
+            Link(destination: destination) {
+                HStack(spacing: CKSpacing.md) {
+                    CKIconBadge(systemImage: systemImage)
+                    Text(title)
+                        .font(CKFont.body)
+                        .foregroundStyle(CKColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: CKSpacing.sm)
+                    Image(systemName: "arrow.up.right")
+                        .font(CKFont.secondary.weight(.semibold))
+                        .foregroundStyle(CKColor.textSecondary)
+                        .accessibilityHidden(true)
+                }
+                .frame(minHeight: CKMetrics.minimumTarget)
+                .contentShape(Rectangle())
+            }
+            .accessibilityLabel(title)
+            .accessibilityHint("Opens in Safari")
         }
     }
 
@@ -642,10 +723,54 @@ private struct SettingsPage: View {
         // contract above still holds — nothing here says the family *was* notified.
         CKCard(title: "Family alerts", systemImage: "person.2.fill",
                caption: "Let family know if something goes wrong on a walk.") {
+            // Step 69.5: Grok Bot + Family Alerts is OpenCane Premium. The switch writes through
+            // `setPremiumFeature` (paywall on a free tap, never mid-walk). While locked, the card
+            // shows only the switch, one line of what Premium adds and "See OpenCane Premium";
+            // the contacts, fall switch, summary and test send appear once unlocked — or while
+            // alerts are still on (a lapse not yet reconciled, an offline "checking"), so a running
+            // feature never loses its controls (review round 69.7). Emergency calling (Profile
+            // tab) is not part of this and stays free. The switch stays disabled without the alert
+            // service whatever the plan: Premium must not sell a switch that cannot deliver.
+            let locked = !self.model.store.unlocksPremium
             CKToggleRow(title: "Alert my family", subtitle: "Falls, close calls and low battery",
-                        isOn: model.familyAlertsEnabled,
-                        hint: "Sends falls, close obstacles, low battery and your position every few minutes to the OpenCane alert service, which decides whether to text your family")
+                        isOn: Binding(get: { self.model.familyAlertsEnabled },
+                                      set: { self.model.setPremiumFeature(.familyAlerts, on: $0) }),
+                        hint: locked
+                            ? "Sends falls, close obstacles, low battery and your position to the OpenCane alert service, which decides whether to text your family. Part of OpenCane Premium."
+                            : "Sends falls, close obstacles, low battery and your position every few minutes to the OpenCane alert service, which decides whether to text your family",
+                        premium: locked)
                 .disabled(!self.model.family.isConfigured)
+            if locked && !self.model.familyAlertsEnabled {
+                familyAlertsLocked
+            } else {
+                familyAlertsDetails(model)
+            }
+        }
+        .font(CKFont.body)
+        .foregroundStyle(CKColor.textPrimary)
+    }
+
+    /// The Family alerts card on the free plan: what Premium adds here, and the way to it.
+    @ViewBuilder
+    private var familyAlertsLocked: some View {
+        Text(model.family.isConfigured
+             ? "Family alerts and the Grok Bot are part of OpenCane Premium. Emergency calling on the Profile tab is always free."
+             : "Family alerts aren't set up on this phone yet. Emergency calling on the Profile tab is always free.")
+            .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
+            .fixedSize(horizontal: false, vertical: true)
+        if let notice = model.premiumNotice, model.premiumNoticeFeature == .familyAlerts {
+            Text(notice).font(CKFont.secondary).foregroundStyle(CKColor.textPrimary)
+        }
+        CKBigButton(title: "See OpenCane Premium", systemImage: "star.fill", role: .secondary,
+                    hint: "Shows what Premium adds and its price") {
+            model.requestPaywall(for: .familyAlerts)
+        }
+    }
+
+    /// The Family alerts card's rows once Premium is unlocked (the card as it was before Step 69.5).
+    /// - Parameter model: the `@Bindable` model from `body`.
+    @ViewBuilder
+    private func familyAlertsDetails(_ model: Bindable<AppModel>) -> some View {
             if !self.model.family.isConfigured {
                 Text("Family alerts aren't set up on this phone yet.")
                     .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
@@ -681,18 +806,15 @@ private struct SettingsPage: View {
                 Text(status).font(CKFont.secondary).foregroundStyle(CKColor.textPrimary)
                     .accessibilityLabel("Last family alert: \(status)")
             }
-        }
-        .font(CKFont.body)
-        .foregroundStyle(CKColor.textPrimary)
     }
 
-    /// "This phone" card: which hardware / package features this device actually has, so a
-    /// teammate can tell at a glance why depth or mesh cues are missing.
+    /// "This phone" card: which hardware features this device actually has, so a helper can tell
+    /// at a glance why depth or mesh cues are missing. Step 69.4 dropped the "App self-check" row
+    /// (a developer's link check that read as debug output; `make test` covers the package).
     private var capabilityCard: some View {
         CKCard(title: "This phone", systemImage: "checklist") {
             capabilityRow("Depth sensor (LiDAR)", model.lidarSupported)
             capabilityRow("Recognizes doors, walls and seats", model.meshClassificationSupported)
-            capabilityRow("App self-check", Self.logicPackageOK)
         }
     }
 
@@ -709,14 +831,6 @@ private struct SettingsPage: View {
         }
         .font(CKFont.body)
         .accessibilityLabel("\(title): \(ok ? "available" : "not available")")
-    }
-
-    /// Proves the SwiftPM link at runtime: a trivial call into CaneKitLogic.
-    ///
-    /// The literal 4 Hz at 1.0 m is the Geiger curve's contract (unit-tested in ios/Logic);
-    /// change it only together with those tests.
-    private static var logicPackageOK: Bool {
-        GeigerRate.hertz(distance: 1.0) == 4
     }
 }
 

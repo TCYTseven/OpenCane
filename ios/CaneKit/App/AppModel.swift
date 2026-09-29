@@ -153,6 +153,22 @@ final class AppModel {
     /// Family alerts: cane detections → the Grok Bot routine "OpenCane cane events" (step 39).
     /// Off unless `familyAlertsEnabled`; unconfigured (no webhook key) is a no-op that says so.
     let family = FamilyAlerts()
+    /// OpenCane Premium through RevenueCat (Step 69.5): the subscription state and the store
+    /// calls. Configured at launch by `configurePremium()` (AppModel+Premium.swift); never on the
+    /// cue path.
+    let store = EntitlementManager()
+    /// The paywall sheet to show, or nil. Set only through `requestPaywall(for:)`, which refuses
+    /// during a walk; cleared by the sheet and by `RootView` the moment a walk starts.
+    var paywallRequest: PaywallRequest?
+    /// Why a gated switch did not turn on during a walk (`PremiumGate.walkLine`), shown under the
+    /// switch; cleared when the walk ends (`reconcilePremium`).
+    var premiumNotice: String?
+    /// Which switch `premiumNotice` belongs to (nil = the Settings Premium card), so the notice is
+    /// shown once, under the control that was tapped (review round 69.7).
+    var premiumNoticeFeature: PremiumFeature?
+    /// A feature unlocked by a purchase that finished mid-walk; switched on when the walk ends
+    /// (`PremiumGate.enablesNow`, review round 69.7).
+    var pendingPremiumFeature: PremiumFeature?
     /// The optional cloud mirror (Steps 45 / 60): after `cloudSharingEnabled`, only Medical ID,
     /// family contacts, trip summaries, hazards (+ photos) and family alerts leave the phone.
     /// Settings, the JSONL trip log, mobility, posts and conversations stay local. Inert when
@@ -473,8 +489,16 @@ final class AppModel {
     }
     /// Periodic vision-model hazard check while walking a route (Hazards card).
     /// Default OFF until validated on the phone.
+    /// Step 69.5: part of OpenCane Premium. Turning it on without Premium is refused here, whoever
+    /// asked (screen, Siri, voice): the value is written back to false (`refusePremiumEnable`). The
+    /// write-back runs this observer once more with `false`, which re-applies the off state —
+    /// harmless, measured in the review round (69.7). The screen and voice paths decide first (`setPremiumFeature`,
+    /// `setOption`) so the walker hears or sees why; this is the backstop.
     var hazardWatchEnabled: Bool = Settings.bool("hazardWatchEnabled", default: false) {
-        didSet { Settings.set(hazardWatchEnabled, "hazardWatchEnabled"); hazards.watchEnabled = hazardWatchEnabled }
+        didSet {
+            if hazardWatchEnabled, !oldValue, refusePremiumEnable(.hazardWatch) { hazardWatchEnabled = false; return }
+            Settings.set(hazardWatchEnabled, "hazardWatchEnabled"); hazards.watchEnabled = hazardWatchEnabled
+        }
     }
     /// "Flashlight on in the dark (routes)" (Settings → Mount card, Step 49).
     ///
@@ -496,8 +520,11 @@ final class AppModel {
     /// Default **OFF** (AGENTS.md → new untuned features ship off, and this one sends the walker's
     /// position off the phone, so it is opt-in twice over: the switch here and a webhook key in
     /// Secrets.plist). In `LaunchRecovery.optionalFeatureKeys`, so a crash loop clears it.
+    /// Step 69.5: part of OpenCane Premium (Grok Bot + Family Alerts); refused here without it,
+    /// like `hazardWatchEnabled`. Emergency calling (Profile, "emergency" by voice) stays free.
     var familyAlertsEnabled: Bool = Settings.bool("familyAlertsEnabled", default: false) {
         didSet {
+            if familyAlertsEnabled, !oldValue, refusePremiumEnable(.familyAlerts) { familyAlertsEnabled = false; return }
             Settings.set(familyAlertsEnabled, "familyAlertsEnabled")
             family.enabled = familyAlertsEnabled
             applyFallWatcher()
@@ -544,8 +571,10 @@ final class AppModel {
     /// Default **OFF**: this is an experimental, unvalidated detector whose first evidence must
     /// come from a real cane. The UI keeps that status visible when a tester opts in, and each
     /// launch record logs `experimental_unverified` rather than implying a safety validation.
+    /// Step 69.5: part of OpenCane Premium; refused here without it, like `hazardWatchEnabled`.
     var namePeopleEnabled: Bool = Settings.bool("namePeopleEnabled", default: PeopleDetection.defaultEnabled) {
         didSet {
+            if namePeopleEnabled, !oldValue, refusePremiumEnable(.namePeople) { namePeopleEnabled = false; return }
             Settings.set(namePeopleEnabled, "namePeopleEnabled")
             sceneContext.setPeopleEnabled(namePeopleEnabled)
             logger.event("people_detection", ["state": PeopleDetection.state(enabled: namePeopleEnabled).rawValue])

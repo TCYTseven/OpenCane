@@ -83,6 +83,8 @@ Fonts are system only (no bundle, no licensing, full Dynamic Type):
 | `pill` | `.subheadline` (15 pt) | Rounded / bold, uppercased, kerning 0.9 pt (≈ 0.06 em), tabular | Status pills. One line (`lineLimit(1)`, `minimumScaleFactor(0.8)`), 1–3 short words. |
 | `secondary` | `.subheadline` (15 pt) | Text / regular | Hints, error lines, trip-stat labels. Smallest size for sentences. |
 | `mono` | `.footnote` (13 pt) | Mono / regular, tabular | Defined, currently unused (the developer footer was removed). Only for `accessibilityHidden` developer views. |
+| `display` | `.largeTitle` (34 pt) | Rounded / bold | Step 69: brand moments only — splash wordmark, onboarding page titles, the paywall title. |
+| `title` | `.title2` (22 pt) | Rounded / bold | Step 69: a sheet's own heading when there is no navigation bar. |
 
 Exceptions the code makes below 15 pt, all on elements that also carry a bigger number or symbol and
 whose VoiceOver label carries the full meaning: the position label (`.caption`, 12 pt) and level word
@@ -146,6 +148,20 @@ the two dangerous states are also the two darkest fills.
 | `neutral` | = `surfaceRaised` | — | GPS SEARCHING / OFF / DENIED, cue CLEAR, QUIET, SYSTEM voice, watch ASLEEP / NOT PAIRED, BEACON OFF / IDLE, HEAD TRACKED / COMPASS ONLY, last watch command. Text in `textPrimary` (the only non-ink pill) |
 | `accent` (pill tone) | = `accent` | — | The **CAMPUS** badge on a destination suggestion (§6.3). Not a state: it marks a hand-verified gazetteer entrance. Text in `onAccent`; accent never carries hazard meaning |
 
+### Brand (Step 69 — splash, onboarding, paywall)
+
+The app icon's night navy and its gold ring. Brand moments only; never a state or a hazard. Ratios
+recomputed 2026-09-29 with the WCAG 2.x formula.
+
+| Token | Light | Dark | Light HC | Dark HC | Use |
+|---|---|---|---|---|---|
+| `brand` | `#0B1533` | `#0B1533` | `#050A1A` | `#050A1A` | Launch screen (asset colour `LaunchBackground`, same hex), splash, onboarding hero well, paywall header |
+| `onBrand` | `#F4F1EA` | `#F4F1EA` | `#FFFFFF` | `#FFFFFF` | Text on `brand` — 15.9:1 |
+| `onBrandSecondary` | `#B9BFD0` | `#B9BFD0` | `#E6E9F0` | `#E6E9F0` | Secondary text on `brand` — 9.8:1 |
+| `brandHighlight` | `#E3B55B` | `#E3B55B` | `#FFD27A` | `#FFD27A` | Gold marks on `brand` — 9.4:1 (13.9:1 HC) |
+| `highlight` | `#654000` | `#E3B55B` | `#4A2F00` | `#FFD27A` | **The high-contrast accent** on ordinary surfaces: Premium badge, paywall benefit icons. ≥ 7.4:1 on every light surface, 9.3:1 on a dark card |
+| `onHighlight` | `#FFFFFF` | `#17140F` | `#FFFFFF` | `#000000` | Text on a `highlight` fill — 7.2:1 / 9.6:1 |
+
 ### Appearance policy
 - The app follows the system appearance (`UIUserInterfaceStyle Automatic`). **For the demo, set the phone to Dark Mode** (dark room; the screen must not light the judges' faces) and run under Guided Access.
 - In sunlight the light palette wins: ivory ground, ink text, the same lane fills.
@@ -187,6 +203,9 @@ and every destination suggestion row are `touchTarget` (60 pt) like the buttons 
 (`WKSpacing.touchTarget`: 48 pt pushed the bottom row off a 46 mm screen). Pills are 32 pt tall and not
 interactive.
 
+`CKMetrics.minimumTarget` (44 pt, Step 69) is the floor for the text-weight controls in sheets:
+Close, Skip, Restore Purchases, Terms, Privacy Policy (`CKTextButton`). Nothing tappable is smaller.
+
 Elevation: none. No shadows — a card is a fill and a hairline. Depth is not a metaphor we need
 when the screen is a gauge.
 
@@ -194,7 +213,7 @@ when the screen is a gauge.
 
 ## 4. Motion
 
-Motion never carries information. The app owns two animations, and both honour Reduce Motion
+Motion never carries information. The app owns these animations, and every one honours Reduce Motion
 (`accessibilityReduceMotion`):
 
 | Event | Normal | Reduce Motion |
@@ -202,6 +221,7 @@ Motion never carries information. The app owns two animations, and both honour R
 | Depth grid update (30 Hz) | **None.** Fill, word and number change instantly. | Same |
 | Big button press (`CKBigButtonStyle`, also Go and the test buttons) | Scale 0.97 on a 0.12 s spring; `.sensoryFeedback(.impact(weight: .light))` on **press-down** (`trigger: isPressed` with the condition `$0 == false && $1`, i.e. the not-pressed → pressed edge; an earlier revision of this file said "on release" — the code is the truth) | Opacity 0.85 only; haptic kept |
 | Root tab switch (`CKTabBar` + `ContentView` page) | Incoming page **fades in** over 0.16 s (`.transition(.asymmetric(insertion: .opacity, removal: .identity))`); the accent capsule slides between icons (`matchedGeometryEffect`, 0.16 s spring) so pill and page land together; `.sensoryFeedback(.selection)` | Instant page swap; capsule jumps; selection haptic kept |
+| Splash (`SplashView`, Step 69.2; timing is `LaunchFlow`) | Launch logo holds 0.6 s while the wordmark fades and rises 8 pt in (0.3 s), then the splash fades out over 0.25 s (0.85 s total, ceiling 1 s) | A still 0.4 s hold, then a cut. **VoiceOver or automation: no splash at all** |
 | Everything else (pills, distance, instruction, cards appearing) | Instant | Instant |
 
 Never animate layout of the grid. Never animate colour of a lane tile (a fade through orange
@@ -952,7 +972,7 @@ or emergency phone number until the walker/helper enters it.
 
 ```
 ┌ EMERGENCY MEDICAL ID ──────────────────────┐
-│ (◯ 56 pt photo)  <name or Not set> [ Edit ] │  photo: bundled `AritroProfile`, accent ring; else person.crop.circle.fill
+│ (◯ 56 pt AB)     <name or Not set> [ Edit ] │  initials on an accent circle (Step 69.4); person.crop.circle.fill while "Not set"
 │                  ✚ EMERGENCY ID             │  `pill` font, danger red
 │ ┌ ⛨ WHITE CANE USER / BLIND ─────────────┐  │  banner: raised surface, danger glyph + `pill` word,
 │ │   <emergencyNotes>                      │  │  then the notes in `secondary`
@@ -999,7 +1019,7 @@ or emergency phone number until the walker/helper enters it.
 | # | Element | VoiceOver label | Value / hint | Traits |
 |---|---|---|---|---|
 | 1 | Card title | "EMERGENCY MEDICAL ID" | — | `.isHeader` |
-| 2 | Photo | "Profile photo of <name>" (the SF Symbol fallback is unlabelled) | — | image |
+| 2 | Avatar | hidden (initials or a person symbol; the name beside it is read) | — | — |
 | 3 | Name, "EMERGENCY ID", banner and notes | the texts themselves | — | static text |
 | 4 | Edit | "Edit Medical ID" | — | button; presents the sheet |
 | 5 | Info rows | "<label>" then "<value>" (two elements per row, in order) | — | static text |
@@ -1017,6 +1037,57 @@ tile. Remaining design gaps: the photo is a bundled asset of one person, not a p
 tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
 
 ---
+
+### 6.9 Launch, splash and onboarding (Step 69)
+
+- **Launch screen**: the app icon as a 120 pt rounded tile on `brand` navy (`UILaunchScreen`).
+- **Splash** (`SplashView`): the same picture plus the wordmark; timing in §4 (≤ 1 s; a cut under
+  Reduce Motion; none under VoiceOver or automation). Hidden from VoiceOver. The engines run under it.
+- **Onboarding** (first launch only, `OnboardingView`): four pages on `background` — hero symbol
+  (gold on a navy circle), title (`display`, a heading), one or two sentences (`body`,
+  `textSecondary`). Skip (text button, top right) on pages 1–3; **Next** pinned at the bottom,
+  **Get Started** on page 4. Page 4 lists camera + LiDAR, location and microphone as cards, each
+  with one line of why and Allow / Allowed / Open Settings. VoiceOver focus moves to each new
+  page's title (after the 0.35 s slide); the page dots say the position, and Next's hint says where it goes ("Goes to page 2 of 4"). Pages scroll at accessibility text sizes.
+  Onboarding pages *do* slide (the system paged `TabView`) — the "pages never slide" rule is for
+  the root tabs, where direction carries no meaning; here the order is real. Reduce Motion removes
+  the animated slide on Next.
+- **Never** a paywall, a price or the word Premium in onboarding.
+
+### 6.10 Step 69.4 UI pass (what changed and why)
+
+- **Details status card**: plain title + one sentence from `DepthStatusText` ("Obstacle detection is
+  on — LiDAR is watching for obstacles at waist and head height."), a check / hourglass / warning glyph
+  by tone. The raw engine strings stay in the trip log.
+- **Hazards card**: an empty state ("Nothing found yet …") instead of silence.
+- **Settings**: "Testing tools" → "Check your kit"; the developer "App self-check" row is gone; a new
+  last group "About" with the version, Privacy Policy, Terms of Use and source-code links (`AppInfo`),
+  and the license line. 69.5 adds the "OpenCane Premium" card at the top.
+- **Profile**: the avatar is the walker's initials, not a teammate's bundled photo.
+
+### 6.11 OpenCane Premium: paywall and gated switches (Step 69.5)
+
+- **What is gated**: Hazard watch, Name people ahead, Alert my family. Their switches carry a
+  `CKPremiumBadge` (star + PREMIUM on `highlight`) only while locked; the hint ends "Part of OpenCane
+  Premium." The Family alerts card collapses to the switch, one line and "See OpenCane Premium"
+  while locked. Nothing else in the app shows a badge.
+- **Paywall** (`PaywallView`, a sheet): floating Close (44 pt navy disc); navy header with the gold
+  star, "OpenCane Premium" (`display`, heading); two benefit rows; price block "$49.99/year" (`title`)
+  over "About $4.16 a month, billed yearly" — one VoiceOver sentence; **Subscribe** (primary
+  `CKBigButton`); the renewal terms; "Navigation and obstacle detection are always free"; the
+  affordability note in a card; Restore Purchases · Terms of Use · Privacy Policy (44 pt text
+  buttons). Loading / error / no-store states use `CKStateMessage`.
+- **Never during a walk.** A tap on a gated switch mid-walk is refused with "Premium features can be
+  turned on after this walk." under that switch (only there) and at `.scene` (the lowest speech band;
+  every Premium line is `.scene`); an open paywall closes the moment a walk starts, and a purchase
+  that lands mid-walk switches its feature on when the walk ends. The paywall itself makes no sound
+  and no haptic.
+- **Locked switches** read "<title>, Premium" to VoiceOver (a user with hints off still knows).
+  Family alerts is disabled without the alert service on this phone, whatever the plan.
+- **A lapse is said, not silent** ("Family alerts turned off. OpenCane Premium has ended.") and is
+  undone when Premium returns.
+- **Settings** starts with the OpenCane Premium card: status, benefits + "See OpenCane Premium" on
+  the free plan, renewal date on Premium, Restore Purchases and Manage Subscription.
 
 ## 7. Do not
 

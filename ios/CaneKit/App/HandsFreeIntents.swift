@@ -178,6 +178,28 @@ extension AppModel {
     /// Callers: `SetOptionIntent` (Shortcuts / the Action button; not an App Shortcut),
     /// `ConversationCoordinator` (fast-path settings by voice).
     func setOption(_ option: HandsFreeOption, enabled: Bool) {
+        // Step 69.5: Hazard watch and Name people ahead are OpenCane Premium. A voice / Siri request
+        // cannot open the paywall, so on the free plan it is told why (mid-walk: the walk line;
+        // before RevenueCat answers: the checking line) and nothing changes. Every warning channel
+        // stays free (`PremiumFeature(handsFreeOption:)` maps none of them). Turning a feature OFF
+        // is never gated.
+        // Spoken at `.scene` (review round 69.7): a subscription line never cuts a sign, a hazard
+        // or a direction; the walker hears it as soon as nothing more important is playing.
+        if enabled, let feature = PremiumFeature(handsFreeOption: option.rawValue) {
+            let decision = PremiumGate.decideEnable(access: store.access, walkActive: isWalkActive, fromScreen: false)
+            if decision != .allow {
+                let line = switch decision {
+                case .refuseDuringWalk: PremiumGate.walkLine
+                case .refuseChecking: PremiumGate.checkingLine
+                default: PremiumGate.premiumLine(for: feature)
+                }
+                speech.say(line, .scene, ttl: 10)
+                logger.event("option_set", ["option": option.rawValue, "requested": enabled,
+                                            "actual": isOptionEnabled(option), "by": "voice",
+                                            "refused": "premium"])
+                return
+            }
+        }
         switch option {
         case .dropOffs: groundHazardsEnabled = enabled
         case .signs: signsEnabled = enabled

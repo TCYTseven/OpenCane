@@ -61,10 +61,17 @@ options:
   generateEmptyDirectories: true
   xcodeVersion: "26.0"
 
-# The local SwiftPM package (ios/Logic/Package.swift). No remote packages, ever (hard rule 2).
+# The local SwiftPM package (ios/Logic/Package.swift), and — the one owner-approved exception to
+# "no remote packages" (hard rule 2, Step 69.5) — RevenueCat's purchases-ios, through its
+# SPM-only mirror (the same sources, a much smaller clone). Only the CaneKit app links it, and
+# only ios/CaneKit/Store/EntitlementManager.swift imports it. `make gen` then the first build
+# resolves it (network needed once; Xcode caches it).
 packages:
   CaneKitLogic:
     path: Logic
+  RevenueCat:
+    url: https://github.com/RevenueCat/purchases-ios-spm.git
+    from: 5.91.0
 
 # Build settings shared by every target (a target's own `settings.base` overrides a key).
 settings:
@@ -87,7 +94,8 @@ settings:
     WATCHOS_DEPLOYMENT_TARGET: "26.0"
     # Feed CFBundleVersion / CFBundleShortVersionString in every target's Info.plist below.
     CURRENT_PROJECT_VERSION: "1"
-    MARKETING_VERSION: "0.1"
+    # Step 69: 1.0 for the Shipaton submission (the About card and the App Store read it).
+    MARKETING_VERSION: "1.0"
 
 targets:
 
@@ -107,10 +115,18 @@ targets:
       - path: Shared/Brand
       # Step 64: the "Talk to OpenCane" control's intent (also compiled into the widget).
       - path: Shared/Intents
+      # Step 69.5: the StoreKit configuration for local purchase testing. In the project so Xcode
+      # can open it, but in no build phase (it must never ship inside the app); the CaneKit
+      # scheme's Run action selects it (`storeKitConfiguration` below).
+      - path: StoreKit/OpenCane.storekit
+        buildPhase: none
     # Embedding: the watch app lands in CaneKit.app/Watch/ (gen.sh patches XcodeGen #1613 for
     # Xcode 26+) and the widget in CaneKit.app/PlugIns/ (a widget anywhere else never loads).
     dependencies:
       - package: CaneKitLogic
+      # Step 69.5: OpenCane Premium (EntitlementManager). The app target only.
+      - package: RevenueCat
+        product: RevenueCat
       - target: CaneKitWatch
         embed: true
       - target: CaneKitWidget
@@ -142,7 +158,14 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: com.aritro.canekit
             CFBundleURLSchemes: [opencane]
-        UILaunchScreen: {}
+        # Step 69.2: the static launch screen is the app icon as a rounded tile (`LaunchLogo`,
+        # 120 pt) centred on the brand navy (`LaunchBackground` = CKColor.brand's hex). Both are
+        # rendered by ios/scripts/launchlogo.py. `SplashView` repeats the same picture, so the
+        # launch screen → splash handoff does not flash.
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+          UIImageName: LaunchLogo
+          UIImageRespectsSafeAreaInsets: true
         # The phone is clamped to the cane in portrait; the UI and the lane math assume it.
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         # ARKit is required to install. LiDAR is not: a phone without it installs and says so
@@ -283,6 +306,10 @@ schemes:
         CaneKitUITests: [test]
     run:
       config: Debug
+      # Step 69.5: purchases in a Debug run from Xcode (simulator or phone) go to this local
+      # StoreKit configuration — the annual $49.99 product — instead of App Store Connect. RevenueCat
+      # still needs its API key and the StoreKit test certificate in its dashboard (README).
+      storeKitConfiguration: StoreKit/OpenCane.storekit
     test:
       config: Debug
       targets:

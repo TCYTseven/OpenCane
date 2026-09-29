@@ -68,6 +68,27 @@ struct ProfilePage: View {
 
     // MARK: - Medical ID Card
 
+    /// A 56 pt ink / ivory circle with the name's initials (`AppInfo.initials`), or a person symbol
+    /// while the name is the default "Not set". Decoration: the name beside it is the label.
+    @ViewBuilder
+    private func avatar(for name: String) -> some View {
+        if let initials = AppInfo.initials(of: name) {
+            Text(initials)
+                .font(.system(.title2, design: .rounded).weight(.bold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)   // the circle is a fixed 56 pt; AX sizes shrink, never "A…"
+                .foregroundStyle(CKColor.onAccent)
+                .frame(width: 56, height: 56)
+                .background(CKColor.accent, in: Circle())
+                .accessibilityHidden(true)
+        } else {
+            Image(systemName: "person.crop.circle.fill")
+                .font(.system(size: 52))
+                .foregroundStyle(CKColor.accent)
+                .accessibilityHidden(true)
+        }
+    }
+
     private var medicalIDCard: some View {
         let p = model.medicalProfile.profile
         // Typed contact, else the one from this phone's Secrets.plist (review round Steps 67–68):
@@ -76,27 +97,10 @@ struct ProfilePage: View {
         return CKCard(title: "EMERGENCY MEDICAL ID") {
             // Profile Header
             HStack(spacing: CKSpacing.md) {
-                #if canImport(UIKit)
-                if let uiImage = UIImage(named: "AritroProfile") {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 56, height: 56)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(CKColor.accent, lineWidth: 2))
-                        .accessibilityLabel("Profile photo of \(p.name)")
-                } else {
-                    Image(systemName: "person.crop.circle.fill")
-                        .font(.system(size: 52))
-                        .foregroundStyle(CKColor.accent)
-                        .accessibilityHidden(true)
-                }
-                #else
-                Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: 52))
-                    .foregroundStyle(CKColor.accent)
-                    .accessibilityHidden(true)
-                #endif
+                // Step 69.4: initials from the walker's own name (a person symbol before a name is
+                // set). This used to draw one teammate's photo (`AritroProfile`) on every walker's
+                // Medical ID; the asset stays in the catalog, unused.
+                avatar(for: p.name)
 
                 VStack(alignment: .leading, spacing: CKSpacing.xs) {
                     Text(p.name)
