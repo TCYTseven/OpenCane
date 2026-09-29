@@ -3,6 +3,9 @@
 //  CaneKit
 //
 //  The launch sequence (Step 69): splash → (first launch) onboarding → the main app.
+//  On a first launch `ContentView` — and with it `AppModel.start()`, ARKit, the launch line and
+//  the launch microphone — waits until onboarding's Get Started / Skip, so the app does not talk
+//  over VoiceOver reading the pages or raise permission alerts before the page that explains them.
 //
 //  Why it exists: `CaneKitApp` used to show `ContentView` directly. The Shipaton build adds a
 //  brand splash and first-launch onboarding, and both must stay out of the way of what already
@@ -21,10 +24,16 @@ import CaneKitLogic
 import SwiftUI
 import UIKit
 
-/// Splash over the first screen, then the first screen alone.
+/// Splash over the first screen (onboarding on a first launch, else the app), then that screen alone.
 struct RootView: View {
     /// The app-wide owner of every engine; `start()` is called when the main screen appears.
     @Environment(AppModel.self) private var model
+    /// Set by Get Started / Skip; read once at launch (through `UserDefaults`, in `init`).
+    @AppStorage(LaunchFlow.onboardingCompletedKey) private var onboardingCompleted = false
+    /// True while onboarding shows. Decided once at launch; cleared by `finishOnboarding()`.
+    @State private var onboardingActive: Bool
+    /// The onboarding → app handoff fades unless Reduce Motion is on.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// This launch's splash plan, decided once from the system settings at launch.
     @State private var splash: LaunchFlow.Splash
     /// True until the plan's hold (and fade) has run. False from the start when the plan is `.skip`.
@@ -39,14 +48,26 @@ struct RootView: View {
                                      automation: Self.isAutomationLaunch)
         _splash = State(initialValue: plan)
         _splashVisible = State(initialValue: plan != .skip)
+        let completed = UserDefaults.standard.bool(forKey: LaunchFlow.onboardingCompletedKey)
+        _onboardingActive = State(initialValue: LaunchFlow.showsOnboarding(
+            completed: completed,
+            automation: Self.isAutomationLaunch,
+            forced: ProcessInfo.processInfo.environment["CANEKIT_SHOW_ONBOARDING"] == "1"))
     }
 
-    /// The main screen (engines start with it) with the splash above it while `splashVisible`.
+    /// Onboarding or the main screen (engines start with the main screen), with the splash above
+    /// either while `splashVisible`.
     var body: some View {
         ZStack {
-            ContentView()
-                // `start()` is idempotent (guards on `started`), so a re-run of this task is safe.
-                .task { model.start() }
+            if onboardingActive {
+                OnboardingView(location: model.location) { finishOnboarding() }
+                    .transition(.opacity)
+            } else {
+                ContentView()
+                    // `start()` is idempotent (guards on `started`), so a re-run is safe.
+                    .task { model.start() }
+                    .transition(.opacity)
+            }
             if splashVisible {
                 SplashView(animates: splash.animates)
                     .transition(.opacity)
@@ -54,6 +75,16 @@ struct RootView: View {
             }
         }
         .task { await dismissSplash() }
+    }
+
+    /// Get Started or Skip: remember it, then show the app (whose appearance starts the engines).
+    private func finishOnboarding() {
+        onboardingCompleted = true
+        if reduceMotion {
+            onboardingActive = false
+        } else {
+            withAnimation(.easeOut(duration: 0.25)) { onboardingActive = false }
+        }
     }
 
     /// Holds for the plan's time, then fades (or, under Reduce Motion, cuts) the splash away.
@@ -68,7 +99,8 @@ struct RootView: View {
     }
 
     /// XCUITests (`CANEKIT_UITEST=1`), muted e2e (`CANEKIT_MUTE=1`) and `--demo-route` /
-    /// `CANEKIT_DEMO_ROUTE=1` launches: straight to the Guide screen, no splash, no onboarding.
+    /// `CANEKIT_DEMO_ROUTE=1` launches: straight to the Guide screen, no splash, no onboarding
+    /// (unless `CANEKIT_SHOW_ONBOARDING=1` forces the pages for a UI test of them).
     static var isAutomationLaunch: Bool {
         AppModel.isAutomation
             || CommandLine.arguments.contains("--demo-route")

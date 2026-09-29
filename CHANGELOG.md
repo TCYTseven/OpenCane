@@ -58,6 +58,50 @@ test on device: cold launch → navy + logo, then the wordmark, then Guide in un
 "OpenCane ready." line unaffected; Reduce Motion on → a cut, no fade; VoiceOver on → straight to
 Guide, focus on the first element.
 
+### 69.3 — First-launch onboarding
+
+- **Tests first.** `OnboardingContentTests` (7) failed to compile until the new Logic file existed.
+  They pin:
+  - 3–4 pages, each with a symbol, a title ≤ 40 characters and a one- or two-sentence body;
+  - permissions on the last page, Next then Get Started, Skip on every page but the last;
+  - "Page N of 4";
+  - the permission wording, including Open Settings after a refusal.
+- **`OnboardingView`**: a paged `TabView` with page dots.
+  - A pinned **Next** / **Get Started** button (`CKBigButton`) on every page, so VoiceOver users never
+    need the three-finger scroll.
+  - **Skip** at top right (44 pt).
+  - VoiceOver focus moves to each page's title (a heading).
+  - Each page is a `ScrollView`, so accessibility text sizes scroll instead of clipping.
+  - Under Reduce Motion, Next changes the page without the slide.
+  - Stored with `@AppStorage("onboardingCompleted")`.
+- **Permissions in context** (last page, `PermissionsPanel` + `PermissionCenter`): camera + LiDAR,
+  location, microphone (+ speech recognition), each with one line of why and Allow / Allowed /
+  Open Settings. States refresh when the app becomes active again after a system alert. The
+  callbacks follow the app's `@Sendable [weak self]` + main-actor hop pattern.
+- **Deviation from the brief, on purpose:** notifications are not requested. OpenCane posts no
+  notifications (family alerts go through the Grok Bot service; the Live Activity needs no
+  permission), and an alert with no purpose is a worse first impression than none. The microphone,
+  which the voice shell actually uses, takes its place.
+- **Behaviour change, first launch only:** `ContentView`, and with it `AppModel.start()`, waits
+  until onboarding ends. So on a first install:
+  - the "OpenCane ready." line and the launch microphone do not talk over VoiceOver reading the pages;
+  - ARKit does not start before the camera permission is explained.
+
+  Returning launches are unchanged. Automation never sees onboarding (`LaunchFlow`), so
+  `make uitest` / `make tour` / `make e2e` see the same first screen as before.
+  `CANEKIT_SHOW_ONBOARDING=1` forces the pages.
+- **Known edge, not fixed:** a Siri App Intent fired before a brand-new install has finished
+  onboarding still starts the engines after 2 s (`IntentSupport.model()`), as it did before.
+
+test on device: delete the app, install, launch:
+- splash, then page 1 with VoiceOver focus on its title;
+- swipe and Next both move a page, and VoiceOver reads each new title;
+- Skip is on pages 1–3;
+- page 4: Allow each row, see "Allowed", deny one and see "Open Settings" work;
+- Get Started → Guide, then "OpenCane ready.";
+- relaunch → no onboarding;
+- largest accessibility text size: every page scrolls and nothing is clipped.
+
 ## Steps 67–68 review round (Codex, Muse, Antigravity) (Sun Sep 13)
 
 Reviews: Antigravity (6 findings), Codex (4), Muse (11) on the Steps 67–68 diff. Every finding was checked

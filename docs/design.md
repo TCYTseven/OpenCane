@@ -1038,6 +1038,22 @@ tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
 
 ---
 
+### 6.9 Launch, splash and onboarding (Step 69)
+
+- **Launch screen**: the app icon as a 120 pt rounded tile on `brand` navy (`UILaunchScreen`).
+- **Splash** (`SplashView`): the same picture plus the wordmark; timing in §4 (≤ 1 s; a cut under
+  Reduce Motion; none under VoiceOver or automation). Hidden from VoiceOver. The engines run under it.
+- **Onboarding** (first launch only, `OnboardingView`): four pages on `background` — hero symbol
+  (gold on a navy circle), title (`display`, a heading), one or two sentences (`body`,
+  `textSecondary`). Skip (text button, top right) on pages 1–3; **Next** pinned at the bottom,
+  **Get Started** on page 4. Page 4 lists camera + LiDAR, location and microphone as cards, each
+  with one line of why and Allow / Allowed / Open Settings. VoiceOver focus moves to each new
+  page's title; the Next button's value is "Page N of 4". Pages scroll at accessibility text sizes.
+  Onboarding pages *do* slide (the system paged `TabView`) — the "pages never slide" rule is for
+  the root tabs, where direction carries no meaning; here the order is real. Reduce Motion removes
+  the animated slide on Next.
+- **Never** a paywall, a price or the word Premium in onboarding.
+
 ## 7. Do not
 
 - No colour-only meaning. Every lane state has a level word and a number; every pill has a word.

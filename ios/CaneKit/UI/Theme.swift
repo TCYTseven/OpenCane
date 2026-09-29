@@ -678,6 +678,9 @@ struct CKFeatureRow: View {
     /// Title / detail colours; the brand surface passes `onBrand` / `onBrandSecondary`.
     var titleColor: Color = CKColor.textPrimary
     var detailColor: Color = CKColor.textSecondary
+    /// Optional words appended to the VoiceOver label only ("Allowed." on a permission row), so a
+    /// caller never has to stack a second `accessibilityLabel` over this one.
+    var spokenSuffix: String? = nil
     /// Large accessibility sizes restack the row vertically so the words keep the full width.
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -708,7 +711,14 @@ struct CKFeatureRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(detail.map { "\(title). \($0)" } ?? title)
+        .accessibilityLabel(spokenLabel)
+    }
+
+    /// "title. detail suffix" — one sentence per row for VoiceOver.
+    private var spokenLabel: String {
+        var words = detail.map { "\(title). \($0)" } ?? title
+        if let spokenSuffix { words += " \(spokenSuffix)" }
+        return words
     }
 }
 

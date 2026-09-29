@@ -334,7 +334,11 @@ bench has *disproved* must never sit in the file as though it were settled — m
 - The route file's WP3 (Goodwin) is a turn, not a crossing; turn waypoints use 12 m fences.
 - `SpeechQueue` has a watchdog (6 s + text length / 6) that unsticks a stalled backend.
 - Location permission is requested at launch (with a sighted helper present; skipped under
-  `CANEKIT_UITEST=1`); Motion and HealthKit at route start.
+  `CANEKIT_UITEST=1`); Motion and HealthKit at route start. **First launch (Step 69):** onboarding
+  shows before `ContentView`, so `AppModel.start()` (engines, launch line, launch microphone) waits
+  for Get Started / Skip, and camera / location / microphone are asked on onboarding's last page,
+  each under a line saying why. Automation (`CANEKIT_UITEST`, `CANEKIT_MUTE`, `--demo-route`) never
+  sees onboarding or the splash (`LaunchFlow`); `CANEKIT_SHOW_ONBOARDING=1` forces the pages.
 
 - Hazards the maps do not know about (Step 11): LiDAR ground hazards (drop-off / hole / curb /
   low obstacle) need a near-field ground reference, an edge jump against the previous *two* 30 cm
