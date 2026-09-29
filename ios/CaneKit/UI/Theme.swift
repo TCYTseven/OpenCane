@@ -2,8 +2,16 @@
 //  Theme.swift
 //  CaneKit
 //
-//  Design tokens and the three reusable components. The prose twin is docs/design.md;
+//  Design tokens and the reusable components. The prose twin is docs/design.md;
 //  when the two disagree, fix this file.
+//
+//  The kit, by job (Step 69 added the brand tokens and the last four components):
+//    · primary / secondary / destructive button — `CKBigButton(role:)` (+ `CKBigButtonStyle`)
+//    · text-weight action (Skip, Restore Purchases, links) — `CKTextButton`
+//    · card — `CKCard`; section header — `CKSectionHeader`; row divider — `CKRowDivider`
+//    · feature row with an SF Symbol — `CKFeatureRow`; settings switch — `CKToggleRow`
+//    · status — `CKStatusPill`; premium mark — `CKPremiumBadge`
+//    · loading / empty / error — `CKStateMessage`
 //
 //  Implements docs/design.md §1 (typography → CKFont), §2 (colour tokens → CKColor),
 //  §3 (spacing, radius, touch targets → CKSpacing / CKRadius / CKMetrics), §4 (owned
@@ -94,6 +102,27 @@ enum CKColor {
     /// Idle / informational pill tone; text on it is `textPrimary` (the only non-ink pill).
     static let neutral = surfaceRaised
 
+    // Brand (Shipaton polish pass, Step 69): the app icon's night navy and its gold ring. Used
+    // only for brand moments — the launch screen, the splash, the onboarding hero and the paywall
+    // header — never for a hazard or a state. Identical in light and dark (the brand surface is
+    // always dark), deeper under Increase Contrast.
+    /// Splash / launch-screen ground and the paywall header. Same hex as the asset-catalog colour
+    /// `LaunchBackground` (the launch screen cannot read Swift), so the handoff has no flash.
+    static let brand = dynamic(0x0B1533, 0x0B1533, hcLight: 0x050A1A, hcDark: 0x050A1A)
+    /// Text and symbols on `brand` (15.9:1 on the navy).
+    static let onBrand = dynamic(0xF4F1EA, 0xF4F1EA, hcLight: 0xFFFFFF, hcDark: 0xFFFFFF)
+    /// Secondary text on `brand` (9.8:1).
+    static let onBrandSecondary = dynamic(0xB9BFD0, 0xB9BFD0, hcLight: 0xE6E9F0, hcDark: 0xE6E9F0)
+    /// The icon's gold, for marks on `brand` only (9.4:1 on the navy, 13.9:1 in high contrast).
+    static let brandHighlight = dynamic(0xE3B55B, 0xE3B55B, hcLight: 0xFFD27A, hcDark: 0xFFD27A)
+    /// The high-contrast accent for marks on ordinary surfaces (the Premium badge, the paywall's
+    /// benefit icons): deep amber in light mode (≥ 7.4:1 on `background`, `surface` and
+    /// `surfaceRaised`), the icon's gold in dark mode (9.3:1 on `surface`). Like `accent`, it never
+    /// carries hazard meaning.
+    static let highlight = dynamic(0x654000, 0xE3B55B, hcLight: 0x4A2F00, hcDark: 0xFFD27A)
+    /// Text on a `highlight` fill: ivory on the amber, ink on the gold (7.2:1 / 9.6:1).
+    static let onHighlight = dynamic(0xFFFFFF, 0x17140F, hcLight: 0xFFFFFF, hcDark: 0x000000)
+
     /// Builds a `Color` that re-resolves for light/dark and Increase Contrast automatically.
     ///
     /// - Parameters: 0xRRGGBB for light, dark, high-contrast light and high-contrast dark.
@@ -128,6 +157,11 @@ enum CKFont {
     }
     /// Metres inside a depth tile (28 pt base). Readable from a metre away.
     static let tile        = Font.system(.title, design: .rounded).weight(.bold).monospacedDigit()
+    /// Screen titles on brand moments: the splash wordmark, onboarding page titles, the paywall
+    /// title (Step 69). Large Title style, so it scales to the largest accessibility sizes.
+    static let display     = Font.system(.largeTitle, design: .rounded).weight(.bold)
+    /// A screen's own title when it is not in a navigation bar (sheet headers). Title 2 bold.
+    static let title       = Font.system(.title2, design: .rounded).weight(.bold)
     /// Current instruction (`GuideCard`) and the Sense status line. No line cap is applied at the
     /// call sites (`lineLimit(nil)` + vertical `fixedSize`): the text wraps and is never truncated
     /// or shrunk — the spotter reads it over the walker's shoulder.
@@ -187,6 +221,9 @@ enum CKMetrics {
     /// destination field, its clear button and suggestion rows, the haptic / wrist test buttons,
     /// the share button, each tab). Big buttons use `bigButton`.
     static let touchTarget: CGFloat = 60
+    /// Apple's floor (44 × 44 pt) for a secondary control inside a sheet: Close, Skip, a text
+    /// link such as Restore Purchases or Terms (Step 69). Nothing tappable is ever smaller.
+    static let minimumTarget: CGFloat = 44
     /// `CKBigButton` minimum height (design.md §3: 72 pt, full or half width).
     static let bigButton: CGFloat = 72
     /// Minimum height of a `CKBigButton` in `tile` layout (icon over word over caption); the
@@ -620,6 +657,175 @@ struct CKSectionHeader: View {
     }
 }
 
+// MARK: - Step 69 components (splash, onboarding, paywall, settings)
+
+/// One benefit or fact with its SF Symbol: the onboarding pages, the paywall's two Premium
+/// benefits and the Settings Premium card use it.
+///
+/// Accessibility: one element whose label is "title. detail" (the symbol is decoration), so a
+/// VoiceOver swipe reads each benefit as one sentence instead of three fragments. Grows with
+/// Dynamic Type; nothing truncates (the text wraps, and at accessibility sizes the icon stacks
+/// above the words).
+struct CKFeatureRow: View {
+    /// SF Symbol in the leading badge. Hidden from VoiceOver.
+    let systemImage: String
+    /// Short bold line ("Grok Bot and Family Alerts").
+    let title: String
+    /// One sentence under it.
+    var detail: String? = nil
+    /// Badge tint: `highlight` on ordinary surfaces, `brandHighlight` on the brand navy.
+    var tint: Color = CKColor.highlight
+    /// Title / detail colours; the brand surface passes `onBrand` / `onBrandSecondary`.
+    var titleColor: Color = CKColor.textPrimary
+    var detailColor: Color = CKColor.textSecondary
+    /// Large accessibility sizes restack the row vertically so the words keep the full width.
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// A 44 pt symbol well beside (or, at accessibility sizes, above) the title and detail.
+    var body: some View {
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: CKSpacing.sm))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: CKSpacing.md))
+        layout {
+            Image(systemName: systemImage)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(tint)
+                .frame(width: CKMetrics.minimumTarget, height: CKMetrics.minimumTarget)
+                .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(CKFont.label)
+                    .foregroundStyle(titleColor)
+                    .fixedSize(horizontal: false, vertical: true)
+                if let detail {
+                    Text(detail)
+                        .font(CKFont.secondary)
+                        .foregroundStyle(detailColor)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(detail.map { "\(title). \($0)" } ?? title)
+    }
+}
+
+/// A text-weight action for secondary choices that must not compete with the one primary button
+/// on a screen: Skip, Restore Purchases, Terms, Privacy Policy, Manage Subscription (Step 69).
+///
+/// At least `CKMetrics.minimumTarget` (44 pt) tall and as wide as its words plus padding;
+/// underlined-free, semibold, in `textPrimary` so it passes the same contrast as body text.
+/// Accessibility: label = `title`, hint = `hint`; a link role adds the `.isLink` trait.
+struct CKTextButton: View {
+    /// Visible word(s) and VoiceOver label.
+    let title: String
+    /// Optional leading SF Symbol (hidden from VoiceOver).
+    var systemImage: String? = nil
+    /// VoiceOver hint: what happens.
+    var hint: String? = nil
+    /// True for a control that leaves the app (a web page): adds the link trait.
+    var isLink: Bool = false
+    /// Foreground; the brand surface passes `onBrand`.
+    var color: Color = CKColor.textPrimary
+    /// Tap handler.
+    let action: () -> Void
+
+    /// Plain button, semibold body text, ≥ 44 pt hit area.
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: CKSpacing.xs) {
+                if let systemImage {
+                    Image(systemName: systemImage).accessibilityHidden(true)
+                }
+                Text(title)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .font(CKFont.body.weight(.semibold))
+            .foregroundStyle(color)
+            .padding(.horizontal, CKSpacing.sm)
+            .frame(minWidth: CKMetrics.minimumTarget, minHeight: CKMetrics.minimumTarget)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityHint(hint ?? "")
+        .accessibilityAddTraits(isLink ? .isLink : [])
+    }
+}
+
+/// The small "PREMIUM" mark beside a gated switch (Step 69). A word, never colour alone.
+///
+/// Accessibility: hidden — the gated row's own hint says "Part of OpenCane Premium", so the badge
+/// would only make VoiceOver read the same fact twice.
+struct CKPremiumBadge: View {
+    /// Uppercase tracked word on a `highlight` capsule, ≥ 24 pt tall.
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: "star.fill").font(.caption2.weight(.bold))
+            Text("PREMIUM").font(.caption.weight(.heavy)).kerning(0.8)
+        }
+        .foregroundStyle(CKColor.onHighlight)
+        .padding(.horizontal, CKSpacing.sm)
+        .frame(minHeight: 24)
+        .background(CKColor.highlight, in: Capsule())
+        .fixedSize()
+        .accessibilityHidden(true)
+    }
+}
+
+/// Loading, empty and error states for anything that loads (Step 69): the paywall's offering,
+/// the Settings subscription status. One VoiceOver element that says what is happening and, for
+/// an error, what to do; a Retry button when the caller passes one.
+struct CKStateMessage: View {
+    /// Which state; picks the glyph (a spinner for `loading`).
+    enum Kind { case loading, empty, error }
+    /// See `Kind`.
+    let kind: Kind
+    /// One short line ("Loading the price…", "Couldn't reach the App Store").
+    let title: String
+    /// Optional second sentence: why, or what to do.
+    var message: String? = nil
+    /// Optional retry; shown as a secondary big button under an error.
+    var retry: (() -> Void)? = nil
+
+    /// Glyph (or spinner) beside the words, then the Retry button.
+    var body: some View {
+        VStack(alignment: .leading, spacing: CKSpacing.md) {
+            HStack(alignment: .top, spacing: CKSpacing.md) {
+                Group {
+                    switch kind {
+                    case .loading: ProgressView()
+                    case .empty: Image(systemName: "tray").foregroundStyle(CKColor.textSecondary)
+                    case .error: Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(CKColor.warning)
+                    }
+                }
+                .font(.title3.weight(.semibold))
+                .frame(width: 28, height: 28)
+                .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(CKFont.label).foregroundStyle(CKColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if let message {
+                        Text(message).font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(message.map { "\(title). \($0)" } ?? title)
+            .accessibilityAddTraits(kind == .loading ? .updatesFrequently : [])
+            if kind == .error, let retry {
+                CKBigButton(title: "Try again", systemImage: "arrow.clockwise", role: .secondary,
+                            hint: "Tries to load it again", action: retry)
+            }
+        }
+    }
+}
+
 // MARK: - Preview
 
 /// Xcode canvas preview of every component in one stack (design review only; no test uses it).
@@ -636,6 +842,14 @@ struct CKSectionHeader: View {
         }
         CKBigButton(title: "Stop route", systemImage: "stop.fill", role: .destructive,
                     hint: "Ends guidance and shows the arrival summary") {}
+        CKFeatureRow(systemImage: "person.2.fill", title: "Grok Bot and Family Alerts",
+                     detail: "Your family hears about a fall or a close call.")
+        HStack {
+            CKPremiumBadge()
+            CKTextButton(title: "Restore Purchases") {}
+        }
+        CKStateMessage(kind: .error, title: "Couldn't reach the App Store",
+                       message: "Check the connection, then try again.", retry: {})
         HStack(spacing: CKSpacing.lg) {
             CKBigButton(title: "Recenter", systemImage: "location.north.line", role: .secondary,
                         hint: "Sets straight ahead as the beacon's forward direction") {}

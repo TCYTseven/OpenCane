@@ -2886,7 +2886,7 @@ All UI types are `struct … : View` in the `CaneKit` app target, which compiles
 
 ### ios/CaneKit/UI/Theme.swift
 
-Purpose: design tokens (`CKColor`, `CKFont`, `CKSpacing`, `CKRadius`, `CKMetrics`) and the three reusable components (`CKBigButton`, `CKStatusPill`, `CKCard`). Prose twin is `docs/design.md`; when they disagree, the Swift is fixed. Contains a `#Preview("Components")`.
+Purpose: design tokens (`CKColor`, `CKFont`, `CKSpacing`, `CKRadius`, `CKMetrics`) and the reusable components (`CKBigButton`, `CKStatusPill`, `CKCard`, `CKIconBadge`, `CKToggleRow`, `CKRowDivider`, `CKSectionHeader`, and since Step 69 `CKFeatureRow`, `CKTextButton`, `CKPremiumBadge`, `CKStateMessage`). Prose twin is `docs/design.md`; when they disagree, the Swift is fixed. Contains a `#Preview("Components")`.
 
 #### `enum CKColor` (namespace, no cases)
 All members are `static let … : Color` built by `dynamic(...)`, so every colour resolves light / dark / increased-contrast at trait time. Nothing else in the app should construct a `Color` literal (design.md §8).
@@ -2911,6 +2911,12 @@ All members are `static let … : Color` built by `dynamic(...)`, so every colou
 | `warning` | `#FBBF24` | same | `#FFB000` | same | pill tone |
 | `danger` | = `laneUrgent` | | | | destructive button, pill tone |
 | `neutral` | = `surfaceRaised` | | | | pill tone |
+| `brand` | `#0B1533` | same | `#050A1A` | same | Step 69: launch screen / splash / onboarding hero / paywall header |
+| `onBrand` | `#F4F1EA` | same | `#FFFFFF` | same | text on `brand` (15.9:1) |
+| `onBrandSecondary` | `#B9BFD0` | same | `#E6E9F0` | same | secondary text on `brand` (9.8:1) |
+| `brandHighlight` | `#E3B55B` | same | `#FFD27A` | same | gold marks on `brand` (9.4:1) |
+| `highlight` | `#654000` | `#E3B55B` | `#4A2F00` | `#FFD27A` | high-contrast accent on ordinary surfaces (Premium badge, paywall icons) |
+| `onHighlight` | `#FFFFFF` | `#17140F` | `#FFFFFF` | `#000000` | text on a `highlight` fill |
 
 - `nonisolated private static func dynamic(_ light: UInt32, _ dark: UInt32, hcLight: UInt32, hcDark: UInt32) -> Color` — wraps `UIColor { traits in … }`; picks by `traits.userInterfaceStyle == .dark` then `traits.accessibilityContrast == .high`; unpacks 0xRRGGBB, alpha 1. `nonisolated` because UIKit may resolve the provider off-main. ⚠ Do not change the lane ladder hex values or the `ink` rule without re-checking the contrast ratios in `docs/design.md §2` (clear 11.4:1, far 15.2:1, near 8.9:1, urgent 7.1:1 against ink).
 - Invariant: lane colours are identical in light and dark (the fill *is* the signal); `accent` never carries hazard meaning. Thresholds are **not** here — they are `CaneKitLogic.TileLevel.level(for:hasData:)` (`< 0.7` urgent, `< 1.2` near, `< 2.0` far, else clear; `!hasData` → `.noData`; non-finite with data → `.clear`).
@@ -2927,6 +2933,8 @@ All members are `static let … : Color` built by `dynamic(...)`, so every colou
 | `pill` | `.subheadline` rounded bold | status pills (uppercased + kerning 0.9 in the view) |
 | `secondary` | `.subheadline` | hints, error lines; smallest user-facing size |
 | `mono` | `.footnote` monospaced, monospacedDigit | **currently unused**; allowed only inside `accessibilityHidden(true)` developer views |
+| `display` | `.largeTitle` rounded bold | Step 69: splash wordmark, onboarding titles, paywall title |
+| `title` | `.title2` rounded bold | Step 69: sheet headings |
 
 #### `enum CKSpacing` (4 pt base)
 | `xs` 4 | `sm` 8 | `md` 12 | `lg` 16 | `xl` 24 | `xxl` 32 | `gutter` 20 |
@@ -2940,6 +2948,7 @@ All members are `static let … : Color` built by `dynamic(...)`, so every colou
 - `touchTarget: CGFloat = 60` — minimum height of any tappable thing that is not a `CKBigButton` (Go, the destination search field and every suggestion row, the four haptic test buttons, the four wrist-cue buttons).
 - `bigButton: CGFloat = 72` — `CKBigButton` min height (`row` layout).
 - `tile: CGFloat = 108` — `CKBigButton` min height in `tile` layout (Step 47).
+- `minimumTarget: CGFloat = 44` — Step 69: floor for `CKTextButton` and the close / skip controls in sheets.
 - `static func border(for contrast: ColorSchemeContrast) -> CGFloat` — 3 if `.increased`, else 1.
 
 #### `struct CKBigButton: View`
@@ -2963,6 +2972,12 @@ All members are `static let … : Color` built by `dynamic(...)`, so every colou
 - Fields: `title: String? = nil`, `@ViewBuilder content`; env `colorSchemeContrast`.
 - Body: `VStack(alignment: .leading, spacing: md)` with optional title (`CKFont.label`, `textSecondary`, `.isHeader`) then content; padding `lg`; full width; `surface` fill in `RoundedRectangle(20, .continuous)`; `border` stroke of `border(for:)` width; `accessibilityElement(children: .contain)`; label `Text(title)` or `Text("")` (comment: an empty label would override children, so only titled cards are labelled).
 - Contract: `CKCard(title: "Guide"/"Obstacles"/"Haptics"/"Hazards"/"Watch"/"Mount"/"This phone"/"Arrived"/"This trip")` are the rotor stops.
+
+#### Step 69 components
+- `struct CKFeatureRow: View` — `systemImage`, `title`, `detail: String? = nil`, `tint: Color = CKColor.highlight`, `titleColor` / `detailColor` (brand surfaces pass `onBrand` / `onBrandSecondary`). A 44 pt tinted symbol well beside the title + detail; at accessibility sizes (`dynamicTypeSize.isAccessibilitySize`) the well stacks above the words (`AnyLayout`). One VoiceOver element, label "title. detail". Used by onboarding, the paywall and the Settings Premium card.
+- `struct CKTextButton: View` — `title`, `systemImage?`, `hint?`, `isLink = false` (adds `.isLink`), `color = textPrimary`, `action`. Semibold body text, ≥ 44 × 44 pt. Skip, Restore Purchases, Terms, Privacy Policy, Manage Subscription.
+- `struct CKPremiumBadge: View` — star + "PREMIUM" on a `highlight` capsule, ≥ 24 pt, `accessibilityHidden` (the gated row's hint says it in words).
+- `struct CKStateMessage: View` — `kind: .loading / .empty / .error`, `title`, `message?`, `retry?`. Spinner / tray / warning glyph beside the words as one VoiceOver element ("title. message", `.updatesFrequently` while loading); an error with `retry` adds a secondary "Try again" `CKBigButton`.
 
 ---
 

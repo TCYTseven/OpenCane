@@ -2,6 +2,41 @@
 
 Build log for the hackathon. One entry per step; each ends with what to test on the phone.
 
+## Step 69 — Shipaton polish pass + RevenueCat Premium (Tue Sep 29)
+
+Owner request (RevenueCat Shipaton 2026, Next Gen Award, due Wed Sep 30 23:45 PDT): make OpenCane look
+and feel like a shipped app — design system, splash, onboarding, a UI pass, RevenueCat with a small
+paywall, and a repo a judge can build. Hard constraint: no change to navigation, detection or audio
+behaviour, and the paywall never appears during a walk. Six sub-steps, one commit each (69.1–69.6).
+
+**How this was verified, and what was not.** This work was done in a Linux container with no Xcode and
+no iOS SDK. `CaneKitLogic` was tested with the swift.org 6.4.0 Linux toolchain
+(`cd ios/Logic && swift test --disable-xctest`, judged by its own exit code). Every changed app file was
+syntax-checked with `swiftc -parse -swift-version 6`, which proves the grammar and nothing about types.
+**The app target was not compiled and nothing ran on a simulator or a phone.** Before merging, the
+orchestrator must run `cd ios && make gen && make test sim uitest tour` on the Mac (and `make e2e`).
+Muse and Antigravity were not available here; the review round was a multi-agent adversarial review
+(69.7).
+
+### 69.1 — Design system (Theme.swift)
+
+- **Kept, not replaced.** `Theme.swift` already was the design system (`CKColor` with light / dark /
+  increased-contrast variants, Dynamic Type `CKFont`, `CKSpacing` / `CKRadius` / `CKMetrics`,
+  `CKBigButton` primary / secondary / destructive, `CKCard`, `CKSectionHeader`). A second one would
+  have split the app, so the new pieces extend it.
+- **Brand tokens** from the app icon: `brand` (night navy `#0B1533`), `onBrand`, `onBrandSecondary`,
+  `brandHighlight` (the icon's gold), and `highlight` — the high-contrast accent for ordinary
+  surfaces (deep amber `#654000` in light, ≥ 7.4:1 on every light surface; gold in dark, 9.3:1) with
+  `onHighlight`. Ratios in design.md §2 "Brand", computed with the WCAG 2.x formula.
+- **Type:** `CKFont.display` (Large Title, rounded bold) and `CKFont.title` (Title 2, rounded bold).
+- **Metrics:** `CKMetrics.minimumTarget` = 44 pt for text-weight controls in sheets.
+- **Components:** `CKFeatureRow` (SF Symbol + title + one line, one VoiceOver sentence, restacks at
+  accessibility sizes), `CKTextButton` (≥ 44 pt Skip / Restore / links, `.isLink` trait),
+  `CKPremiumBadge`, `CKStateMessage` (loading / empty / error + Try again).
+- Nothing existing changed: no token value, no component, no accessibility label.
+
+test on device: none for 69.1 on its own (no screen uses the new pieces yet); `make sim` must build.
+
 ## Steps 67–68 review round (Codex, Muse, Antigravity) (Sun Sep 13)
 
 Reviews: Antigravity (6 findings), Codex (4), Muse (11) on the Steps 67–68 diff. Every finding was checked

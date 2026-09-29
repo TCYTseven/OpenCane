@@ -83,6 +83,8 @@ Fonts are system only (no bundle, no licensing, full Dynamic Type):
 | `pill` | `.subheadline` (15 pt) | Rounded / bold, uppercased, kerning 0.9 pt (≈ 0.06 em), tabular | Status pills. One line (`lineLimit(1)`, `minimumScaleFactor(0.8)`), 1–3 short words. |
 | `secondary` | `.subheadline` (15 pt) | Text / regular | Hints, error lines, trip-stat labels. Smallest size for sentences. |
 | `mono` | `.footnote` (13 pt) | Mono / regular, tabular | Defined, currently unused (the developer footer was removed). Only for `accessibilityHidden` developer views. |
+| `display` | `.largeTitle` (34 pt) | Rounded / bold | Step 69: brand moments only — splash wordmark, onboarding page titles, the paywall title. |
+| `title` | `.title2` (22 pt) | Rounded / bold | Step 69: a sheet's own heading when there is no navigation bar. |
 
 Exceptions the code makes below 15 pt, all on elements that also carry a bigger number or symbol and
 whose VoiceOver label carries the full meaning: the position label (`.caption`, 12 pt) and level word
@@ -146,6 +148,20 @@ the two dangerous states are also the two darkest fills.
 | `neutral` | = `surfaceRaised` | — | GPS SEARCHING / OFF / DENIED, cue CLEAR, QUIET, SYSTEM voice, watch ASLEEP / NOT PAIRED, BEACON OFF / IDLE, HEAD TRACKED / COMPASS ONLY, last watch command. Text in `textPrimary` (the only non-ink pill) |
 | `accent` (pill tone) | = `accent` | — | The **CAMPUS** badge on a destination suggestion (§6.3). Not a state: it marks a hand-verified gazetteer entrance. Text in `onAccent`; accent never carries hazard meaning |
 
+### Brand (Step 69 — splash, onboarding, paywall)
+
+The app icon's night navy and its gold ring. Brand moments only; never a state or a hazard. Ratios
+recomputed 2026-09-29 with the WCAG 2.x formula.
+
+| Token | Light | Dark | Light HC | Dark HC | Use |
+|---|---|---|---|---|---|
+| `brand` | `#0B1533` | `#0B1533` | `#050A1A` | `#050A1A` | Launch screen (asset colour `LaunchBackground`, same hex), splash, onboarding hero well, paywall header |
+| `onBrand` | `#F4F1EA` | `#F4F1EA` | `#FFFFFF` | `#FFFFFF` | Text on `brand` — 15.9:1 |
+| `onBrandSecondary` | `#B9BFD0` | `#B9BFD0` | `#E6E9F0` | `#E6E9F0` | Secondary text on `brand` — 9.8:1 |
+| `brandHighlight` | `#E3B55B` | `#E3B55B` | `#FFD27A` | `#FFD27A` | Gold marks on `brand` — 9.4:1 (13.9:1 HC) |
+| `highlight` | `#654000` | `#E3B55B` | `#4A2F00` | `#FFD27A` | **The high-contrast accent** on ordinary surfaces: Premium badge, paywall benefit icons. ≥ 7.4:1 on every light surface, 9.3:1 on a dark card |
+| `onHighlight` | `#FFFFFF` | `#17140F` | `#FFFFFF` | `#000000` | Text on a `highlight` fill — 7.2:1 / 9.6:1 |
+
 ### Appearance policy
 - The app follows the system appearance (`UIUserInterfaceStyle Automatic`). **For the demo, set the phone to Dark Mode** (dark room; the screen must not light the judges' faces) and run under Guided Access.
 - In sunlight the light palette wins: ivory ground, ink text, the same lane fills.
@@ -186,6 +202,9 @@ buttons, Share hazard map) is ≥ 60 pt tall (`touchTarget`). System `Toggle`s k
 and every destination suggestion row are `touchTarget` (60 pt) like the buttons beside them. Tiles are not tappable (they are a display). Watch buttons are ≥ 44 pt
 (`WKSpacing.touchTarget`: 48 pt pushed the bottom row off a 46 mm screen). Pills are 32 pt tall and not
 interactive.
+
+`CKMetrics.minimumTarget` (44 pt, Step 69) is the floor for the text-weight controls in sheets:
+Close, Skip, Restore Purchases, Terms, Privacy Policy (`CKTextButton`). Nothing tappable is smaller.
 
 Elevation: none. No shadows — a card is a fill and a hairline. Depth is not a metaphor we need
 when the screen is a gauge.
