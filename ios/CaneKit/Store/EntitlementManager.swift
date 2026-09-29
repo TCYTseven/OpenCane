@@ -21,7 +21,8 @@
 //      `restore()` and renders the resulting state. Nothing here speaks or touches the audio
 //      session, the haptics or the depth pipeline.
 //    · `CANEKIT_PREMIUM=free|premium` (launch environment) forces a state without the store, for
-//      UI tests and screenshots of the gated / unlocked screens. Ignored when unset.
+//      UI tests and screenshots of the gated / unlocked screens. Without it, automation
+//      (`RootView.isAutomationLaunch`) is always `.notConfigured`, key or not (review round 69.7).
 //
 //  Threading / isolation: main actor (project default). RevenueCat's async APIs are called from
 //  the main actor; every value that crosses back (`CustomerInfo`, `Offerings`, `Package`,
@@ -35,6 +36,9 @@
 
 import CaneKitLogic
 import Foundation
+// `@Observable` / `@ObservationIgnored`: none of the other imports re-exports Observation
+// (review round 69.7, the compile reviewer's one definite error).
+import Observation
 import RevenueCat
 
 /// The paywall's product, as plain strings in the App Store's own locale formatting.
@@ -118,6 +122,13 @@ final class EntitlementManager {
         case "free": setAccess(.free); return
         case "premium": setAccess(.premium); return
         default: break
+        }
+        // Review round 69.7: XCUITests, the tour and e2e bundle the same git-ignored Secrets.plist
+        // as a real build. With a key in it they would talk to RevenueCat, show badges and change
+        // every Settings screenshot. Automation is "no store" unless CANEKIT_PREMIUM says otherwise.
+        if RootView.isAutomationLaunch {
+            setAccess(.notConfigured)
+            return
         }
         guard let key = Secrets.string("REVENUECAT_API_KEY") else {
             setAccess(.notConfigured)

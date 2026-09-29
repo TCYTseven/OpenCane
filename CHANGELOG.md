@@ -240,6 +240,127 @@ test on device (with a key and the StoreKit config, Debug from Xcode):
 test on device: follow README "Build and run from a fresh clone" on a clean checkout and confirm
 `make gen && make sim` succeeds with the RevenueCat package resolving.
 
+### 69.7 — Review round (three adversarial reviewers)
+
+Three independent read-only reviewers ran on `206049b..HEAD`, one lens each:
+- **compile:** Swift 6 strict concurrency, SwiftUI signatures, RevenueCat 5.91.0 sources. It
+  type-checked `EntitlementManager` on Linux against a stub RevenueCat module with the real
+  signatures.
+- **regressions and the gating rules.**
+- **accessibility and App Store.**
+
+Muse and Antigravity were not available in this container. Every finding was checked against the
+code before acting. Logic tests came first where a rule changed: the new-API tests failed to compile
+until the source existed. Result: `swift test --disable-xctest` exit 0, **964 tests in 29 suites, 1
+known issue** (Step 66).
+
+**Fixed**
+
+1. **Compile error:** `EntitlementManager.swift` used `@Observable` without `import Observation`, and
+   none of its imports re-export it. Found by the compile reviewer and reproduced there.
+2. **Every existing install would have been onboarded** (regressions #1, confirmed: no migration for
+   the new key). An upgraded phone would open on silent pages with ARKit, the launch line and the
+   voice shell stopped.
+   - `LaunchFlow.isPriorInstall` treats an OpenCane setting in `UserDefaults`, or a `canekit-*.jsonl`
+     trip log, as a prior install. `RootView` marks such a phone onboarded.
+   - Tests: `anUpgradedInstallIsNeverOnboarded`, `priorInstallKeysAreRealSettings`.
+3. **Family alerts could be sold and switched on without the alert service**, then stuck on
+   (regressions #2, accessibility #5, confirmed). A fall then said "Telling your family" to nobody.
+   - The switch is `.disabled(!family.isConfigured)` whatever the plan.
+   - `setPremiumFeature` and `premiumUnlocked` never switch Family alerts on without the service
+     (`canDeliver`).
+   - The locked card says "not set up" instead of selling the feature.
+4. **A lapse switched features off silently and forever** (regressions #3). Now `reconcilePremium`:
+   - speaks `PremiumGate.revokedLine` ("Family alerts turned off. OpenCane Premium has ended.");
+   - remembers the features under `premiumRevokedFeatures`;
+   - switches them back on when Premium returns;
+   - never acts during a walk.
+
+   Test: `unlocksAndRestoresWaitForTheWalkToEnd`.
+5. **Indoor recording was not a walk** (regressions #4). `isWalkActive` now also covers
+   `indoor.isRecording` / `isFinishingExit`.
+6. **A subscriber was told "part of OpenCane Premium" while RevenueCat was still answering**
+   (regressions #5). A voice request during `.checking` now hears `checkingLine`.
+   Test: `aVoiceRequestWhileCheckingIsAskedToWait`.
+7. **The Premium line was spoken at two different bands** (regressions #6, accessibility #17). Every
+   Premium line is now `.scene`, including the voice path, so a subscription line never cuts a sign,
+   a hazard or a direction.
+8. **A purchase finishing mid-walk turned a feature on mid-walk** (regressions #7). The unlock now
+   waits in `pendingPremiumFeature` until the walk ends (`PremiumGate.enablesNow`).
+9. **Automation with a real key** (regressions #9, confirmed). XCUITests, the tour and e2e bundle the
+   same `Secrets.plist`, so a key would have changed badges and screenshots. Automation is now
+   `.notConfigured` unless `CANEKIT_PREMIUM` is set.
+10. **"Depth paused" was wrong while Both cameras is on** (regressions #10). It now says "It resumes on
+    its own when OpenCane is on screen and the camera is free."
+11. **The locked Family card hid the controls of a feature still running** (regressions #11). The
+    details show whenever alerts are on.
+12. **PRIVACY.md said Health data is never sent** (accessibility #1, confirmed: `CloudSync.endTrip`
+    uploads `steps`). The policy now names:
+    - the step count inside a walk summary;
+    - Apple Maps search;
+    - the speech server fallback;
+    - family-alert events and the random install ID in Supabase.
+13. **The benefit copy overpromised** (accessibility #4). It now reads "…go to the OpenCane alert
+    service, which can email or text your family" and "People counting is experimental".
+    Test: `benefitCopyDoesNotOverpromise`.
+14. **Premium status was in the hint only** (accessibility #6). A locked switch's label is
+    "<title>, Premium". Free switches keep exactly `title` (the test contract), and automation is
+    never locked.
+15. **Focus was lost when an onboarding permission was granted** (accessibility #7). The "Allowed"
+    mark stays a VoiceOver element, and `PermissionCenter.refresh` announces "<row> allowed".
+16. **Page-change focus came before the slide ended** (accessibility #8). It now waits 0.35 s.
+17. **"Next, Page 1 of 4"** (accessibility #9). The value was dropped; the hint says "Goes to page 2 of 4".
+18. **The paywall's Close button was last in the swipe order** (accessibility #10). It now has
+    `accessibilitySortPriority(1)`.
+19. **The success announcement was cut by the dismissal** (accessibility #11). It is now posted 0.7 s
+    after dismiss.
+20. **Visible "Just" vs spoken "about"** (accessibility #12). Both say "About $4.16 a month, billed
+    yearly". The unused `perMonth` round-down helper and its test were removed; the figure is the
+    store's own.
+21. **"End of the current year" / "in Settings" was ambiguous** (accessibility #13). It now reads
+    "current subscription year", and "OpenCane Settings or in your Apple Account settings".
+22. **Button Shapes** (accessibility #14): `CKTextButton` underlines. **Link traits** (#15): a link
+    drops `.isButton`.
+23. **Fixed frames at AX sizes** (accessibility #16): fixed glyph sizes in `CKFeatureRow`,
+    `CKStateMessage` and the paywall Close; the Profile initials shrink instead of truncating.
+24. **The same notice was read twice on Settings** (accessibility #19). `premiumNoticeFeature` puts it
+    under the tapped control only.
+25. **A long sales card before "Everyday"** (accessibility #20, partly). The Settings card lost its
+    benefit rows (the paywall has them). It stays first, because the brief puts subscription status
+    in Settings and it is now three elements.
+26. **Two contrast comments were wrong** (accessibility #21). The ratios are now as computed.
+27. **Possible `@Sendable` alignment closure** (compile #2, speculative). `SplashView` reads
+    `CKSpacing.xl` outside the closure; free either way.
+28. **The `didSet` comment was inaccurate** (compile / regressions #12, measured by the compile
+    reviewer). The write-back re-runs the observer once with `false`, which is harmless. The comment
+    now says so.
+
+**Rejected, with reasons**
+- **Rename "Grok Bot", "LiDAR", "HSA/FSA"** (accessibility #18). These are the owner's own words: the
+  benefit name and the affordability note are quoted from the brief. "LiDAR" is always paired with
+  what it does.
+- **Speak Premium refusals at `.nav`** (regressions #6's alternative). `.scene` meets the owner's rule
+  that the paywall flow never interrupts guidance. The visible notice under the switch covers the
+  wait.
+
+**Deferred to the owner** (docs/todo.md):
+- **Fall detection is Premium in practice.** It has always required Family alerts
+  (`applyFallWatcher`), and Family alerts is Premium by the brief. Emergency calling stays free.
+- **First-launch edges while onboarding is up** (regressions #8). `opencane://talk` is ignored, a
+  Camera Control press opens the Camera app, and an App Intent starts the engines behind the pages
+  after 2 s.
+- **The privacy link resolves only after merge to `main`** (accessibility #3).
+- **Corrections:** the 69.5 entry's test count "(10) + (5)" was really 9 + 5. The suites now hold
+  12 + 4 = 16.
+
+test on device:
+- Upgrade the demo phone (no reinstall) → no onboarding, "OpenCane ready.".
+- Without the Grok Bot key, the Family switch is dimmed on every plan.
+- Expire the subscription in the StoreKit transaction manager → "… turned off. OpenCane Premium has
+  ended."; renew it → the features are back.
+- Voice "turn on hazard watch" within a second of launch → "Still checking your subscription."
+- Onboarding with VoiceOver: Allow → "Camera and LiDAR allowed", with focus on the row.
+
 ## Steps 67–68 review round (Codex, Muse, Antigravity) (Sun Sep 13)
 
 Reviews: Antigravity (6 findings), Codex (4), Muse (11) on the Steps 67–68 diff. Every finding was checked

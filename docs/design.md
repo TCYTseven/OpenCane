@@ -1048,7 +1048,7 @@ tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
   `textSecondary`). Skip (text button, top right) on pages 1–3; **Next** pinned at the bottom,
   **Get Started** on page 4. Page 4 lists camera + LiDAR, location and microphone as cards, each
   with one line of why and Allow / Allowed / Open Settings. VoiceOver focus moves to each new
-  page's title; the Next button's value is "Page N of 4". Pages scroll at accessibility text sizes.
+  page's title (after the 0.35 s slide); the page dots say the position, and Next's hint says where it goes ("Goes to page 2 of 4"). Pages scroll at accessibility text sizes.
   Onboarding pages *do* slide (the system paged `TabView`) — the "pages never slide" rule is for
   the root tabs, where direction carries no meaning; here the order is real. Reduce Motion removes
   the animated slide on Next.
@@ -1073,13 +1073,19 @@ tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
   while locked. Nothing else in the app shows a badge.
 - **Paywall** (`PaywallView`, a sheet): floating Close (44 pt navy disc); navy header with the gold
   star, "OpenCane Premium" (`display`, heading); two benefit rows; price block "$49.99/year" (`title`)
-  over "Just $4.16 a month, billed yearly" — one VoiceOver sentence; **Subscribe** (primary
+  over "About $4.16 a month, billed yearly" — one VoiceOver sentence; **Subscribe** (primary
   `CKBigButton`); the renewal terms; "Navigation and obstacle detection are always free"; the
   affordability note in a card; Restore Purchases · Terms of Use · Privacy Policy (44 pt text
   buttons). Loading / error / no-store states use `CKStateMessage`.
 - **Never during a walk.** A tap on a gated switch mid-walk is refused with "Premium features can be
-  turned on after this walk." under the switch and at `.scene` (the lowest speech band); an open
-  paywall closes the moment a walk starts. The paywall itself makes no sound and no haptic.
+  turned on after this walk." under that switch (only there) and at `.scene` (the lowest speech band;
+  every Premium line is `.scene`); an open paywall closes the moment a walk starts, and a purchase
+  that lands mid-walk switches its feature on when the walk ends. The paywall itself makes no sound
+  and no haptic.
+- **Locked switches** read "<title>, Premium" to VoiceOver (a user with hints off still knows).
+  Family alerts is disabled without the alert service on this phone, whatever the plan.
+- **A lapse is said, not silent** ("Family alerts turned off. OpenCane Premium has ended.") and is
+  undone when Premium returns.
 - **Settings** starts with the OpenCane Premium card: status, benefits + "See OpenCane Premium" on
   the free plan, renewal date on Premium, Restore Purchases and Manage Subscription.
 

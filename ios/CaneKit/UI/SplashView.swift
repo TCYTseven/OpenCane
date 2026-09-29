@@ -32,12 +32,15 @@ struct SplashView: View {
     /// The launch screen's picture plus the wordmark, positioned below the logo with an alignment
     /// guide so the logo stays exactly where the launch screen drew it.
     var body: some View {
+        // Read outside the alignment closure: if the SDK marks that closure `@Sendable`, a
+        // main-actor static inside it would not compile (review round 69.7).
+        let gap = CKSpacing.xl
         ZStack {
             CKColor.brand.ignoresSafeArea()
             Image("LaunchLogo")
                 .overlay(alignment: .bottom) {
                     wordmark
-                        .alignmentGuide(.bottom) { d in d[.top] - CKSpacing.xl }
+                        .alignmentGuide(.bottom) { d in d[.top] - gap }
                 }
         }
         .accessibilityHidden(true)

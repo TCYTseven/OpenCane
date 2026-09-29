@@ -16,7 +16,7 @@
 //  Source pinned: `ios/Logic/Sources/CaneKitLogic/LaunchFlow.swift` (`splashHoldSeconds` 0.6,
 //  `splashFadeSeconds` 0.25, `reduceMotionHoldSeconds` 0.4, `maxSplashSeconds` 1.0,
 //  `onboardingCompletedKey`, `splash(reduceMotion:voiceOver:automation:)`,
-//  `showsOnboarding(completed:automation:forced:)`). Caller: `RootView` (app).
+//  `showsOnboarding(completed:priorInstall:automation:forced:)`, `isPriorInstall`). Caller: `RootView` (app).
 //
 
 import Testing
@@ -74,19 +74,35 @@ struct LaunchFlowTests {
 
     /// First launch only.
     @Test func onboardingShowsOnceOnAFreshInstall() {
-        #expect(LaunchFlow.showsOnboarding(completed: false, automation: false, forced: false))
-        #expect(!LaunchFlow.showsOnboarding(completed: true, automation: false, forced: false))
+        #expect(LaunchFlow.showsOnboarding(completed: false, priorInstall: false, automation: false, forced: false))
+        #expect(!LaunchFlow.showsOnboarding(completed: true, priorInstall: false, automation: false, forced: false))
+    }
+
+    /// Review round 69.7: a phone that ran OpenCane before Step 69 has no `onboardingCompleted` key.
+    /// Onboarding in front of it would hold every engine (and "OpenCane ready.") behind silent
+    /// pages on the owner's own demo phone. A prior install counts as completed.
+    @Test func anUpgradedInstallIsNeverOnboarded() {
+        #expect(!LaunchFlow.showsOnboarding(completed: false, priorInstall: true, automation: false, forced: false))
+        #expect(LaunchFlow.showsOnboarding(completed: false, priorInstall: true, automation: false, forced: true))
+    }
+
+    /// The UserDefaults keys that prove an earlier launch (each written by a pre-Step-69 build).
+    @Test func priorInstallKeysAreRealSettings() {
+        #expect(LaunchFlow.isPriorInstall(defaultsKeys: ["AppleLanguages", "cueLevel"], documentNames: []))
+        #expect(LaunchFlow.isPriorInstall(defaultsKeys: [], documentNames: ["canekit-2026-09-13T15-48-34Z.jsonl"]))
+        #expect(!LaunchFlow.isPriorInstall(defaultsKeys: ["AppleLanguages", "NSInterfaceStyle"], documentNames: ["notes.txt"]))
+        #expect(LaunchFlow.priorInstallKeys.contains("opencane_medical_profile"))
     }
 
     /// XCUITests (`CANEKIT_UITEST=1`), muted e2e (`CANEKIT_MUTE=1`) and `--demo-route` launches all
     /// expect the Guide screen at once; none of them has "completed" onboarding in its simulator.
     @Test func automationAndDemoRoutesNeverOnboard() {
-        #expect(!LaunchFlow.showsOnboarding(completed: false, automation: true, forced: false))
+        #expect(!LaunchFlow.showsOnboarding(completed: false, priorInstall: false, automation: true, forced: false))
     }
 
     /// `CANEKIT_SHOW_ONBOARDING=1` (a UI test of the pages) wins over both.
     @Test func aForcedRunShowsOnboardingEvenAfterCompletion() {
-        #expect(LaunchFlow.showsOnboarding(completed: true, automation: true, forced: true))
-        #expect(LaunchFlow.showsOnboarding(completed: false, automation: true, forced: true))
+        #expect(LaunchFlow.showsOnboarding(completed: true, priorInstall: true, automation: true, forced: true))
+        #expect(LaunchFlow.showsOnboarding(completed: false, priorInstall: false, automation: true, forced: true))
     }
 }

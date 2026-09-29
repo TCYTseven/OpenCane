@@ -109,7 +109,8 @@ struct HazardsCard: View {
                         hint: premiumHint("Experimental and not yet tested on the cane. When you ask where am I, says how many people are ahead, which way and how far"),
                         premium: showsPremiumBadge)
             liveCaption(PeopleDetection.state(enabled: model.namePeopleEnabled).userFacingDescription)
-            if let notice = model.premiumNotice {
+            if let notice = model.premiumNotice,
+               model.premiumNoticeFeature == .hazardWatch || model.premiumNoticeFeature == .namePeople {
                 liveCaption(notice)
             }
 

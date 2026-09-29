@@ -48,9 +48,18 @@ struct RootView: View {
                                      automation: Self.isAutomationLaunch)
         _splash = State(initialValue: plan)
         _splashVisible = State(initialValue: plan != .skip)
-        let completed = UserDefaults.standard.bool(forKey: LaunchFlow.onboardingCompletedKey)
+        let defaults = UserDefaults.standard
+        let completed = defaults.bool(forKey: LaunchFlow.onboardingCompletedKey)
+        // Review round 69.7: a phone that ran OpenCane before Step 69 has no completion flag, but
+        // it has settings or trip logs. It counts as onboarded (and is marked so), or the owner's
+        // demo phone would open on silent pages with every engine stopped.
+        let priorInstall = !completed && LaunchFlow.isPriorInstall(
+            defaultsKeys: defaults.dictionaryRepresentation().keys,
+            documentNames: (try? FileManager.default.contentsOfDirectory(atPath: URL.documentsDirectory.path)) ?? [])
+        if priorInstall { defaults.set(true, forKey: LaunchFlow.onboardingCompletedKey) }
         _onboardingActive = State(initialValue: LaunchFlow.showsOnboarding(
             completed: completed,
+            priorInstall: priorInstall,
             automation: Self.isAutomationLaunch,
             forced: ProcessInfo.processInfo.environment["CANEKIT_SHOW_ONBOARDING"] == "1"))
     }

@@ -75,6 +75,8 @@ struct ProfilePage: View {
         if let initials = AppInfo.initials(of: name) {
             Text(initials)
                 .font(.system(.title2, design: .rounded).weight(.bold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)   // the circle is a fixed 56 pt; AX sizes shrink, never "A…"
                 .foregroundStyle(CKColor.onAccent)
                 .frame(width: 56, height: 56)
                 .background(CKColor.accent, in: Circle())

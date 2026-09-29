@@ -482,9 +482,14 @@ bench has *disproved* must never sit in the file as though it were settled — m
   navigation and emergency calling stay free. The paywall only opens through
   `AppModel.requestPaywall(for:)`, which refuses while `isWalkActive`; `RootView` closes an open
   paywall when a walk starts; a lapse detected mid-walk waits for the walk to end. A build without
-  `REVENUECAT_API_KEY` is `.notConfigured` and **unlocks everything** — that is what keeps the
-  XCUITests, e2e and a fresh clone behaving exactly as before; do not "fix" it into locked.
-  Pinned by `PremiumGateTests`.
+  `REVENUECAT_API_KEY` is `.notConfigured` and **unlocks everything**, and so is every automated
+  launch (`CANEKIT_UITEST`, `CANEKIT_MUTE`, `--demo-route`) even when `Secrets.plist` has a key,
+  unless `CANEKIT_PREMIUM=free|premium` forces a state — that is what keeps the XCUITests, the tour,
+  e2e and a fresh clone behaving exactly as before; do not "fix" it into locked. Every Premium line
+  is spoken at `.scene`, never above. A lapse is spoken and undone when Premium returns; nothing is
+  revoked or unlocked mid-walk. Family alerts is never switched on without the alert service key.
+  A phone that ran OpenCane before Step 69 is never onboarded (`LaunchFlow.isPriorInstall`).
+  Pinned by `PremiumGateTests`, `LaunchFlowTests`.
 
 ### Steps 34–37 and the rotation fix (Sat 2026-09-12) — do not "simplify" these
 

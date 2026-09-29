@@ -113,7 +113,7 @@ public enum OnboardingContent {
         page < count - 1
     }
 
-    /// "Page 2 of 4" — the Next button's VoiceOver value.
+    /// "Page 2 of 4" — the Next button's hint says where it goes ("Goes to page 2 of 4").
     public static func spokenPosition(page: Int, count: Int) -> String {
         "Page \(page + 1) of \(count)"
     }

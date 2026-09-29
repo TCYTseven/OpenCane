@@ -116,11 +116,11 @@ enum CKColor {
     /// The icon's gold, for marks on `brand` only (9.4:1 on the navy, 13.9:1 in high contrast).
     static let brandHighlight = dynamic(0xE3B55B, 0xE3B55B, hcLight: 0xFFD27A, hcDark: 0xFFD27A)
     /// The high-contrast accent for marks on ordinary surfaces (the Premium badge, the paywall's
-    /// benefit icons): deep amber in light mode (≥ 7.4:1 on `background`, `surface` and
-    /// `surfaceRaised`), the icon's gold in dark mode (9.3:1 on `surface`). Like `accent`, it never
+    /// benefit icons): deep amber in light mode (8.1:1 on `background`, 9.2:1 on `surface`, 7.4:1
+    /// on `surfaceRaised`), the icon's gold in dark mode (9.3:1 on `surface`). Like `accent`, it never
     /// carries hazard meaning.
     static let highlight = dynamic(0x654000, 0xE3B55B, hcLight: 0x4A2F00, hcDark: 0xFFD27A)
-    /// Text on a `highlight` fill: ivory on the amber, ink on the gold (7.2:1 / 9.6:1).
+    /// Text on a `highlight` fill: white on the amber, ink on the gold (9.2:1 / 9.6:1).
     static let onHighlight = dynamic(0xFFFFFF, 0x17140F, hcLight: 0xFFFFFF, hcDark: 0x000000)
 
     /// Builds a `Color` that re-resolves for light/dark and Increase Contrast automatically.
@@ -626,7 +626,10 @@ struct CKToggleRow: View {
                 }
             }
         }
-        .accessibilityLabel(title)
+        // ⚠ Test contract: exactly `title` for every free switch. A locked Premium switch adds
+        // ", Premium" so a VoiceOver user with hints off still knows a tap opens the paywall
+        // (review round 69.7); no XCUITest queries a Premium switch, and automation is never locked.
+        .accessibilityLabel(premium ? "\(title), Premium" : title)
         .accessibilityHint(hint ?? subtitle ?? "")
     }
 }
@@ -694,8 +697,10 @@ struct CKFeatureRow: View {
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: CKSpacing.sm))
             : AnyLayout(HStackLayout(alignment: .top, spacing: CKSpacing.md))
         layout {
+            // Fixed glyph size: the well is a fixed 44 pt, and a Dynamic Type glyph overflowed it at
+            // accessibility sizes (review round 69.7). The words beside it carry the scaling.
             Image(systemName: systemImage)
-                .font(.title3.weight(.semibold))
+                .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(tint)
                 .frame(width: CKMetrics.minimumTarget, height: CKMetrics.minimumTarget)
                 .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -745,6 +750,9 @@ struct CKTextButton: View {
     var color: Color = CKColor.textPrimary
     /// Tap handler.
     let action: () -> Void
+    /// Settings → Accessibility → Button Shapes: a plain-styled button draws no shape of its own,
+    /// so this one underlines itself (review round 69.7).
+    @Environment(\.accessibilityShowButtonShapes) private var showButtonShapes
 
     /// Plain button, semibold body text, ≥ 44 pt hit area.
     var body: some View {
@@ -754,6 +762,7 @@ struct CKTextButton: View {
                     Image(systemName: systemImage).accessibilityHidden(true)
                 }
                 Text(title)
+                    .underline(showButtonShapes)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -766,7 +775,9 @@ struct CKTextButton: View {
         .buttonStyle(.plain)
         .accessibilityLabel(title)
         .accessibilityHint(hint ?? "")
+        // A link is read as "link", not "button, link" (review round 69.7).
         .accessibilityAddTraits(isLink ? .isLink : [])
+        .accessibilityRemoveTraits(isLink ? .isButton : [])
     }
 }
 
@@ -816,7 +827,7 @@ struct CKStateMessage: View {
                     case .error: Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(CKColor.warning)
                     }
                 }
-                .font(.title3.weight(.semibold))
+                .font(.system(size: 20, weight: .semibold))
                 .frame(width: 28, height: 28)
                 .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {

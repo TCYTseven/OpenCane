@@ -76,8 +76,14 @@ struct OnboardingView: View {
                 .padding(.bottom, CKSpacing.lg)
         }
         .background(CKColor.background.ignoresSafeArea())
-        // A swipe or a Next tap: VoiceOver lands on the new page's title.
-        .onChange(of: page) { _, newPage in focusedTitle = newPage }
+        // A swipe or a Next tap: VoiceOver lands on the new page's title — after the slide, so the
+        // page is in the accessibility tree when focus moves (review round 69.7).
+        .onChange(of: page) { _, newPage in
+            Task {
+                try? await Task.sleep(for: .milliseconds(350))
+                focusedTitle = newPage
+            }
+        }
         // On first appearance VoiceOver would start on Skip; put it on the first title instead.
         // The short wait lets the page exist in the accessibility tree before focus moves.
         .task {
@@ -149,15 +155,15 @@ struct OnboardingView: View {
             .accessibilityHidden(true)
     }
 
-    /// Next (earlier pages) or Get Started (last page), pinned under the pages. Its VoiceOver value
-    /// is the position ("Page 2 of 4").
+    /// Next (earlier pages) or Get Started (last page), pinned under the pages. No VoiceOver value:
+    /// the page dots already say "page 1 of 4", and "Next, Page 1 of 4" sounded like Next went to
+    /// page 1 (review round 69.7). The hint says where it goes.
     private var primaryButton: some View {
         let isLast = page >= pages.count - 1
         return CKBigButton(title: OnboardingContent.primaryButtonTitle(page: page, count: pages.count),
                            systemImage: isLast ? "checkmark.circle.fill" : "arrow.right",
                            hint: isLast ? "Finishes the introduction and opens OpenCane"
-                                        : "Goes to the next page",
-                           value: OnboardingContent.spokenPosition(page: page, count: pages.count)) {
+                                        : "Goes to \(OnboardingContent.spokenPosition(page: page + 1, count: pages.count).lowercased())") {
             advance()
         }
     }
@@ -213,12 +219,15 @@ struct PermissionsPanel: View {
     private func action(for row: PermissionRow, state: PermissionState) -> some View {
         switch state {
         case .allowed:
+            // Review round 69.7: this replaces the focused Allow button the moment the permission is
+            // granted, so it stays a VoiceOver element (focus has somewhere to land) and says what
+            // changed; `PermissionCenter` also announces it.
             Label(OnboardingContent.actionTitle(for: state), systemImage: "checkmark.circle.fill")
                 .font(CKFont.body.weight(.semibold))
                 .foregroundStyle(CKColor.textPrimary)
                 .frame(maxWidth: .infinity, minHeight: CKMetrics.minimumTarget)
-                // The row's label already ends in "Allowed."
-                .accessibilityHidden(true)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(row.title) allowed")
         case .notAsked, .denied:
             Button {
                 if state == .denied { center.openSettings() } else { center.request(row.kind) }
@@ -268,8 +277,30 @@ final class PermissionCenter {
         }
     }
 
-    /// Re-reads every state from the system. Cheap; safe to call often.
+    /// Re-reads every state from the system. Cheap; safe to call often. A row that turns
+    /// `.allowed` is announced to VoiceOver ("Camera and LiDAR allowed"), because the button that
+    /// had focus has just been replaced (review round 69.7).
     func refresh() {
+        let before = (camera, location, microphone)
+        read()
+        for row in OnboardingContent.permissions {
+            let was = switch row.kind {
+            case .camera: before.0
+            case .location: before.1
+            case .microphone: before.2
+            }
+            if was != .allowed, state(row.kind) == .allowed, announcesChanges {
+                AccessibilityNotification.Announcement("\(row.title) allowed").post()
+            }
+        }
+        announcesChanges = true
+    }
+
+    /// False until the first `refresh()`, so states that were already granted are not announced.
+    @ObservationIgnored private var announcesChanges = false
+
+    /// Reads the three states.
+    private func read() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized: camera = .allowed
         case .denied, .restricted: camera = .denied

@@ -57,8 +57,8 @@ public enum PremiumBenefit: String, CaseIterable, Sendable {
     /// One line under the title.
     public var detail: String {
         switch self {
-        case .advancedDetection: "Hazard watch spots cones, barriers and scooters on your route, and OpenCane can count the people ahead."
-        case .familyAlerts: "Your family hears about a fall, a close call or a low battery, with a one-line summary."
+        case .advancedDetection: "Hazard watch checks your route for cones, barriers and scooters. People counting is experimental."
+        case .familyAlerts: "Falls, close calls and low battery go to the OpenCane alert service, which can email or text your family."
         }
     }
 
@@ -130,6 +130,9 @@ public enum PremiumGate {
         case refuseDuringWalk
         /// A voice / Siri request cannot show a sheet: say `premiumLine(for:)`.
         case refuseSpoken
+        /// A voice / Siri request while RevenueCat has not answered yet: say `checkingLine` (the
+        /// walker may well be a subscriber; never tell them they are on the free plan).
+        case refuseChecking
     }
 
     /// Turning a gated switch ON.
@@ -140,7 +143,8 @@ public enum PremiumGate {
     public static func decideEnable(access: PremiumAccess, walkActive: Bool, fromScreen: Bool) -> Decision {
         if access.unlocks { return .allow }
         if walkActive { return .refuseDuringWalk }
-        return fromScreen ? .showPaywall : .refuseSpoken
+        if fromScreen { return .showPaywall }
+        return access == .checking ? .refuseChecking : .refuseSpoken
     }
 
     /// Turning a gated switch OFF: always allowed.
@@ -155,9 +159,26 @@ public enum PremiumGate {
         access == .free && !walkActive
     }
 
+    /// Whether a feature unlocked by a purchase or restore is switched on now. Mid-walk it waits
+    /// (the StoreKit sheet can outlive the paywall), so nothing new starts talking during a walk.
+    public static func enablesNow(walkActive: Bool) -> Bool { !walkActive }
+
+    /// Whether features switched off by a lapse are switched back on now that Premium is back.
+    public static func restoresNow(access: PremiumAccess, walkActive: Bool) -> Bool {
+        access == .premium && !walkActive
+    }
+
     /// Spoken when a voice / Siri request asks for a gated feature on the free plan.
     public static func premiumLine(for feature: PremiumFeature) -> String {
-        "\(feature.spokenName) is part of OpenCane Premium. You can subscribe in Settings."
+        "\(feature.spokenName) is part of OpenCane Premium. You can subscribe in OpenCane Settings."
+    }
+
+    /// Spoken for a voice / Siri request before RevenueCat's first answer.
+    public static let checkingLine = "Still checking your subscription. Try again in a moment."
+
+    /// Spoken (and logged) when a lapse switches a feature off, so it never happens silently.
+    public static func revokedLine(for feature: PremiumFeature) -> String {
+        "\(feature.spokenName) turned off. OpenCane Premium has ended."
     }
 
     /// Spoken (and shown under the switch) when a gated switch is tapped mid-walk.
@@ -169,21 +190,13 @@ public enum PaywallPricing {
     /// The owner's affordability note, verbatim.
     public static let affordabilityNote = "OpenCane is a social good project and we want it to be affordable for everyone. Premium may be eligible for reimbursement through your insurance, HSA/FSA, or vision rehabilitation program. Check with your plan."
 
-    /// Annual price ÷ 12, rounded **down** to the cent, so the per-month figure never overstates
-    /// the saving. Fallback only: the paywall prefers the store's own `localizedPricePerMonth`.
-    public static func perMonth(annual: Decimal) -> Decimal {
-        var monthly = annual / 12
-        var rounded = Decimal()
-        NSDecimalRound(&rounded, &monthly, 2, .down)
-        return rounded
-    }
-
     /// "$49.99/year" — the headline price, as the brief writes it.
     public static func priceLine(localizedPrice: String) -> String { "\(localizedPrice)/year" }
 
-    /// "Just $4.16 a month, billed yearly" — under the headline.
+    /// "About $4.16 a month, billed yearly" — under the headline; the figure is the store's own
+    /// `localizedPricePerMonth`, and "about" matches `spokenOffer`.
     public static func perMonthLine(localizedPerMonth: String) -> String {
-        "Just \(localizedPerMonth) a month, billed yearly"
+        "About \(localizedPerMonth) a month, billed yearly"
     }
 
     /// The price block's VoiceOver label: whole sentences, no slash.
@@ -194,6 +207,6 @@ public enum PaywallPricing {
 
     /// The auto-renewal disclosure under the Subscribe button (App Store Review Guideline 3.1.2).
     public static func renewalTerms(localizedPrice: String) -> String {
-        "\(localizedPrice) is charged to your Apple Account when you subscribe, and again every year. The subscription renews automatically unless you cancel at least 24 hours before the end of the current year. Manage or cancel it any time in Settings."
+        "\(localizedPrice) is charged to your Apple Account when you subscribe, and again every year. The subscription renews automatically unless you cancel at least 24 hours before the end of the current subscription year. Manage or cancel it any time in OpenCane Settings or in your Apple Account settings."
     }
 }

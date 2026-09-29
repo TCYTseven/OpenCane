@@ -18,7 +18,7 @@
 //  run underneath the splash from the first frame.
 //
 //  Owner / caller: `RootView` (app) reads `splash(reduceMotion:voiceOver:automation:)` once at launch
-//  and `showsOnboarding(completed:automation:forced:)` once at launch; `OnboardingView` sets the
+//  and `showsOnboarding(completed:priorInstall:automation:forced:)` once at launch; `OnboardingView` sets the
 //  `onboardingCompletedKey` flag through `@AppStorage`.
 //  Tests: LaunchFlowTests.swift.
 //
@@ -76,15 +76,35 @@ public enum LaunchFlow {
         return .show(holdSeconds: splashHoldSeconds, fadeSeconds: splashFadeSeconds)
     }
 
+    /// `UserDefaults` keys a pre-Step-69 OpenCane wrote once the walker changed anything, or on its
+    /// own (the Medical ID store, the trip counter). Any one of them means this is not a first launch.
+    public static let priorInstallKeys: Set<String> = [
+        "cueLevel", "cuePlace", "portraitMode", "mirrorLeftRight", "loggingEnabled", "useNaturalVoice",
+        "listenOnLaunch", "voiceFollowUp", "beaconEnabled", "signsEnabled", "groundHazardsEnabled",
+        "hazardWatchEnabled", "familyAlertsEnabled", "fallDetectionEnabled", "familyContactEmails",
+        "obstacleNamesEnabled", "hapticsSilenced", "autoTorchInDark", "cloudSharingEnabled",
+        "opencane_medical_profile", "opencane_completed_trips_count",
+    ]
+
+    /// True when this phone ran OpenCane before (review round 69.7): an OpenCane setting in
+    /// `UserDefaults`, or a trip log (`canekit-*.jsonl`, written on every launch with "Write trip
+    /// log" on, the default) in Documents.
+    public static func isPriorInstall(defaultsKeys: some Sequence<String>, documentNames: some Sequence<String>) -> Bool {
+        if defaultsKeys.contains(where: priorInstallKeys.contains) { return true }
+        return documentNames.contains { $0.hasPrefix("canekit-") && $0.hasSuffix(".jsonl") }
+    }
+
     /// Whether first-launch onboarding shows this launch.
     /// - Parameters:
     ///   - completed: the stored `onboardingCompletedKey` flag.
+    ///   - priorInstall: `isPriorInstall(...)` — an upgraded phone counts as completed (its engines
+    ///     must not wait behind pages it never needed).
     ///   - automation: an XCUITest, a muted e2e run or a `--demo-route` launch (they drive the Guide
     ///     screen at once and never finished onboarding in their simulator).
     ///   - forced: `CANEKIT_SHOW_ONBOARDING=1`, for a UI test of the pages themselves.
     /// - Returns: `forced`, or a fresh install outside automation.
-    public static func showsOnboarding(completed: Bool, automation: Bool, forced: Bool) -> Bool {
+    public static func showsOnboarding(completed: Bool, priorInstall: Bool, automation: Bool, forced: Bool) -> Bool {
         if forced { return true }
-        return !completed && !automation
+        return !completed && !priorInstall && !automation
     }
 }

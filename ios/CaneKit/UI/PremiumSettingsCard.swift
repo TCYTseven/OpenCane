@@ -8,7 +8,7 @@
 //
 //  States (all words, never colour alone):
 //    · checking — a spinner row, "Checking your subscription…";
-//    · free — "You're on the free plan", the two benefits as feature rows, "See OpenCane Premium"
+//    · free — "You're on the free plan" and "See OpenCane Premium" (the benefits are on the paywall)
 //      (which, like every paywall entry, is refused in words during a walk);
 //    · premium — "OpenCane Premium is on", with the renewal or end date;
 //    · notConfigured — "Every feature is unlocked in this build" (no RevenueCat key; a developer
@@ -37,16 +37,14 @@ struct PremiumSettingsCard: View {
     var body: some View {
         CKCard(title: "OpenCane Premium", systemImage: "star.fill") {
             status
+            // Review round 69.7: no benefit rows here (the paywall has them) — the card a VoiceOver
+            // user swipes past on the way to "Everyday" stays short.
             if model.store.access == .free {
-                ForEach(PremiumBenefit.allCases, id: \.self) { benefit in
-                    CKFeatureRow(systemImage: benefit.systemImage, title: benefit.title,
-                                 detail: benefit.detail)
-                }
                 CKBigButton(title: "See OpenCane Premium", systemImage: "star.fill",
                             hint: "Shows what Premium adds and its price") {
                     model.requestPaywall(for: nil)
                 }
-                if let notice = model.premiumNotice {
+                if let notice = model.premiumNotice, model.premiumNoticeFeature == nil {
                     Text(notice).font(CKFont.secondary).foregroundStyle(CKColor.textPrimary)
                 }
             }

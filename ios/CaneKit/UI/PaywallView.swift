@@ -115,7 +115,7 @@ struct PaywallView: View {
     private var closeButton: some View {
         Button { dismiss() } label: {
             Image(systemName: "xmark")
-                .font(.body.weight(.bold))
+                .font(.system(size: 17, weight: .bold))   // fixed: the disc is a fixed 44 pt
                 .foregroundStyle(CKColor.onBrand)
                 .frame(width: CKMetrics.minimumTarget, height: CKMetrics.minimumTarget)
                 .background(CKColor.brand, in: Circle())
@@ -123,6 +123,8 @@ struct PaywallView: View {
         }
         .buttonStyle(.plain)
         .padding(CKSpacing.md)
+        // First in the swipe order: as an overlay it would otherwise come after the footer links.
+        .accessibilitySortPriority(1)
         .accessibilityLabel("Close")
         .accessibilityHint("Closes OpenCane Premium without subscribing")
     }
@@ -259,8 +261,13 @@ struct PaywallView: View {
         guard !finished else { return }
         finished = true
         model.premiumUnlocked(from: request, via: via)
-        AccessibilityNotification.Announcement("OpenCane Premium is on.").post()
         dismiss()
+        // After the sheet has gone: the dismissal's screen change would cut an announcement made
+        // before it (review round 69.7). An unstructured task outlives this view.
+        Task {
+            try? await Task.sleep(for: .milliseconds(700))
+            AccessibilityNotification.Announcement("OpenCane Premium is on.").post()
+        }
     }
 
     /// Opens a web page in Safari.

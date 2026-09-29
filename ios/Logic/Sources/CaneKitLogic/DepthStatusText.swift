@@ -45,7 +45,7 @@ public struct DepthStatusText: Sendable, Equatable {
                          detail: "This takes a moment. Hold the cane still if you can.", tone: .waiting)
         case "Depth paused", "AR interrupted":
             return .init(title: "Obstacle detection is paused",
-                         detail: "It resumes when OpenCane is back on screen.", tone: .waiting)
+                         detail: "It resumes on its own when OpenCane is on screen and the camera is free.", tone: .waiting)
         case "No LiDAR / sceneDepth on this device":
             return .init(title: "This iPhone has no LiDAR",
                          detail: "Obstacle warnings need an iPhone Pro with LiDAR. Route guidance still works.",

@@ -12,7 +12,7 @@
 //      or audio guidance" → `neverAPaywallDuringAWalk`, `aLapseMidWalkWaitsForTheWalkToEnd`.
 //    · "When a free user taps a gated feature, show the paywall" → `aFreeTapOnScreenOpensThePaywall`;
 //      a voice / Siri request cannot show a sheet, so it is told in words
-//      (`voiceRequestsAreToldNotShown`).
+//      (`voiceRequestsAreToldNotShown`, `aVoiceRequestWhileCheckingIsAskedToWait`).
 //    · A build with no RevenueCat key (a fresh clone, the XCUITests, e2e) keeps every feature, so
 //      nothing that worked before the store existed stops working → `unconfiguredStoreUnlocks`.
 //    · "Price … displayed as $49.99/year, with a per-month equivalent underneath" and "the price and
@@ -28,6 +28,13 @@ import Testing
 
 @Suite("Premium gate")
 struct PremiumGateTests {
+
+    /// Review round 69.7: the paid promise must match what the switches deliver — the alert
+    /// service decides whether to contact family, and people counting is experimental.
+    @Test func benefitCopyDoesNotOverpromise() {
+        #expect(PremiumBenefit.familyAlerts.detail.contains("can email or text your family"))
+        #expect(PremiumBenefit.advancedDetection.detail.contains("experimental"))
+    }
 
     /// The RevenueCat identifiers the dashboard and the StoreKit file must match.
     @Test func identifiersArePinned() {
@@ -86,8 +93,26 @@ struct PremiumGateTests {
     @Test func voiceRequestsAreToldNotShown() {
         #expect(PremiumGate.decideEnable(access: .free, walkActive: false, fromScreen: false) == .refuseSpoken)
         let line = PremiumGate.premiumLine(for: .hazardWatch)
-        #expect(line == "Hazard watch is part of OpenCane Premium. You can subscribe in Settings.")
+        #expect(line == "Hazard watch is part of OpenCane Premium. You can subscribe in OpenCane Settings.")
         #expect(PremiumGate.walkLine == "Premium features can be turned on after this walk.")
+    }
+
+    /// Review round 69.7: in the first moments after launch a paying walker must not be told they
+    /// are on the free plan. A voice request while `.checking` says so instead.
+    @Test func aVoiceRequestWhileCheckingIsAskedToWait() {
+        #expect(PremiumGate.decideEnable(access: .checking, walkActive: false, fromScreen: false) == .refuseChecking)
+        #expect(PremiumGate.checkingLine == "Still checking your subscription. Try again in a moment.")
+    }
+
+    /// Review round 69.7: an unlock that lands mid-walk (the StoreKit sheet outlived the paywall)
+    /// waits for the walk to end; a lapse is said out loud and undone when Premium comes back.
+    @Test func unlocksAndRestoresWaitForTheWalkToEnd() {
+        #expect(PremiumGate.enablesNow(walkActive: false))
+        #expect(!PremiumGate.enablesNow(walkActive: true))
+        #expect(PremiumGate.restoresNow(access: .premium, walkActive: false))
+        #expect(!PremiumGate.restoresNow(access: .premium, walkActive: true))
+        #expect(!PremiumGate.restoresNow(access: .free, walkActive: false))
+        #expect(PremiumGate.revokedLine(for: .familyAlerts) == "Family alerts turned off. OpenCane Premium has ended.")
     }
 
     /// Turning a feature OFF is never gated.
@@ -110,16 +135,11 @@ struct PremiumGateTests {
 @Suite("Paywall pricing")
 struct PaywallPricingTests {
 
-    @Test func perMonthRoundsDownToTheCent() {
-        // 49.99 / 12 = 4.1658…: never advertise more than the real saving.
-        #expect(PaywallPricing.perMonth(annual: Decimal(string: "49.99")!) == Decimal(string: "4.16")!)
-        #expect(PaywallPricing.perMonth(annual: Decimal(string: "12")!) == Decimal(1))
-        #expect(PaywallPricing.perMonth(annual: 0) == 0)
-    }
-
+    /// Review round 69.7: the visible and spoken per-month words match ("about"), and the figure is
+    /// the store's own (`localizedPricePerMonth`), so no second rounding rule lives here.
     @Test func priceLineMatchesTheBrief() {
         #expect(PaywallPricing.priceLine(localizedPrice: "$49.99") == "$49.99/year")
-        #expect(PaywallPricing.perMonthLine(localizedPerMonth: "$4.16") == "Just $4.16 a month, billed yearly")
+        #expect(PaywallPricing.perMonthLine(localizedPerMonth: "$4.16") == "About $4.16 a month, billed yearly")
     }
 
     /// VoiceOver reads the whole offer and the renewal terms as sentences, with no slash.
@@ -137,7 +157,8 @@ struct PaywallPricingTests {
         #expect(terms.contains("$49.99"))
         #expect(terms.contains("every year"))
         #expect(terms.contains("24 hours"))
-        #expect(terms.contains("Settings"))
+        #expect(terms.contains("subscription year"))
+        #expect(terms.contains("Apple Account"))
     }
 
     @Test func affordabilityNoteIsTheOwnersWords() {

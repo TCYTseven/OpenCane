@@ -163,6 +163,12 @@ final class AppModel {
     /// Why a gated switch did not turn on during a walk (`PremiumGate.walkLine`), shown under the
     /// switch; cleared when the walk ends (`reconcilePremium`).
     var premiumNotice: String?
+    /// Which switch `premiumNotice` belongs to (nil = the Settings Premium card), so the notice is
+    /// shown once, under the control that was tapped (review round 69.7).
+    var premiumNoticeFeature: PremiumFeature?
+    /// A feature unlocked by a purchase that finished mid-walk; switched on when the walk ends
+    /// (`PremiumGate.enablesNow`, review round 69.7).
+    var pendingPremiumFeature: PremiumFeature?
     /// The optional cloud mirror (Steps 45 / 60): after `cloudSharingEnabled`, only Medical ID,
     /// family contacts, trip summaries, hazards (+ photos) and family alerts leave the phone.
     /// Settings, the JSONL trip log, mobility, posts and conversations stay local. Inert when
@@ -484,8 +490,9 @@ final class AppModel {
     /// Periodic vision-model hazard check while walking a route (Hazards card).
     /// Default OFF until validated on the phone.
     /// Step 69.5: part of OpenCane Premium. Turning it on without Premium is refused here, whoever
-    /// asked (screen, Siri, voice): the value is written back to false before anything reacts
-    /// (`refusePremiumEnable`). The screen and voice paths decide first (`setPremiumFeature`,
+    /// asked (screen, Siri, voice): the value is written back to false (`refusePremiumEnable`). The
+    /// write-back runs this observer once more with `false`, which re-applies the off state —
+    /// harmless, measured in the review round (69.7). The screen and voice paths decide first (`setPremiumFeature`,
     /// `setOption`) so the walker hears or sees why; this is the backstop.
     var hazardWatchEnabled: Bool = Settings.bool("hazardWatchEnabled", default: false) {
         didSet {

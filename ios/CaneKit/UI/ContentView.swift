@@ -726,8 +726,11 @@ private struct SettingsPage: View {
             // Step 69.5: Grok Bot + Family Alerts is OpenCane Premium. The switch writes through
             // `setPremiumFeature` (paywall on a free tap, never mid-walk). While locked, the card
             // shows only the switch, one line of what Premium adds and "See OpenCane Premium";
-            // the contacts, fall switch, summary and test send appear once unlocked. Emergency
-            // calling (Profile tab) is not part of this and stays free.
+            // the contacts, fall switch, summary and test send appear once unlocked — or while
+            // alerts are still on (a lapse not yet reconciled, an offline "checking"), so a running
+            // feature never loses its controls (review round 69.7). Emergency calling (Profile
+            // tab) is not part of this and stays free. The switch stays disabled without the alert
+            // service whatever the plan: Premium must not sell a switch that cannot deliver.
             let locked = !self.model.store.unlocksPremium
             CKToggleRow(title: "Alert my family", subtitle: "Falls, close calls and low battery",
                         isOn: Binding(get: { self.model.familyAlertsEnabled },
@@ -736,8 +739,8 @@ private struct SettingsPage: View {
                             ? "Sends falls, close obstacles, low battery and your position to the OpenCane alert service, which decides whether to text your family. Part of OpenCane Premium."
                             : "Sends falls, close obstacles, low battery and your position every few minutes to the OpenCane alert service, which decides whether to text your family",
                         premium: locked)
-                .disabled(!self.model.family.isConfigured && !locked)
-            if locked {
+                .disabled(!self.model.family.isConfigured)
+            if locked && !self.model.familyAlertsEnabled {
                 familyAlertsLocked
             } else {
                 familyAlertsDetails(model)
@@ -750,10 +753,12 @@ private struct SettingsPage: View {
     /// The Family alerts card on the free plan: what Premium adds here, and the way to it.
     @ViewBuilder
     private var familyAlertsLocked: some View {
-        Text("Family alerts and the Grok Bot are part of OpenCane Premium. Emergency calling on the Profile tab is always free.")
+        Text(model.family.isConfigured
+             ? "Family alerts and the Grok Bot are part of OpenCane Premium. Emergency calling on the Profile tab is always free."
+             : "Family alerts aren't set up on this phone yet. Emergency calling on the Profile tab is always free.")
             .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
             .fixedSize(horizontal: false, vertical: true)
-        if let notice = model.premiumNotice {
+        if let notice = model.premiumNotice, model.premiumNoticeFeature == .familyAlerts {
             Text(notice).font(CKFont.secondary).foregroundStyle(CKColor.textPrimary)
         }
         CKBigButton(title: "See OpenCane Premium", systemImage: "star.fill", role: .secondary,
