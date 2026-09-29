@@ -22,7 +22,7 @@ screen layout and button labels, where the shipped code (and the tests that pin 
 
 ## Every doc
 
-Tracked Markdown (`git ls-files "*.md"`: 31 files) plus the one other hand-written doc in the repo
+Tracked Markdown (`git ls-files "*.md"`: 36 files) plus the one other hand-written doc in the repo
 (`opencane-hardware-brief.html`). Nothing else in the repo is documentation; source files document
 themselves in their headers (AGENTS.md "How we engineer" 7).
 
@@ -32,6 +32,8 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 |---|---|
 | [`README.md`](../README.md) | You want the pitch, the demo, the hardware list, the repo map and the quick start. |
 | [`AGENTS.md`](../AGENTS.md) | **Before your first edit, human or AI.** It has the hard rules (concurrency, iOS 26 APIs only, logic lives in `ios/Logic`, secrets, frozen bundle IDs, audio session, speech priorities (rule 8), accessibility-label contract (rule 9), per-commit gate (rule 10)), "How we engineer", the commands, the two false-green traps, the OpenSCAD traps and the "looks wrong but is deliberate" list. It wins every conflict. |
+| [`PRIVACY.md`](../PRIVACY.md) | Step 69: the privacy policy the app links to (Settings → About, the paywall). Lists every way data can leave the phone. Change it in the same commit as any new upload path. |
+| [`LICENSE`](../LICENSE) | MIT (Step 69). Not Markdown; listed so it is not missed. |
 | [`CLAUDE.md`](../CLAUDE.md) | You are Claude Code. It is the short version of `AGENTS.md`, loaded automatically. |
 | [`CHANGELOG.md`](../CHANGELOG.md) | You need to know what landed in each build step, why, how it was reviewed and verified, and its "test on device" list. Newest first. Step numbers 15, 16, 17, 21, 22 and 25 each appear twice, on purpose (see the note under Step 27). Steps 38–46 also share their digits with the cue-v2 *plan* items in `docs/todo.md`, which are written "cue-v2 #38" … "#45" for that reason — a CHANGELOG "Step 41" is hazard telemetry, "cue-v2 #41" is torso haptics (shipped in Step 47). |
 | [`.jules/bolt.md`](../.jules/bolt.md) | You are touching SwiftUI views that observe the 30 Hz depth stream. One learning (Step 21): keep high-frequency observed properties in leaf views, not in `ContentView.body`. |
@@ -57,6 +59,7 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 | [`docs/cue_design_v2.md`](cue_design_v2.md) | **Before changing when OpenCane buzzes or speaks.** The Step 35 research (4 researchers + 4 fact-checkers, 74 kept findings): what blind travellers need (§1), where OpenCane violated it (§2), the proposed v2 (§3), the ranked change list (§4), open questions for a blind tester (§5), sources, and an addendum measured on the first field log. Numbers marked **[H]** are hypotheses. The approved plan (items cue-v2 #35–#45 — plan numbers, not CHANGELOG steps) is in `docs/todo.md` → "Cue design v2". |
 | [`docs/auditory-load.md`](auditory-load.md) | You are adding or tuning any automatic sound. The Step 30 short research note on blind auditory overload, what OpenCane does about each point, and the open questions for tester walks. `cue_design_v2.md` is the later, fuller research. |
 | [`docs/handsfree.md`](handsfree.md) | **You are the walker, or setting the phone up for one.** Every spoken command, what the status answer means, the Settings path for the Action button (and why a locked phone asks to unlock first), what the AirPods stem and Back Tap cannot do, asking a question, and what still needs the screen. |
+| [`docs/DEMO_SCRIPT.md`](DEMO_SCRIPT.md) | Step 69: you are recording the two-minute Shipaton video (splash, onboarding, a walk, the paywall, a test purchase, the unlocked feature), with a pre-flight list and backups. |
 | [`docs/devices_setup.md`](devices_setup.md) | Before touching the AirPods or the Apple Watch, and before the untethered demo: pairing, Spatial Audio off, the watch app, the voice cache, Guided Access, on-device vision and a symptom → fix table. |
 | [`docs/route_isr_cif.md`](route_isr_cif.md) | You are editing `route_isr_cif.json` or re-recording the route on foot. It covers the evidence for every waypoint, OSM node IDs, and which points are still unverified. |
 | [`docs/stress_test_plan.md`](stress_test_plan.md) | You are planning device and field tests: facts from the code that change how you test (§0), test levels, the device test matrix (D-tests), failure injection (F-tests), the blindfolded go/no-go checklist and the demo run sheet. |

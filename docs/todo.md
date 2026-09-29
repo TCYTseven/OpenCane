@@ -6,7 +6,7 @@
   - [x] 69.3 First-launch onboarding (4 pages, Next on every page, Skip, permissions in context); engines start after it
   - [x] 69.4 UI pass: Settings About card (version, privacy, terms), friendly depth status, Profile avatar without a teammate's photo, section naming
   - [x] 69.5 RevenueCat: `purchases-ios` via project.yml, `EntitlementManager`, `PremiumGate` (Logic, tested), paywall, Settings subscription card, StoreKit config
-  - [ ] 69.6 LICENSE, README, PRIVACY.md, demo script
+  - [x] 69.6 LICENSE, README, PRIVACY.md, demo script
   - [ ] 69.7 Multi-agent adversarial review; findings fixed or rejected in CHANGELOG
   - [ ] Orchestrator (Mac): `make gen test sim uitest tour e2e` — the app target was only parse-checked in this session
   - [ ] Device: VoiceOver pass on splash, onboarding, paywall, Settings; sandbox purchase + restore; a walk with the paywall never appearing

@@ -203,6 +203,43 @@ test on device (with a key and the StoreKit config, Debug from Xcode):
 - Expire the subscription in Xcode's transaction manager → the features switch off, not
   mid-walk.
 
+### 69.6 — Repo and demo readiness
+
+- **`LICENSE`**: MIT, "OpenCane contributors", at the root, so GitHub shows it in the About box.
+- **`PRIVACY.md`**: the policy the app links to from Settings → About and the paywall. It was
+  written from the code and lists every upload path with when it happens:
+  - cloud vision for "Where am I" and Hazard watch;
+  - voice questions;
+  - ElevenLabs text;
+  - the Grok Bot family alerts and their optional summary;
+  - the opt-in Supabase mirror;
+  - RevenueCat.
+
+  Change it in the same commit as any new upload path.
+- **`README.md`** restructured for a judge:
+  - what OpenCane does, and free vs Premium;
+  - screenshots: instructions for `make tour`, because no screenshot could be rendered here;
+  - hardware;
+  - build from a fresh clone, keys and the RevenueCat key;
+  - testing the paywall with the StoreKit file, step by step, including the RevenueCat dashboard
+    and the StoreKit certificate;
+  - the tech stack, checked against the imports;
+  - the team, the repo map, links, license and privacy.
+
+  The hackathon demo-route paragraph was folded into "What OpenCane does". `docs/route_isr_cif.md`
+  still has the route.
+- **`docs/DEMO_SCRIPT.md`**: the two-minute take with times and voice-over, a pre-flight list and
+  backup shots. The take covers the splash, onboarding, a real walk with "Head height.", a tap
+  mid-walk that shows no paywall, the paywall, a StoreKit test purchase, and the unlocked Hazard
+  watch or family alert.
+- **`ios/README.md`**: `REVENUECAT_API_KEY` in §4, and `CANEKIT_SHOW_ONBOARDING` /
+  `CANEKIT_PREMIUM` in the automation table. **`docs/README.md`** lists the new docs.
+- **Not done here:** `graphify update .`, because graphify is not installed in this container. Run it
+  on the Mac.
+
+test on device: follow README "Build and run from a fresh clone" on a clean checkout and confirm
+`make gen && make sim` succeeds with the RevenueCat package resolving.
+
 ## Steps 67–68 review round (Codex, Muse, Antigravity) (Sun Sep 13)
 
 Reviews: Antigravity (6 findings), Codex (4), Muse (11) on the Steps 67–68 diff. Every finding was checked

@@ -183,6 +183,7 @@ display name, not the target name).
 | `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL`, `GEMINI_API_KEY` / `GEMINI_MODEL`, `OPENAI_API_KEY` / `OPENAI_MODEL` | The other "Where am I" providers |
 | `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, `ELEVENLABS_MODEL` | Natural voice. The defaults are a warm premade voice and `eleven_flash_v2_5`. |
 | *(permission, not a key)* Location **Always** | Asked at the first route start (Step 47). Answer **Always**: with When In Use only, iOS puts its blue location pill in the Dynamic Island during a locked-screen route and demotes OpenCane's Live Activity to the minimal bubble; with Always, OpenCane's own route card owns the island, as Apple / Google Maps do. Declining keeps guidance working (a background session is armed instead). |
+| `REVENUECAT_API_KEY` | OpenCane Premium (Step 69.5): RevenueCat's **public** Apple API key (`appl_…`). Empty = no store, every feature unlocked, and Settings says so. Setting up the product, entitlement `premium`, offering `default` and StoreKit testing: root README → "Test the paywall". |
 | `OPENCANE_GROKBOT_WEBHOOK_URL`, `OPENCANE_GROKBOT_WEBHOOK_KEY` | Family alerts (§4.1). Copied from the Grok Bot routine's webhook-trigger panel. Empty = the feature is off and says so in Settings. |
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | Cloud sync (Step 60 MVP): walkers, Medical ID, family contacts, trip summaries, hazards, the family-alert feed. Mobility, settings and the JSONL trip log stay on the phone. Read from the process environment first, then this file (`Cloud/SupabaseClient.swift`). Publishable key only — never the secret key in a client. |
 | `CUSTOM_REASONING_EFFORT` | Optional, not in the example plist: the `reasoning_effort` sent to the custom (Muse) endpoint; empty = `low`. |
@@ -443,6 +444,8 @@ xcodebuild's environment (the Makefile does this). None of them is set on a norm
 | `CANEKIT_DESCRIBE_EVERY_WAYPOINT=1` | Asks "Where am I" at the start and at every waypoint. | `e2e.py --scenario streetview` |
 | `CANEKIT_SHOTS=<dir>` | Where `CaneKitVisualTour` writes its PNGs (test runner side). | `make tour` |
 | `CANEKIT_SENSOR_PROBE=1` (or `--sensor-probe`) | Debug: a one-shot "what can run with LiDAR" measurement before `DepthEngine` starts; results are `probe_*` trip-log records. | by hand |
+| `CANEKIT_SHOW_ONBOARDING=1` | Step 69: shows first-launch onboarding even under automation or after it was completed (a UI test of the pages). Without it, automation never sees onboarding or the splash (`LaunchFlow`). | by hand / a future UI test |
+| `CANEKIT_PREMIUM=free` / `premium` | Step 69.5: forces the OpenCane Premium state without RevenueCat (screenshots and UI tests of the locked / unlocked screens). Unset = the real store, or everything unlocked when there is no `REVENUECAT_API_KEY`. | by hand / a future UI test |
 | `CANEKIT_SENSOR_SELFTEST=1` (or `--sensor-selftest`) | Debug: shows the sensor self-test buttons on the Hazards card. Never in the demo build. | by hand |
 
 ## 6. Gotchas
