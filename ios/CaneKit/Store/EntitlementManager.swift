@@ -47,6 +47,8 @@ struct PaywallProduct: Equatable {
     let localizedPrice: String
     /// "$4.16" — RevenueCat's per-month figure for the annual price, when it has one.
     let localizedPerMonth: String?
+    /// Spoken length of a free introductory offer ("month"), or nil when the product charges at once.
+    let freeTrialPeriod: String?
 }
 
 /// Where the paywall's offering is.
@@ -176,7 +178,8 @@ final class EntitlementManager {
             }
             package = found
             offering = .loaded(PaywallProduct(localizedPrice: found.storeProduct.localizedPriceString,
-                                              localizedPerMonth: found.storeProduct.localizedPricePerMonth))
+                                              localizedPerMonth: found.storeProduct.localizedPricePerMonth,
+                                              freeTrialPeriod: Self.freeTrialPeriod(found.storeProduct)))
         } catch {
             offering = .failed(error.localizedDescription)
         }
@@ -222,10 +225,24 @@ final class EntitlementManager {
         setAccess(entitlement?.isActive == true ? .premium : .free)
     }
 
-    /// The paywall a screenshot tour shows. Price matches `OpenCane.storekit` ($49.99/year).
+    /// Spoken length of a free introductory offer, or nil when the product charges at subscribe.
+    private static func freeTrialPeriod(_ product: StoreProduct) -> String? {
+        guard let offer = product.introductoryDiscount, offer.paymentMode == .freeTrial else { return nil }
+        let count = max(1, offer.subscriptionPeriod.value * offer.numberOfPeriods)
+        let unit: String
+        switch offer.subscriptionPeriod.unit {
+        case .day: unit = count == 1 ? "day" : "days"
+        case .week: unit = count == 1 ? "week" : "weeks"
+        case .month: unit = count == 1 ? "month" : "months"
+        case .year: unit = count == 1 ? "year" : "years"
+        }
+        return count == 1 ? unit : "\(count) \(unit)"
+    }
+
+    /// The paywall a screenshot tour shows. Price matches `OpenCane.storekit` ($49.99/year, first month free).
     private func applyScreenshotOffer() {
         setAccess(.free)
-        offering = .loaded(PaywallProduct(localizedPrice: "$49.99", localizedPerMonth: "$4.16"))
+        offering = .loaded(PaywallProduct(localizedPrice: "$49.99", localizedPerMonth: "$4.16", freeTrialPeriod: "month"))
     }
 
     /// Sets `access` and tells `AppModel` when it actually changed.

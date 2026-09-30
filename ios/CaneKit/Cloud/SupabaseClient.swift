@@ -3,7 +3,7 @@
 //  CaneKit
 //
 //  The transport half of OpenCane's cloud mirror: a hand-rolled PostgREST + Storage client over
-//  `URLSession`. No SDK — AGENTS.md hard rule 2 forbids third-party packages, and the REST surface
+//  `URLSession`. No SDK — AGENTS.md hard rule 2 allows only RevenueCat, so this client stays on URLSession. The REST surface
 //  this app needs is four verbs wide.
 //
 //  Owner: `CloudSync` (one instance, built by `CloudSync.init` from `Secrets`). Nothing else

@@ -159,6 +159,11 @@ struct PaywallPricingTests {
         #expect(terms.contains("24 hours"))
         #expect(terms.contains("subscription year"))
         #expect(terms.contains("Apple Account"))
+        let trial = PaywallPricing.renewalTerms(localizedPrice: "$49.99", freeTrialPeriod: "month")
+        #expect(trial.hasPrefix("The first month is free."))
+        #expect(!trial.contains("when you subscribe"))
+        let spokenTrial = PaywallPricing.spokenOffer(localizedPrice: "$49.99", localizedPerMonth: "$4.16", freeTrialPeriod: "month")
+        #expect(spokenTrial.contains("The first month is free."))
     }
 
     @Test func affordabilityNoteIsTheOwnersWords() {

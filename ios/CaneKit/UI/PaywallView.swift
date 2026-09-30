@@ -165,14 +165,16 @@ struct PaywallView: View {
             }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(PaywallPricing.spokenOffer(localizedPrice: product.localizedPrice,
-                                                           localizedPerMonth: product.localizedPerMonth))
+                                                           localizedPerMonth: product.localizedPerMonth,
+                                                           freeTrialPeriod: product.freeTrialPeriod))
             CKBigButton(title: "Subscribe", systemImage: "star.fill",
                         hint: "Opens the App Store to subscribe for \(product.localizedPrice) a year",
                         value: model.store.isPurchasing ? "Purchasing" : nil) {
                 Task { await subscribe() }
             }
             .disabled(model.store.isPurchasing || model.store.isRestoring)
-            Text(PaywallPricing.renewalTerms(localizedPrice: product.localizedPrice))
+            Text(PaywallPricing.renewalTerms(localizedPrice: product.localizedPrice,
+                                             freeTrialPeriod: product.freeTrialPeriod))
                 .font(CKFont.secondary)
                 .foregroundStyle(CKColor.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)

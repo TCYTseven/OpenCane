@@ -21,7 +21,7 @@ trust any of it.
    change first (section 13).
 
    > **Update (software Step 51).** The first cane walk held the phone at **45° down**
-   > (trip log a trip log, tilt median 45.3°), and the row bands then read
+   > (a field trip log, tilt median 45.3°), and the row bands then read
    > knee-high things as "head" and the floor as "torso". `LaneMath` now gravity-corrects: every
    > depth sample is bucketed by its height above the ground (camera 95 cm; floor < 25 cm dropped;
    > head ≥ 140 cm), so pavement is never an obstacle at any pitch. The 3–8° window is no longer a
@@ -52,8 +52,8 @@ button, USB-C. MagSafe magnet array plus alignment magnet. Magnetometer. LiDAR S
 rear. Operating ambient 0–35 °C. Dual-frequency GPS.
 
 Apple's dimensional drawing for accessory makers
-([iphone-17-pro-max.pdf](https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-17-pro-max.pdf),
-dated ) gives the values below, all in mm. Button positions are **centre ± half-length,
+([iphone-17-pro-max.pdf](https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-17-pro-max.pdf))
+gives the values below, all in mm. Button positions are **centre ± half-length,
 measured from the top edge**. "Left" and "right" are as seen from the screen.
 
 | Feature | Value | Used for |

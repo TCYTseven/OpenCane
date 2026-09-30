@@ -109,7 +109,7 @@ on the phone with `make run` (CHANGELOG Steps 35 and 37). A second Mac or phone 
 
 ## 2. Verified spec deviations (don't "fix" these back)
 
-| Spec said | Reality (Apple docs, checked ) | What CaneKit does |
+| Spec said | Reality (Apple docs, checked | What CaneKit does |
 |---|---|---|
 | `AVAudioEnvironmentNode.isListenerHeadTrackingEnabled` | Needs the **Head Pose** capability, which is paid-team only | `CMHeadphoneMotionManager` yaw (relative, drifts) drives `listenerAngularOrientation`. **Recenter** comes from the phone or watch button, or auto-recenter when walking straight (`StraightWalkDetector`: 3 steady fixes, never within 15 m of a crossing). The beacon ignores head yaw until the first recenter after a turn. |
 | Watch side button = "next" | There is no API for the side button or a crown *press* | Crown rotation (3 detents within 1 s of the first) + big on-screen Repeat / Next / Describe / Recenter |

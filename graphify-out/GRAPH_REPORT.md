@@ -1187,7 +1187,7 @@ Nodes (11): IslandAlertLevel, curb, head, near, none, .rank, stop, IslandAlertTh
 
 ### Community 223 - "Historical — the "WHERE WE ARE" snapshot"
 Cohesion: 0.22
-Nodes (9): Branch state (updated ), Historical — the "WHERE WE ARE" snapshot, Honest capability table — what the demo can and cannot claim, Keys (git-ignored `ios/CaneKit/Resources/Secrets.plist`, never committed), MEASURED ON THE PHONE: both cameras AND depth is possible, without ARKit, Open findings from the Muse review of the sensor layer (xhigh), The merge gate (nothing lands on main that fails any step), What is NOT proven on the phone yet (+1 more)
+Nodes (9): Branch state (updated), Historical — the "WHERE WE ARE" snapshot, Honest capability table — what the demo can and cannot claim, Keys (git-ignored `ios/CaneKit/Resources/Secrets.plist`, never committed), MEASURED ON THE PHONE: both cameras AND depth is possible, without ARKit, Open findings from the Muse review of the sensor layer (xhigh), The merge gate (nothing lands on main that fails any step), What is NOT proven on the phone yet (+1 more)
 
 ### Community 224 - ".start"
 Cohesion: 0.12

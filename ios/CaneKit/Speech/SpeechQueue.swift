@@ -239,7 +239,7 @@ final class SpeechQueue {
     /// Restore a refused-key latch written by a previous launch, before the first line can be
     /// dispatched. A warm mp3 cache never calls ElevenLabs (`ElevenLabsVoice.prefetch`), so without
     /// this the next launch mixes cached ElevenLabs lines with Apple's until the first miss
-    /// (trip log a trip log). Caller: `AppModel.start`, after the Voice
+    /// (a field trip log). Caller: `AppModel.start`, after the Voice
     /// picker is pushed and before `prefetch` / `say`.
     func applyPersistedNaturalVoiceLatch() {
         guard Settings.bool(NaturalVoiceLatch.settingsKey, default: false) else { return }

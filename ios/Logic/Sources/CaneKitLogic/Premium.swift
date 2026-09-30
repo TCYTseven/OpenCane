@@ -200,13 +200,19 @@ public enum PaywallPricing {
     }
 
     /// The price block's VoiceOver label: whole sentences, no slash.
-    public static func spokenOffer(localizedPrice: String, localizedPerMonth: String?) -> String {
+    /// `freeTrialPeriod` is a spoken length ("month") when the store product's intro offer is free.
+    public static func spokenOffer(localizedPrice: String, localizedPerMonth: String?, freeTrialPeriod: String? = nil) -> String {
         let month = localizedPerMonth.map { ", about \($0) a month" } ?? ""
-        return "OpenCane Premium costs \(localizedPrice) per year\(month). It renews automatically every year until you cancel."
+        let trial = freeTrialPeriod.map { " The first \($0) is free." } ?? ""
+        return "OpenCane Premium costs \(localizedPrice) per year\(month).\(trial) It renews automatically every year until you cancel."
     }
 
     /// The auto-renewal disclosure under the Subscribe button (App Store Review Guideline 3.1.2).
-    public static func renewalTerms(localizedPrice: String) -> String {
-        "\(localizedPrice) is charged to your Apple Account when you subscribe, and again every year. The subscription renews automatically unless you cancel at least 24 hours before the end of the current subscription year. Manage or cancel it any time in OpenCane Settings or in your Apple Account settings."
+    /// A free intro offer is said first, so the charge is not described as due at subscribe.
+    public static func renewalTerms(localizedPrice: String, freeTrialPeriod: String? = nil) -> String {
+        let charge = "\(localizedPrice) is charged to your Apple Account"
+        let lead = freeTrialPeriod.map { "The first \($0) is free. Then \(charge), and again every year." }
+            ?? "\(charge) when you subscribe, and again every year."
+        return "\(lead) The subscription renews automatically unless you cancel at least 24 hours before the end of the current subscription year. Manage or cancel it any time in OpenCane Settings or in your Apple Account settings."
     }
 }

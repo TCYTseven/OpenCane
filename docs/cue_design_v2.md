@@ -309,7 +309,7 @@ Pay testers. Have a sighted spotter present. Always run a cane-only baseline fir
 - /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/CueDeciderTests.swift
 - /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/NavSupportTests.swift
 - /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/SpeechLoadPolicyTests.swift
-## Addendum: measured on the field log (trip log a trip log)
+## Addendum: measured on the field log (a field trip log)
 
 
 

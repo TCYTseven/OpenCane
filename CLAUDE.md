@@ -14,8 +14,7 @@ shipped code is the truth: when a doc and the code disagree, fix the doc in the 
   (communities in `graphify-out/GRAPH_REPORT.md`); `graphify update .` after code changes.
 - Automated runs are silent: the app mutes itself under `CANEKIT_MUTE=1` / `CANEKIT_UITEST=1`.
 - Measure before tuning a cue: `cd ios && make audit` (`ios/scripts/cue_audit.py` on a trip log; a
-  handheld log must not tune a distance). Cue research: `docs/cue_design_v2.md`. There is no
-  the code comment.
+  handheld log must not tune a distance). Cue research is `docs/cue_design_v2.md`.
 - **Deliberate, do not "fix"** (details, why and tests in AGENTS.md → "Steps 34–37 and the rotation
   fix"): flashlight state comes from KVO, never `isTorchActive` read right after setting; Both
   cameras is refused for the whole route and face tracking mid-route; `speech_dispatch` is a separate

@@ -5,7 +5,7 @@
 //  The flashlight switch as a small state machine: what the on-screen switch shows, when a
 //  request counts as done, and what is spoken about it.
 //
-// Why it exists (measured, trip log a trip log, t = 106–120 s): the app set
+// Why it exists (measured, a field trip log, t = 106–120 s): the app set
 //  the torch and read `AVCaptureDevice.isTorchActive` on the very next line. iOS updates that
 //  property asynchronously, so the read was the OLD state: the switch snapped back, "The
 //  flashlight did not switch on." was spoken, the torch then came on anyway, and every change took
