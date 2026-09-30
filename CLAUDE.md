@@ -4,7 +4,7 @@ Read `AGENTS.md` first (hard rules, layout, commands, deliberate oddities), then
 `docs/CODE_REFERENCE.md` for the file/type/function map. Trust them over anything you guess, but the
 shipped code is the truth: when a doc and the code disagree, fix the doc in the same commit.
 
-- Swift 6 strict concurrency, main-actor default; iOS 26 APIs only. The one third-party package is RevenueCat (`purchases-ios`), isolated in `ios/CaneKit/Store/EntitlementManager.swift`. The paywall never opens during a walk (`Premium.swift`).
+- Swift 6 strict concurrency, main-actor default; iOS 26 APIs only. The one third-party package is RevenueCat (`purchases-ios`), isolated in `ios/CaneKit/Store/EntitlementManager.swift`. The paywall never opens during a walk (`Premium.swift`). It says the first month is free only when this Apple Account is eligible (`EntitlementManager.freeTrialPeriod`).
 - Decisions with numbers live in `ios/Logic` with tests; run `cd ios && make test` before every commit
   (judge it by its own exit code, never through `| tail`).
 - Simulator target is the iPhone 17 Pro Max on iOS 27 (`make sim17` once). Demo runs untethered on the phone.

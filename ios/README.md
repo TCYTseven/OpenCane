@@ -33,7 +33,8 @@ Every other doc is listed in [`docs/README.md`](../docs/README.md).
 emergency calling stay free. OpenCane Premium (Hazard watch, Name people ahead, and Family Alerts) is the store:
 the gate is `ios/Logic/Sources/CaneKitLogic/Premium.swift`, the client is
 `ios/CaneKit/Store/EntitlementManager.swift`, the screen is `ios/CaneKit/UI/PaywallView.swift`.
-The paywall does not open during a walk. Setup for the product, the entitlement `premium` and
+The paywall does not open during a walk. It says the first month is free only when RevenueCat
+says this Apple Account is still eligible. Setup for the product, the entitlement `premium` and
 the offering `default` is in the root README, "Test the paywall". The short submission note is
 [`CHANGELOG.md`](../CHANGELOG.md). The step log is `git log`. There is no `docs/todo.md`.
 

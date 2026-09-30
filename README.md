@@ -188,7 +188,7 @@ code wins when a document disagrees with the code: fix the document in the same 
 | [`hardware/`](hardware/) | Physical kit: `mount_screwless/` (the live mount, OpenSCAD source), `3d_print_files/` (print runbook; G-code/STLs generated locally), `mount/` (screwed draft + tilt model), `cane_tip/` (printed rolling ball tip) |
 | [`scripts/`](scripts/) | Windows mount toolchain (PowerShell + Node): render STLs, slice G-code, verify the screwless mount |
 | `firmware/`, `cad/`, `ios/stretch/` | ESP32 grip firmware and OpenSCAD drafts. Stretch / legacy only. |
-| [`graphify-out/`](graphify-out/) | Knowledge graph of the repo (code + docs; the committed report lists 6,072 nodes, built from `dc59f370`; it lags later commits until `graphify update .`). `GRAPH_REPORT.md` lists the communities, `graph.html` opens in a browser. Query it with `graphify query "<question>"`; refresh with `graphify update .` after code changes. |
+| [`graphify-out/`](graphify-out/) | Knowledge graph of the repo (code + docs; the committed report lists 6,511 nodes and 15,384 edges, built from `b0db1ebd`). `GRAPH_REPORT.md` lists the communities, `graph.html` opens in a browser (community view, because the graph is over 5,000 nodes). Query it with `graphify query "<question>"`; refresh with `graphify update .` after code changes. |
 | `opencane-hardware-brief.html` | One-page hardware brief for a browser |
 
 ## Links

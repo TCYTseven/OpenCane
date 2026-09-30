@@ -492,6 +492,12 @@ bench has *disproved* must never sit in the file as though it were settled — m
   is spoken at `.scene`, never above. A lapse is spoken and undone when Premium returns; nothing is
   revoked or unlocked mid-walk. Family alerts is never switched on without the alert service key.
   A phone that ran OpenCane before Step 69 is never onboarded (`LaunchFlow.isPriorInstall`).
+  The product `opencane_premium_annual` is $49.99/year with a one-month free intro in
+  `ios/StoreKit/OpenCane.storekit`. The paywall says "The first month is free." only when
+  RevenueCat reports this Apple Account `IntroEligibilityStatus.eligible`
+  (`EntitlementManager.freeTrialPeriod`). `.ineligible` and `.unknown` keep the charge-at-subscribe
+  wording. `CANEKIT_PAYWALL_PREVIEW=1` is the screenshot tour only and forces the free month.
+  Paste-ready Shipaton text is `docs/DEVPOST.md`. The two-minute film is `docs/DEMO_SCRIPT.md`.
   Pinned by `PremiumGateTests`, `LaunchFlowTests`.
 
 ### Steps 34–37 and the rotation fix — do not "simplify" these
