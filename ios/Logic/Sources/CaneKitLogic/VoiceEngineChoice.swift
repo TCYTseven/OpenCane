@@ -83,7 +83,7 @@ public enum VoiceEngineReason: String, Sendable, Equatable, CaseIterable {
     /// ElevenLabs refused the key: quota used up (HTTP 401 `quota_exceeded`), a revoked key, or a
     /// voice / model the account cannot use (401 / 403 / 422, `VoicePrefetch.isFatal`). The whole
     /// session then speaks in the system voice — cached lines too — so the walker hears one voice,
-    /// not the natural voice for old lines and Apple's for new ones (first-launch report,).
+    /// not the natural voice for old lines and Apple's for new ones (first-launch report).
     case naturalUnavailable = "natural_unavailable"
 }
 

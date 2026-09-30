@@ -21,10 +21,10 @@ coupon = "all"; // [all, rings, corners, rosettes]
 
 /* [Mirrored from cane_mount.scad] */
 // MEASURED 27.65 by the bore coupons in hardware/mount_screwless/,
-//, and independently by dial caliper on. The 28.75
+// and independently by dial caliper. The 28.75
 // here was 1.132 in read off the wrong part of a tapered cane; a collar
 // bored for it has 1.10 mm of clearance and spins on the shaft. Changed
-//. Do not put 28.75 back without a ring that proves it.
+// Do not put 28.75 back without a ring that proves it.
 pole_d       = 27.65;  // mm, stick diameter. MEASURED.
 phone_w      = 78.0;   // mm
 phone_h      = 163.4;  // mm

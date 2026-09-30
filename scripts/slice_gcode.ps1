@@ -241,7 +241,7 @@ $argv = @('--load-settings', "$machineProfile;$processProfile",
 # slice runs to completion. This is the OPPOSITE of scripts/build_stl.ps1,
 # where 2>&1 must be avoided because it trips $? on OpenSCAD's clean exits -
 # same shell, same version, opposite fix, because the two exes use the
-# streams differently. Verified both ways on.
+# streams differently. Verified both ways.
 #
 # Relaxing $ErrorActionPreference - with the redirect in place the stderr
 # lines arrive as ErrorRecords, and under 'Stop' the first one still aborts.

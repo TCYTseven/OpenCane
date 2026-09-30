@@ -68,7 +68,7 @@ world_view = true;  // ghost cane + phone in the assembly preview
 // clearance - far too big to absorb. A collar bored for 28.75 would just
 // spin on a 27.65 shaft.
 //
-// MEASURED,, by the bore coupons against the real cane. This
+// MEASURED, by the bore coupons against the real cane. This
 // is no longer a disputed number. Two sets of rings (yellow and white)
 // were slid onto the cane at the collar spot:
 //   1 notch  27.75  barely went on          <- the bound
@@ -440,7 +440,7 @@ assert(tip_clear >= 8,
 // r = 17 and a 3 mm pitch is THIRTY MICRONS - a seventh of a layer. It
 // renders, it passes every assert, it looks like a thread in preview,
 // and it slices away to a smooth cylinder. That is exactly what this
-// file did until, and the ring spun freely on the collar.
+// file did, and the ring spun freely on the collar.
 //
 // So the bump is built as an ANGULAR SECTOR: an axial half-width of a mm
 // is thr_ang(a) = a * 360 / thr_pitch degrees of arc, at every radius.
@@ -457,7 +457,7 @@ thr_arc = 16;   // polygon segments per arc. 16 is under 0.02 mm of chord.
 // closest approach to the axis is r = 15.65 against a minor of 17.03, so
 // union() with circle(minor) swallowed the whole outer half of the tooth
 // and the root came out 0.738 mm wide instead of the 1.500 mm thr_duty
-// asks for - measured,, by a radial pin through the band.
+// asks for - measured, by a radial pin through the band.
 // The tooth was square, thr_duty was inert above ~0.155 and INVERTED
 // above it (raising it made the tooth narrower), and both asserts below
 // guarded a shape the geometry never produced. Walking angle and radius

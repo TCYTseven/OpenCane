@@ -315,7 +315,7 @@ final class DualCameraSession {
                 // AVFoundation teardown rule ("set the delegate and queue to nil before you
                 // release the output, to avoid deadlocks"). ⚠ That sentence is *not* in the
                 // iOS 27 SDK's AVCaptureVideoDataOutput.h nor in the current online reference
-                // (both checked,): it is legacy wording, so treat it as belt and
+                // (both checked): it is legacy wording, so treat it as belt and
                 // braces rather than a documented guarantee. What is documented is that nil is
                 // the one allowed value for the queue here ("may not be NULL, except when setting
                 // the sampleBufferDelegate to nil"), and that this is what stops delivery.

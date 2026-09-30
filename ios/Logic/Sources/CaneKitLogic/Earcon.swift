@@ -5,7 +5,7 @@
 //  Calm feedback (Step 65): seven short tones that replace the app's waiting words, and the policy
 //  that says — for every listening, waiting and busy event — tone, words, both, or nothing.
 //
-// Why this exists: owner,, after the first mounted walk — "make sure it's not over
+// Why this exists: owner, after the first mounted walk — "make sure it's not over
 //  stimulating again like with the amount of questions with the loading etc — make it nice, maybe a
 //  little tap or bell and then it releases something; don't over-stimulate the blind person too much
 // or else they won't listen." The phone log of that walk (a trip log) shows why:

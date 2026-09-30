@@ -12,8 +12,7 @@
 //  only when it carries the **overhang signature** — the torso cell of the same lane is at least
 //  `overhangGap` farther, has no return, or cannot be seen. Things near in both bands go to the
 //  torso logic. The signature fails safe: a torso dropout (glass, sunlight) or an uncovered
-//  torso cell keeps the head warning. ⚠ The signature is ON by default (owner decision
-//, `CueRules.requireOverhangSignature`); it supersedes the earlier "walls still get
+//  torso cell keeps the head warning. ⚠ The signature is ON by default (owner decision, `CueRules.requireOverhangSignature`); it supersedes the earlier "walls still get
 //  Head height, leave as is" note in AGENTS.md. `Settings.bool("overhangSignature")` is the valve.
 //
 //  Pure, Foundation-only, no state. Callers: `CueDecider.update` (the head zone's distance),

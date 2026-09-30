@@ -8,7 +8,7 @@
 // TIME, sliced, 0.4 nozzle / 0.2 layer / 4 walls / 25% gyroid:
 //   what="bore"   52 m 53 s   the five rings alone
 //   what="all"     3 h 01 m   the whole plate
-// The header said "~25 minutes" until. It is not 25 minutes
+// The header said "~25 minutes." It is not 25 minutes
 // and never was; someone planning an evening around that number lost two
 // and a half hours. If you only need pole_d, print what="bore".
 //
@@ -23,7 +23,7 @@
 //      2 notches 28.05    5 notches 28.95
 //      3 notches 28.35
 //    This table is the ONE thing in this header a fitter reads with parts
-// in hand, and it was wrong until: it still listed the
+// in hand, and it was wrong: it still listed the
 //    superseded 27.85/28.25/28.45/28.95/29.15 set while bore_tests below
 //    had already moved to the values above. Every ring would have been
 //    recorded as 0.10-0.20 mm larger than it is. If you edit bore_tests,
@@ -49,7 +49,7 @@
 //    collar is a collet that closes. Set bore_clear as a design decision
 //    (0.40 today) and let collet_squeeze take it up.
 //
-// RESULT, - this test has been RUN and it is settled:
+// RESULT — this test has been RUN and it is settled:
 //      1 notch  27.75  barely went on   <- the bound
 //      2 notches 28.05  decent
 //      3 notches 28.35  decent, yellow and white agreed
@@ -68,7 +68,7 @@
 //      4 notches 0.55  0.65     both, generous
 //    TWO numbers per nut, not one. This table was written for an earlier
 //    THREE-nut set stepping thr_clear 0.35/0.45/0.55 and was not updated
-// when the set became four pairs on - it would have named
+// when the set became four pairs — it would have named
 //    the wrong clearance for every nut on the plate. Read it from
 //    thr_tests below, and if you edit thr_tests, edit this in the same
 //    keystroke. It is the same defect this file's bore table carried,
@@ -109,7 +109,7 @@
 //    the way the arm's tenons print, so the lower flank (a 45-degree
 //    overhang) is in the measurement. Judge the fit with the tenon's
 //    notched base face DOWN, i.e. in the orientation it was printed.
-// (Flanks were 67 degrees until: they printed in
+// (Flanks were 67 degrees: they printed in
 //    air on the arm and the slicer put support inside the cradle's socket.)
 //
 // Coupons are identified by NOTCHES, not printed numbers: count the
@@ -150,7 +150,7 @@ ring_h       = 10.0;   // mm, height of each bore ring.
 // 0.50 mm gap. This set halves that gap and moves the floor down 0.10.
 //
 // It does NOT bracket 27.65 from below - 27.75 is still above it. The
-// comment here claimed it did until. If ring 1 goes on
+// comment here claimed it did. If ring 1 goes on
 // LOOSELY the cane is below this set's floor and the test has failed to
 // bound it; cut a set from 27.15 in 0.20 steps and rerun. Only a ring
 // that REFUSES to go on gives a real lower bound.
@@ -160,7 +160,7 @@ dt_tests     = [0.15, 0.25, 0.35];         // dt_clear values to try
 // One male stub serves all four - only the female cut varies.
 //
 // TWO axes, not one, and the reason is a measurement from the bench on
-//: a single nut at [0.35, 0.25] went down two turns of four
+// A single nut at [0.35, 0.25] went down two turns of four
 // and then jammed. That symptom rules out both single-axis causes. It
 // was not radial clearance - the first two turns were free. It was not
 // elephant's foot on the stub - that binds at the LAST turn, against the
@@ -182,7 +182,7 @@ thr_tests    = [[0.45, 0.25], [0.35, 0.45], [0.45, 0.45], [0.55, 0.65]];
 thr_len      = 12.0;   // mm, threaded length of the stub and each nut.
 // Bore clearance the THREAD PAIR is built around, so its core diameter
 // matches the real collar's. Was inlined as a bare 0.40 in thread_pair()
-// until, against the house rule that every dimension lives in
+// against the house rule that every dimension lives in
 // this block. Keep it equal to bore_clear in screwless_mount.scad. It is
 // NOT an output of the bore-ring test - see note 1 above.
 bore_clear   = 0.40;   // mm, on diameter.
@@ -238,7 +238,7 @@ module bore_row() {
 // the thing to keep in sync is the reason it looks like this: a twisted
 // linear_extrude turns ANGLE into height, so a tooth drawn as a linear
 // offset in y comes out ~0.03 mm thick and slices away to a plain
-// cylinder. Both copies had that bug until. Draw the tooth as
+// cylinder. Both copies had that bug. Draw the tooth as
 // an angular SECTOR or this coupon measures nothing at all.
 function thr_ang2(axial_mm) = axial_mm * 360 / thr_pitch;
 
@@ -250,7 +250,7 @@ function thr_ang2(axial_mm) = axial_mm * 360 / thr_pitch;
 // circle(minor) swallowed the outer half of every tooth: the coupon
 // printed a 0.738 mm root where thr_duty asks for 1.500, and measuring
 // its fit told you about a thread the collar does not have. Measured by
-// radial pin,; 1.396 mm after this rewrite. Walking angle and
+// radial pin; 1.396 mm after this rewrite. Walking angle and
 // radius together is what makes a trapezoid once the twist turns angle
 // into height. This is a hand copy of thread_profile() in
 // screwless_mount.scad - if you change one, change both.
@@ -326,7 +326,7 @@ module thread_nut(tc) {
         // Identity notches in the top rim, one per FLUTE MIDPOINT.
         //
         // The 13 deg step the bore rings use is WRONG here and was in
-        // this file for about ten minutes on. Flutes land on
+        // this file for about ten minutes. Flutes land on
         // multiples of 36, so notches at 90, 103, 116, 129 put the third
         // and fourth INSIDE the flute at 108. Measured: the notch-region
         // volume fell 0.002, 0.007, 0.008 cm3 across the four nuts where
@@ -346,7 +346,7 @@ module thread_nut(tc) {
 // Laid out in rows of `per_row`, not one long line. A single line of the
 // stub plus four nuts is 251.11 mm wide, which leaves 4.4 mm a side on a
 // 260 mm bed - less than a brim - and it grew past the bed the moment the
-// fourth nut was added on. Wrapping keeps the plate square as
+// fourth nut was added. Wrapping keeps the plate square as
 // more clearances get added.
 module thread_row() {
     br   = (pole_d + bore_clear) / 2;
@@ -416,7 +416,7 @@ row_bore = 0;                       // bore rings span y +-18.67
 row_thr  = 60;                      // two rows, y -22.23 .. +74.68 of here
 row_dt   = 170;                     // dovetail pairs span y 0 .. 49
 // "next" is the plate to print when the bore rings are already DONE and
-// pole_d is settled - which it is, as of. It is the thread row
+// pole_d is settled - which it is, settled. It is the thread row
 // and the dovetail row together in one job, because those are the two
 // numbers still unknown and there is no reason to run the printer twice.
 // Skipping the bore row saves 21.33 cm3 and its 52 m 53 s.

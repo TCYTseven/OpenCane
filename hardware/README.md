@@ -5,7 +5,7 @@
 > Sliced files are gitignored — they are ~85 MB of build output, not source.
 
 The only new hardware in OpenCane / CaneKit is a mount. It clamps the iPhone 17 Pro Max upright to
-the 27.65 mm non-metal stick (measured by the bore rings on ; it is a broom handle
+the 27.65 mm non-metal stick (measured by the bore rings; it is a broom handle
 standing in for a cane), near the grip, with the LiDAR and rear camera facing forward and
 ~5° down. The phone's own buzz has to be felt through the cane. Everything else (AirPods Pro,
 Apple Watch) is off the shelf. This folder replaces the old `cad/` drafts for the phone mount;
@@ -20,7 +20,7 @@ phone's buzz is felt in the handle, with nothing magnetic near the phone's botto
 and the shaft out of the camera's view. The product overview is the root
 [`README.md`](../README.md).
 
-**Status :** two designs. `mount/` (screwed, this page's quick start) is a
+**Status:** two designs. `mount/` (screwed, this page's quick start) is a
 draft nobody has rendered. `mount_screwless/` is the live one: simulated end to end
 (`scripts/verify_mount.ps1`: 32 PASS/FAIL lines in a full run, 17 with `-Quick`; all green at Step 25),
 sliced, bore rings printed and read; the rest is not yet printed. See `CHANGELOG.md` Steps 21 and 25.

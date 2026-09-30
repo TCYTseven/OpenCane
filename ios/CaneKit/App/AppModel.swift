@@ -1485,7 +1485,7 @@ final class AppModel {
         // Warnings never wait for the network — a cache miss is spoken by the system voice at once
         // — so the only way a warning is ever heard in the natural voice is for it to be on disk
         // already. Without this the walker heard route lines in the ElevenLabs voice and warnings
-        // in Apple's, alternating line by line (user report,).
+        // in Apple's, alternating line by line (user report).
         // `backgroundLines` rather than one batch here because the first warning that misses the
         // cache calls `prefetch` itself, which would otherwise cancel this batch half-done; as a
         // standing tail it is resumed by every later batch instead. Fire-and-forget on a detached
@@ -1603,7 +1603,7 @@ final class AppModel {
         switch verdict {
         case .open(let seconds):
             // The emergency answer gets the whole confirmation window, walking or not (review
-            //, OpenCode: 3 s while navigating was shorter than the 8 s the prompt promises).
+            // OpenCode: 3 s while navigating was shorter than the 8 s the prompt promises).
             let window = wasQuestion ? EmergencyConfirm.confirmWindow : seconds
             logger.event("voice_followup", ["action": "opened", "seconds": window, "emergency": wasQuestion])
             if wasQuestion { conversation.emergencyListenOpened() }
@@ -2763,7 +2763,7 @@ final class AppModel {
             severity: severity
         )
         // Field "type", not "kind": a "kind" field used to replace the record's own kind
-        // ("hazard" → "sign"), so e2e.py never saw a hazard record (phone trip log,).
+        // ("hazard" → "sign"), so e2e.py never saw a hazard record (phone trip log).
         var eventFields: [String: Any] = ["type": kind, "text": text, "source": source.rawValue]
         if let distanceM { eventFields["distance_m"] = distanceM }
         if let heightM { eventFields["height_m"] = heightM }

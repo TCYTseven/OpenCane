@@ -549,7 +549,7 @@ bench has *disproved* must never sit in the file as though it were settled — m
   gives the back camera a fixed 90 and the front camera a fixed 0 (270 fallback), and uses no
   `RotationCoordinator` angle for either. Every earlier attempt to use one coordinator angle for both
   cameras fixed one feed and broke the other (preview-for-both left the back sideways, trip log
-  `` `back_rotation: 0`; capture-for-both, `103d548`, tilted the front). The
+  `back_rotation: 0`; capture-for-both, `103d548`, tilted the front). The
   capture angle follows the phone's physical orientation and the preview angle is sampled once at
   connect, so both are wrong when Both cameras starts with the phone sideways or flat. The UI is
   portrait-only (`UISupportedInterfaceOrientations` in `ios/project.yml`), so a fixed angle is right;

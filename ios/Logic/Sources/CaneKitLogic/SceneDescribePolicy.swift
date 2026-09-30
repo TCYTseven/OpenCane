@@ -5,7 +5,7 @@
 //  Whether a "Where am I" run may still speak after a lock (Step 63).
 //
 //  Why this file exists: `ConversationCoordinator.cancelForBackground` already drops a cloud
-// *question* so its pre-lock answer cannot speak after the unlock (Codex,).
+// *question* so its pre-lock answer cannot speak after the unlock (Codex).
 //  `SceneDescriber` used an unstructured `Task` with no generation check, so a JPEG captured
 //  before the lock could still `speech.say` the scene the walker had left. The fence is a
 //  generation compare — the same shape as `TripRefreshGeneration.accepts` — so the rule is

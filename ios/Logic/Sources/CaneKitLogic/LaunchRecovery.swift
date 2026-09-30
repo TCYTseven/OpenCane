@@ -4,7 +4,7 @@
 //
 //  The rule that stops an optional feature from being able to keep the app from starting.
 //
-// Why this file exists (the evidence, from the phone,):
+// Why this file exists (the evidence, from the phone):
 // · a trip log, t=17.583 —
 //      `{"kind":"face_tracking","supported":true,"enabled":true}`. The walker turned on "Head
 //      tracking without AirPods". That switch was persisted in `UserDefaults`.

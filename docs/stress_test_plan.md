@@ -66,8 +66,7 @@ D = device matrix (§2) · F = failure injection (§3) · G = go/no-go (§4).
    consecutive fixes with accuracy ≤ 30 m, and there's no speed gate. So at ±10 m accuracy, arrival
    fires within 15 m of the node. Intermediate fences need accuracy ≤ 20 m and speed > 0.5 m/s. Speed
    is −1 when standing, which fails the gate.
-10. **`docs/route_isr_cif.md` matches the JSON** (its tables were regenerated from it on
-    ): WP3, WP6 and WP8 are 12 m, WP9 is 20 m, and WP3 is **not** a crossing. Crossings are
+10. **`docs/route_isr_cif.md` matches the JSON** (its tables were regenerated from that JSON): WP3, WP6 and WP8 are 12 m, WP9 is 20 m, and WP3 is **not** a crossing. Crossings are
     WP4, WP6 and WP7. If the two ever disagree, the JSON is the truth.
 11. **Watch and cane haptics** (`WatchModel`, `HapticPlayer`; design.md §5.3 / §6.6 agree). Wrist:
     turnLeft `.directionUp`, turnRight `.directionDown`, crossing `.notification`, arrived `.success`,

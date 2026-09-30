@@ -166,8 +166,7 @@ public enum FaceTrackingChange: Equatable, Sendable {
 ///
 /// ⚠ Per camera, on measured evidence (the owner's iPhone 17 Pro Max, clamped portrait): every
 /// attempt to use one `AVCaptureDevice.RotationCoordinator` angle for BOTH cameras fixed one feed
-/// and broke the other — preview-for-both left the back feed sideways (trip log
-///: `back_rotation: 0`), capture-for-both tilted the front inset. With the
+/// and broke the other — preview-for-both left the back feed sideways (`back_rotation: 0`), capture-for-both tilted the front inset. With the
 /// per-camera rule the back feed logged `back_rotation: 90` (trip log).
 ///
 /// The interface is portrait-only (Info.plist `UISupportedInterfaceOrientations`), so what the
