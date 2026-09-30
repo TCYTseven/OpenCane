@@ -1,4 +1,4 @@
-<!-- Research workflow output, . 4 researchers + 4 source fact-checkers (74 findings kept, 10 dropped as unsupported) + synthesis. Numbers marked [H] are hypotheses, not measurements. -->
+<!-- Research workflow output. 4 researchers + 4 source fact-checkers (74 findings kept, 10 dropped as unsupported) + synthesis. Numbers marked [H] are hypotheses, not measurements. -->
 
 # OpenCane cue design v2: what blind travellers need, and how to make the cane calmer
 
