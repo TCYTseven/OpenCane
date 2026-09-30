@@ -44,8 +44,7 @@ The safety line also includes the route-time `SensorModeInterlock` (face/high-ra
 cannot restart ARKit during navigation), the generation-fenced `VoiceInputGuard` lifecycle
 (route/interruption/permission/engine failures stop push-to-talk and restore playback), GPS freshness
 fencing, terminal AR cleanup, and explicit cloud/people-detection consent gates. Recount the
-tests with `grep -rhoE '^\s*@Test' Logic/Tests | wc -l` after every merge; the count above is the
-current Step 51 snapshot.
+tests with `grep -rhoE '^\s*@Test' Logic/Tests | wc -l` after every merge. Do not keep a frozen count in this file.
 
 ## Layout
 
@@ -54,7 +53,7 @@ current Step 51 snapshot.
 | `CaneKit/` | The phone app: `App/` (`AppModel` owns every engine; App Intents and hands-free intents), `Conversation/` (voice input, conversational assistant), `Alerts/` (family alerts: `FamilyAlerts`, `GrokBotClient`, `FallWatcher`, `AlertSummarizer`), `Cloud/` (`CloudSync`, `SupabaseClient`), `Depth/`, `Haptics/`, `Speech/`, `Audio/` (beacon, sound watcher), `Navigation/`, `Scene/`, `Trip/` (trip log, `LiveActivityController`, `MedicalProfileStore`), `Watch/`, `UI/` (incl. `ProfilePage`), `Resources/` (`route_isr_cif.json`, assets, your git-ignored `Secrets.plist`) |
 | `CaneKitWatch/`, `CaneKitWidget/`, `CaneKitUITests/` | The targets above |
 | `Shared/LiveActivity/` | `NavActivityAttributes`, compiled into the app and the widget |
-| `Logic/` | `CaneKitLogic`, 56 source files. Family alerts and safety events: `FamilyAlertPolicy`, `FamilyContacts`, `GrokBotEvent`, `AlertContext`, `FallDetector`, `ThreatWatch`, `ActionRateLimit`. Live Activity: `LiveActivityCoalescer`. Step 47: `TorsoHapticPolicy`, `SceneEngineSummary`. Depth and obstacles: `LaneMath`, `LaneReport`, `DepthSnapshot`, `DepthReadiness`, `MultiCamDepth`, `CueDecider`, `PeopleAhead`, `Hazards`, `SensorModeInterlock`. Cues and speech: `CueProfile` (`CueRules`), `SpeechResume`, `SpeechLoadPolicy`, `SpokenPhrases`, `UtteranceEnd`, `VoicePrefetch`. Navigation: `GeoMath`, `CourseSmoother`, `NavSupport`, `NavigationHealth`, `TripRefreshGeneration`, `Waypoint`, `CampusPlaces`, `DestinationSuggestions`. Scene: `VLMCodec`, `SceneVocabulary`, `CloudSceneGate`, `PeopleDetection`. Hands-free and conversation: `ConversationModels`, `ConversationPrompt`, `FastPathIntentClassifier`, `HeadNodDetector`, `QuestionPrompt`, `StatusSummary`, `VoiceInputGuard`. Devices and app state: `WatchMessage`, `HeadYawSources`, `SoundAlerts`, `SoundRecognitionGuard`, `TorchSwitch`, `LiveView`, `LaunchRecovery`, `StopRouteConfirmation`, `TripLogRecord`. Plus `Tests/` |
+| `Logic/` | `CaneKitLogic`, 77 source files, including `Premium.swift`. Family alerts and safety events: `FamilyAlertPolicy`, `FamilyContacts`, `GrokBotEvent`, `AlertContext`, `FallDetector`, `ThreatWatch`, `ActionRateLimit`. Live Activity: `LiveActivityCoalescer`. Step 47: `TorsoHapticPolicy`, `SceneEngineSummary`. Depth and obstacles: `LaneMath`, `LaneReport`, `DepthSnapshot`, `DepthReadiness`, `MultiCamDepth`, `CueDecider`, `PeopleAhead`, `Hazards`, `SensorModeInterlock`. Cues and speech: `CueProfile` (`CueRules`), `SpeechResume`, `SpeechLoadPolicy`, `SpokenPhrases`, `UtteranceEnd`, `VoicePrefetch`. Navigation: `GeoMath`, `CourseSmoother`, `NavSupport`, `NavigationHealth`, `TripRefreshGeneration`, `Waypoint`, `CampusPlaces`, `DestinationSuggestions`. Scene: `VLMCodec`, `SceneVocabulary`, `CloudSceneGate`, `PeopleDetection`. Hands-free and conversation: `ConversationModels`, `ConversationPrompt`, `FastPathIntentClassifier`, `HeadNodDetector`, `QuestionPrompt`, `StatusSummary`, `VoiceInputGuard`. Devices and app state: `WatchMessage`, `HeadYawSources`, `SoundAlerts`, `SoundRecognitionGuard`, `TorchSwitch`, `LiveView`, `LaunchRecovery`, `StopRouteConfirmation`, `TripLogRecord`. Plus `Tests/` |
 | `project.yml` | XcodeGen spec. `CaneKit.xcodeproj` is generated and git-ignored. |
 | `Makefile`, `scripts/` | `gen.sh` (project generation), `test.sh` (logic tests), `e2e.py` (GPS-replay end-to-end), `cue_audit.py` (cue load of one trip log, `make audit`), `vision_probe.swift` / `sign_probe.swift` (on-device Vision and sign-reading range against Street View frames), `streetview/` (`frames.json` + git-ignored JPEGs), `streetview_stim.py` (run by hand, no Makefile target: a stand-alone Street View walk visualiser that shells out to `vision_probe.swift` and writes `build/streetview_stim/`; it runs no app code, so use `make e2e SCENARIO=streetview` for what the app says), `appicon.py` (renders the app icon) |
 | `Secrets.example.plist` | Template for `CaneKit/Resources/Secrets.plist` |
@@ -134,7 +133,7 @@ Everything runs from `ios/` on the command line. You don't need the Xcode GUI af
 | Command | What it does |
 |---|---|
 | `make gen` | `scripts/gen.sh`: `xcodegen generate` + the watch-embed patch, and it copies `Secrets.example.plist` → `CaneKit/Resources/Secrets.plist` if missing. Run it only after `project.yml` or the file list changes. `WATCH=0 scripts/gen.sh` gives a phone-only project. |
-| `make test` | `scripts/test.sh`: the 654 `CaneKitLogic` tests (Swift Testing). Works with the Swift 6 toolchain / Command Line Tools; never touches the simulator or xcodebuild. Extra arguments pass through to `swift test` only when you call `scripts/test.sh` directly (e.g. `scripts/test.sh --filter SpeechResume`). |
+| `make test` | `scripts/test.sh`: the `CaneKitLogic` Swift Testing suite (965 tests, 1 known issue, on the last local run). Recount with `grep -rhoE '^\s*@Test' Logic/Tests | wc -l`. Works with the Swift 6 toolchain / Command Line Tools; never touches the simulator or xcodebuild. Extra arguments pass through to `swift test` only when you call `scripts/test.sh` directly (e.g. `scripts/test.sh --filter SpeechResume`). |
 | `make build` | Device build, automatic signing, personal team (needs `TEAM` + `DEVICE`) |
 | `make install` | `xcrun devicectl device install app` onto the phone |
 | `make launch` | `xcrun devicectl device process launch com.aritro.canekit` |
@@ -142,7 +141,7 @@ Everything runs from `ios/` on the command line. You don't need the Xcode GUI af
 | `make sim` | Build for the iOS simulator (no LiDAR, haptics or watch there) |
 | `make sim17` | Create the **iPhone 17 Pro Max / iOS 27** simulator (`xcrun simctl create`). Run it once: Xcode 27 does not create that device by default. |
 | `make sim-grant` | Boot the simulator and pre-grant location + motion so no system alert races a test's first tap. `uitest`, `tour` and `e2e` run it for you. |
-| `make uitest` | The whole `CaneKitUITests` target (three XCTest classes, 12 tests) on the iPhone 17 Pro Max simulator. Set a simulator location first (below). |
+| `make uitest` | The whole `CaneKitUITests` target (three XCTest classes, 13 tests) on the iPhone 17 Pro Max simulator. Set a simulator location first (below). |
 | `make uitest-streetview` | Only `testWhereAmIDescribesAStreetViewFrame`, with `TEST_RUNNER_CANEKIT_FRAME_DIR` pointing at `STREETVIEW` (default `scripts/streetview`), so Street View frames stand in for the camera. Needs the git-ignored JPEGs. |
 | `make tour` | Screenshot every screen state (`CaneKitVisualTour`) → PNGs in `SHOTS` (default `build/shots/`) |
 | `make island` | Photograph the Live Activity in the Dynamic Island (`CaneKitIslandTour`: compact, expanded, walking, after Stop) → `NN-island-*.png` in `SHOTS`; same prerequisites as `make tour` |
@@ -351,36 +350,37 @@ changes, also run `make uitest` and `make tour` on the iPhone 17 Pro Max / iOS 2
 "How we engineer" 4 adds `make e2e` (and `SCENARIO=streetview` when the camera path changed). Then
 run the Muse review of the diff.
 
-- **Unit tests (`Logic/`, no device):** 654 Swift Testing `@Test` annotations in 53 files under
-  `Logic/Tests/CaneKitLogicTests/`. By layer, file names without the `Tests.swift` suffix (count per
+- **Unit tests (`Logic/`, no device):** 965 Swift Testing `@Test` annotations in 74 files under
+  `Logic/Tests/CaneKitLogicTests/` (last local `make test`: 965 tests in 29 suites, 1 known issue in `StressTests.geofenceSurvivesHostileGps`). By layer, file names without the `Tests.swift` suffix (count per
   file in parentheses):
-  - Depth and obstacles: `LaneMath` (16), `DepthSnapshot` (14), `DepthReadiness` (7, the bounded
-    route-start LiDAR gate), `MultiCamDepth` (8), `CueDecider` (15, hysteresis / rate limit / Geiger),
-    `TorsoHapticPolicy` (Step 47, torso haptics by cue level), `PeopleAhead` (28), `Hazard` (49, ground
+  - Depth and obstacles: `LaneMath` (17), `DepthSnapshot` (14), `DepthReadiness` (9, the bounded
+    route-start LiDAR gate), `MultiCamDepth` (8), `CueDecider` (27, hysteresis / rate limit / Geiger),
+    `TorsoHapticPolicy` (24, Step 47, torso haptics by cue level), `PeopleAhead` (28), `Hazard` (49, ground
     profile, signs, hazard watch, GeoJSON map).
   - Family alerts and safety events: `FamilyAlertPolicy` (10), `FamilyContacts` (14), `GrokBotEvent` (7),
     `AlertContext` (11), `FallDetector` (10), `ThreatWatch` (10), `ActionRateLimit` (5).
-  - Scene engine card: `SceneEngineSummary` (16). Live Activity: `LiveActivityCoalescer` (10).
-  - Cues and speech: `CueProfile` (15), `SpeechResume` (15), `SpeechLoadPolicy` (7), `SpokenPhrases`
-    (12), `UtteranceEnd` (7), `VoicePrefetch` (5), `NavSupport` (19, turn settling, straight-walk,
-    spoken-cue policy, crown gesture).
+  - Scene engine card: `SceneEngineSummary` (20). Live Activity: `LiveActivityCoalescer` (12).
+  - Cues and speech: `CueProfile` (17), `SpeechResume` (15), `SpeechLoadPolicy` (7), `SpokenPhrases`
+    (15), `UtteranceEnd` (8), `VoicePrefetch` (8), `NavSupport` (26, turn settling, straight-walk,
+    spoken-cue policy, crown gesture), `Earcon` (14).
   - Navigation: `GeoMath` (26, skip-ahead, passed-by, arrival gate), `CourseSmoother` (3), `Route`
-    (4, MapKit steps → waypoints and the shipped route file), `CampusPlaces` (11),
-    `DestinationSuggestions` (14).
-  - Scene: `VLMCodec` (11), `SceneVocabulary` (16), `CloudSceneGate` (15).
-  - Hands-free and conversation: `ConversationLogic` (13), `NodToTalkFastPath` (2), `HeadNodDetector`
-    (7), `QuestionPrompt` (6), `StatusSummary` (12).
-  - Devices and app state: `WatchMessage` (3), `HeadYawSources` (18), `SoundAlerts` (38),
-    `TorchSwitch` (16), `LiveView` (22), `LaunchRecovery` (6), `TripLogRecord` (2).
+    (4, MapKit steps → waypoints and the shipped route file), `CampusPlaces` (15),
+    `DestinationSuggestions` (16), `IndoorRoute` (45).
+  - Scene: `VLMCodec` (11), `SceneVocabulary` (16), `CloudSceneGate` (16).
+  - Hands-free and conversation: `ConversationLogic` (28), `NodToTalkFastPath` (2), `HeadNodDetector`
+    (7), `QuestionPrompt` (6), `StatusSummary` (17).
+  - Devices and app state: `WatchMessage` (3), `HeadYawSources` (18), `SoundAlerts` (40),
+    `TorchSwitch` (16), `LiveView` (22), `LaunchRecovery` (7), `TripLogRecord` (2), `PremiumGate` (16),
+    `LaunchFlow` (11), `IslandPolicy` (23).
 
-  Count them yourself with `grep -rhoE "^\s*@Test" Logic/Tests | wc -l`. Verify a run by its exit
+  That layer list is not every file. Count them yourself with `grep -rhoE "^\s*@Test" Logic/Tests | wc -l`. Verify a run by its exit
   code and `error:` lines, never through `tail` (AGENTS.md, Step 27 trap).
-- **UI (`make uitest`):** 12 XCTest methods across three classes. `CaneKitUITests` has 10: start, Next, Repeat, Recenter
+- **UI (`make uitest`):** 13 XCTest methods across three classes. `CaneKitUITests` has 10: start, Next, Repeat, Recenter
   and Stop on the demo route; Where am I without a key; Where am I on a Street View frame (skipped
   unless `make uitest-streetview`); the haptic test buttons and the Silence toggle; mount toggles
   persist; the Cues pickers change and restore; VoiceOver labels; the Navigate-to-CIF button on the
   idle Guide; the empty-destination error; and campus suggestions while typing. `CaneKitVisualTour`
-  has 1 (`testTour`) and `CaneKitIslandTour` has 1 (`testDynamicIsland`, `make island`). The last recorded run (Step 37): 11 run, 10 passed, 1 skipped, 0 failures.
+  has 2 (`testTour`, `testShipatonShots`) and `CaneKitIslandTour` has 1 (`testDynamicIsland`, `make island`).
   Accessibility labels are a test contract (`AGENTS.md` rule 9).
 - **Visual (`make tour`):** one PNG per screen state in `build/shots/`, for review by eye.
 - **End-to-end (`make e2e`):** replays the ISR → CIF route in the simulator with

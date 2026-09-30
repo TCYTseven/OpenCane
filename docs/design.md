@@ -34,9 +34,9 @@ of it below says so.
 
 | Viewer | Situation | What it forces |
 |---|---|---|
-| **The blind user** | Never looks. Phone is clamped to the cane; they use speech, the cane's buzz, the watch, or the Action button ("Where am I"). | Every state has words: speech via `SpeechQueue`, and a VoiceOver label / value on screen. VoiceOver order is the selected tab's cards, then the tab bar (Guide / Sense / Settings / Profile). Our own buttons are ≥ 60 pt (big buttons 72 pt). Nothing is colour-only. |
+| **The blind user** | Never looks. Phone is clamped to the cane; they use speech, the cane's buzz, the watch, or the Action button ("Where am I"). | Every state has words: speech via `SpeechQueue`, and a VoiceOver label / value on screen. VoiceOver order is the selected tab's cards, then the tab bar (Guide / Details / Settings / Profile). Our own buttons are ≥ 60 pt (big buttons 72 pt). Nothing is colour-only. |
 | **The sighted judge / teammate** | Glances at the phone on the cane from ~1 m, in a dark room (demo) or in sunlight (walk). | The Guide instruction, the distance and the depth tiles must be readable at arm's length: tile numerals 28 pt bold, hero distance 64 pt, fills ≥ 6.5:1 against their `ink` text, no thin type, no mid-grey. Dark surfaces for the demo (a bright screen in a dark room blinds the room). |
-| **The developer** | Reads engine health, speech backend, watch link and the hazard detections while walking behind. | The debug cards on the **Sense** tab (Hazards) and the **Settings** tab (Haptics, Watch, Mount, This phone). There is no debug footer any more (removed): depth fps is shown on the Mount card's aim row, while thermal and battery remain in the trip log's `lanes` records. |
+| **The developer** | Reads engine health, speech backend, watch link and the hazard detections while walking behind. | The debug cards on the **Details** tab (Hazards) and the **Settings** tab (Haptics, Watch, Mount, This phone). There is no debug footer any more (removed): depth fps is shown on the Mount card's aim row, while thermal and battery remain in the trip log's `lanes` records. |
 
 **Brand voice.** A safety instrument, not a lifestyle app. Think avalanche beacon or aircraft
 standby gauge: calm, terse, trustworthy, legible in the dark. Everything on screen is either a
@@ -467,7 +467,7 @@ carry `.updatesFrequently` so touching them reads the current state.
 ## 6. Screens
 
 The phone app is **four icon-only pages** (`ContentView`: `NavigationStack` > selected page
-`ScrollView` + `CKTabBar`). Tabs are Guide · Sense · Settings · Profile (`RootTab`; Profile since
+`ScrollView` + `CKTabBar`). Tabs are Guide · Details · Settings · Profile (`RootTab`; the Details case is still `.sense`; Profile since
 Step 44). The navigation title is **inline and centred, one per tab** (Steps 41–42:
 `.navigationBarTitleDisplayMode(.inline)` plus a bold `.title2` principal `Text`, hidden from
 VoiceOver because the bar already reads it): Guide = "OpenCane", Sense = **"Details"**, Settings =
@@ -484,7 +484,7 @@ Guide page                                Sense page                         Set
                                             (§6.2 / §6.5)                     ┌ Family alerts ──────┐
                                                                               ┌ This phone ─────────┐
                                                                               (§6.5)
-[ walk ]  [ 3×3 grid ]  [ gear ]  [ person ]   ← CKTabBar, icon-only; VoiceOver "Guide" / "Sense" / "Settings" / "Profile"
+[ walk ]  [ 3×3 grid ]  [ gear ]  [ person ]   ← CKTabBar, icon-only; VoiceOver "Guide" / "Details" / "Settings" / "Profile"
 ```
 
 Card titles are `.isHeader`, so the headings rotor jumps the cards of the *current* page (Guide →
@@ -1096,13 +1096,13 @@ tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
 - No shadows. Elevation is a fill change and a hairline.
 - No icon-only **action** buttons. Guide / route / haptic controls still carry a visible word; the
   SF Symbol is a companion (the watch's half-width buttons put the word under the symbol). The
-  **root tab bar is the exception**: four icons, words only in VoiceOver (`Guide` / `Sense` /
+  **root tab bar is the exception**: four icons, words only in VoiceOver (`Guide` / `Details` /
   `Settings` / `Profile`). A tab never encodes a hazard.
 - No custom fonts. SF Pro / SF Rounded / SF Mono only.
 - No haptics for decoration. The Taptic Engine is a safety channel; the big-button press confirm,
   the tab-bar `.selection` tick, the watch's `.click` send confirm and the system crown detents
   are the only non-cue haptics.
-- No sounds except speech and the beacon. No earcons. The beacon never plays through the phone speaker.
+- No sounds except speech, the spatial beacon, and the short earcon tones in `Earcon.swift`. Obstacle warnings stay haptic. The beacon never plays through the phone speaker.
 - No `CKBigButton` under 72 pt and no other phone button under 60 pt; no watch button under 44 pt.
 - No double-speak: cue speech comes from `SpeechQueue`, never also from a VoiceOver announcement.
 - No truncation of an instruction on the phone: it wraps, it is never cut with "…".
@@ -1130,15 +1130,15 @@ tiles' 1.2 m/s placeholder is still indistinguishable from a measurement.
 `ios/CaneKitUITests/CaneKitUITests.swift`, `CaneKitVisualTour.swift` and `CaneKitIslandTour.swift` find
 elements by these exact strings. AGENTS.md rule 9: none of them may change without updating the tests in
 the same commit. All three suites launch with `CANEKIT_UITEST=1` (skips the launch location prompt and
-mutes `SpeechQueue`). Today that is 12 XCUITests (10 in `CaneKitUITests`, `CaneKitVisualTour.testTour`,
-`CaneKitIslandTour.testDynamicIsland`); `make uitest` runs the whole `CaneKitUITests` target, so all 12,
+mutes `SpeechQueue`). Today that is 13 XCUITests (10 in `CaneKitUITests`, `CaneKitVisualTour.testTour`,
+`CaneKitVisualTour.testShipatonShots`, `CaneKitIslandTour.testDynamicIsland`); `make uitest` runs the whole `CaneKitUITests` target, so all 13,
 while `make tour` and `make island` run one suite each. The Street View "Where am I" test skips itself
 unless `make uitest-streetview` passes a frame folder. Set a simulator location first
 (AGENTS.md "Commands") or the route tests fail for want of a GPS fix.
 
 | Query | Exact string | Where it comes from | Used by |
 |---|---|---|---|
-| `buttons[…]` | "Guide", "Sense", "Settings" | `RootTab.title` / `CKTabBar` (icon-only) | labels test (the first three); haptics, mount and cue picker tests open Settings; tour |
+| `buttons[…]` | "Guide", "Details", "Settings" | `RootTab.title` / `CKTabBar` (icon-only; the Details case is still `.sense`) | labels test (the first three); haptics, mount and cue picker tests open Settings; tour |
 | `buttons[…]` | "Profile" | `RootTab.title` / `CKTabBar` (the fourth tab, Step 44) | `testAccessibilityLabelsExist` opens the tab and asserts the Profile label plus its privacy and Medical ID controls |
 | `buttons[…]` | "Start route to CIF" | `GuideCard`, idle | every test waits for it first; tour |
 | `buttons[…]` | "Navigate to CIF from here" | `GuideCard`, idle (its label is its text) | `testNavigateToCIFButtonIsOnTheIdleGuide`: exists and is enabled when idle, gone while a route runs, back after Stop (never tapped: it would request real Apple Maps directions) |

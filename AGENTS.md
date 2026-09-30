@@ -132,8 +132,8 @@ target, path, scheme or bundle id, it is CaneKit. Two traps worth knowing:
 9. **Accessibility labels are a test contract.** The strings in `CaneKitUITests` (Start route to CIF,
    Navigate to CIF from here, Stop route, Repeat, Next, Recenter, Where am I, Go, Test
    left/center/right/head haptic, Silence haptics, Mirror left / right, Write trip log, Head row,
-   Type a destination first, Destination, Simulate walk (`CaneKitIslandTour`), the root tabs Guide / Sense /
-   Settings / Profile (`RootTab.title`; the tests drive the first three), the Cues picker
+   Type a destination first, Destination, Simulate walk (`CaneKitIslandTour`), the root tabs Guide / Details /
+   Settings / Profile (`RootTab.title`; the Details case is still `.sense`; the tests drive the first three), the Cues picker
    segments Quiet / Standard / Detailed / Indoors / Outdoors (`CueLevel.title` / `CuePlace.title`), and a campus
    suggestion's label "Grainger Engineering Library, campus place" —
    `DestinationSuggestion.voiceOverLabel`) must not change without updating the tests in the same

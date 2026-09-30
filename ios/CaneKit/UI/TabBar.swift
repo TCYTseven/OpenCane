@@ -2,8 +2,8 @@
 //  TabBar.swift
 //  CaneKit
 //
-//  Four icon-only root tabs under ContentView: Guide (walk), Sense (obstacles + hazards; nav title
-//  "Details"), Settings (cues, haptics, watch, mount, family alerts), Profile (Medical ID +
+//  Four icon-only root tabs under ContentView: Guide (walk), Details (obstacles + hazards;
+//  the case is still `.sense`), Settings (cues, haptics, watch, mount, family alerts), Profile (Medical ID +
 //  mobility, Step 44). The visible control is an SF Symbol; the word is the
 //  VoiceOver label and the XCUITest `app.buttons[...]` key (docs/design.md §6, §9).
 //
@@ -11,7 +11,7 @@
 //  Tab changes do not speak through SpeechQueue — VoiceOver already announces the selected
 //  button; a spoken cue would double-speak (design.md §7).
 //
-//  Accessibility contract: ⚠ test contract labels "Guide", "Sense", "Settings", "Profile"
+//  Accessibility contract: ⚠ test contract labels "Guide", "Details", "Settings", "Profile"
 //  (CaneKitUITests + CaneKitVisualTour). Hit target ≥ `CKMetrics.touchTarget` (60 pt).
 //
 //  Owner / caller: `ContentView.body` (`CKTabBar(selection: $tab)` under the page).

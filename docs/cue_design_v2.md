@@ -92,7 +92,7 @@
 - The beacon is silent within 10° of course and during crossing settle.
 - Route buzzes are deliberately unlike obstacle taps.
 - The wrist `.failure` pattern is reserved for head height.
-- No earcons.
+- Earcons shipped later (`Earcon.swift`, Step 65). Do not delete them to match this older "no earcons" note. Obstacle warnings stay haptic.
 - Obstacle names never cut route lines.
 
 ---
