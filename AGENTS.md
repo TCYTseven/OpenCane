@@ -240,7 +240,7 @@ Traps that have already cost a run (the first two produced a false green in Step
 
 ## Hardware / OpenSCAD — traps that have already cost us a night
 
-Everything here was paid for with a real mistake on . Read it before touching a `.scad`.
+Everything here was paid for with a real mistake. Read it before touching a `.scad`.
 
 **Never trust an exit code or `Status: NoError`.** OpenSCAD exits **non-zero for EMPTY geometry**,
 which at the shell is indistinguishable from a failed `assert()`. It also exits **zero, reporting

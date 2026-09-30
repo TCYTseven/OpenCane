@@ -1,12 +1,12 @@
 # Route: ISR Townsend Hall to CIF (UIUC, Urbana IL)
 
 Waypoint file: [`ios/CaneKit/Resources/route_isr_cif.json`](../ios/CaneKit/Resources/route_isr_cif.json)
-(route `name` "ISR Townsend Hall to CIF", `recorded` ). The JSON is authoritative; this page
-explains it and keeps the evidence. The tables below were regenerated from the JSON on .
+(route `name` "ISR Townsend Hall to CIF"; the JSON `recorded` field is the capture stamp). The JSON is authoritative; this page
+explains it and keeps the evidence. The tables below were regenerated from that JSON.
 
-Coordinates pulled from OpenStreetMap; start point re-checked against the
+Coordinates were pulled from OpenStreetMap; the start point was re-checked against the
 University Housing ISR site plan and floor plans after the start was fixed as **Townsend Hall**. Step 10
- then changed the file: WP3 became a turn (`crossing: false`), WP3 / WP6 / WP8 got 12 m
+then changed the file: WP3 became a turn (`crossing: false`), WP3 / WP6 / WP8 got 12 m
 fences, WP1 got `curved: true`, every waypoint got a short `name`, and WP6 says "Turn left to face west"
 before the crossing. **Not yet walked or GPS-verified**: see "To re-record on the Friday walk" below.
 
