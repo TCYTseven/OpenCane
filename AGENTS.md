@@ -1,9 +1,9 @@
 # AGENTS.md — rules for anyone (human or AI) editing OpenCane / CaneKit
 
 Read this before touching the repo. `docs/CODE_REFERENCE.md` is the map of every file, type and
-function; `CHANGELOG.md` is the build log; `docs/todo.md` is the strict checklist;
-`docs/devices_setup.md` is the AirPods + Apple Watch checklist; `docs/TEAM_HANDOFF.md` §10 is where
-an agent resumes the open work. When you change code, update its module section in
+function; `CHANGELOG.md` is the short submission note (the step log is in git history);
+`docs/devices_setup.md` is the AirPods + Apple Watch checklist; `docs/DEMO_SCRIPT.md` is the
+two-minute film. When you change code, update its module section in
 `docs/CODE_REFERENCE.md` in the same commit — agents rely on it being true. When this file and the
 shipped code disagree, the code is the truth: fix this file (and say so in `CHANGELOG.md`).
 
@@ -64,7 +64,7 @@ target, path, scheme or bundle id, it is CaneKit. Two traps worth knowing:
 | `ios/project.yml`, `ios/scripts/gen.sh`, `ios/Makefile` | XcodeGen project + CLI build/test/install |
 | `ios/scripts/` | `test.sh` (`make test`), `e2e.py` (`make e2e`, asserts on the trip log), `cue_audit.py` (`make audit`, cue load of one walk), `sign_probe.swift` / `vision_probe.swift` (measure what Vision reads), `streetview/` (`frames.json` + git-ignored JPEGs for `SCENARIO=streetview`), `streetview_stim.py` (run by hand: a demo / dataset visualiser over the Street View frames with its own nav approximation and template narration — runs no CaneKit code, no Makefile target, no tests), `appicon.py`, `launchlogo.py` (Step 69: launch-screen logo + navy colour set from the app icon), `gen.sh` |
 | `ios/stretch/`, `ios/drafts/` | Not in any target. Old ESP32 BLE code and iOS 18 drafts. Leave alone. |
-| `docs/` | `README.md` (index of every doc), `CODE_REFERENCE.md`, `design.md` (UI/cue design system), `cue_design_v2.md` (cue research, Step 35), `auditory-load.md` (speech-load research, Step 30), `handsfree.md` (Siri / Action Button use), `route_isr_cif.md` (route evidence), `stress_test_plan.md`, `devices_setup.md`, `todo.md`, `ideas.md` (history), `TEAM_BRIEF.md` / `TEAM_HANDOFF.md` (dated status snapshots), `superpowers/` (speech-load plan + spec) |
+| `docs/` | `README.md`, `CODE_REFERENCE.md`, `design.md`, `DEMO_SCRIPT.md`, `handsfree.md`, `devices_setup.md`, `cue_design_v2.md`, `UX.md`, `route_isr_cif.md`, `stress_test_plan.md` |
 | `hardware/mount/` | Phone-to-cane mount, screwed: design brief + parametric OpenSCAD (Sagar) |
 | `hardware/mount_screwless/` | Same job, **zero bought hardware**: collet clamp + dovetail modularity. `PRINTING.md` is the operator runbook — read it before sending anything to a printer (Sagar) |
 | `hardware/3d_print_files/` | Print runbook for the screwless mount; local `gcode/` + `stl/` after `scripts/build_stl.ps1` + `slice_gcode.ps1` (gitignored) |

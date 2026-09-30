@@ -45,7 +45,8 @@ struct RootView: View {
     init() {
         let plan = LaunchFlow.splash(reduceMotion: UIAccessibility.isReduceMotionEnabled,
                                      voiceOver: UIAccessibility.isVoiceOverRunning,
-                                     automation: Self.isAutomationLaunch)
+                                     automation: Self.isAutomationLaunch,
+                                     forced: ProcessInfo.processInfo.environment["CANEKIT_SHOW_SPLASH"] == "1")
         _splash = State(initialValue: plan)
         _splashVisible = State(initialValue: plan != .skip)
         let defaults = UserDefaults.standard

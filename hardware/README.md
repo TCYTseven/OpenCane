@@ -17,8 +17,8 @@ the print plan with your own ideas and experience. The app needs only four thing
 the phone upright with the rear camera and LiDAR clear and facing forward; the camera 3–8° below
 the horizon with the cane held normally (the Mount card shows it live); a firm enough grip that the
 phone's buzz is felt in the handle, with nothing magnetic near the phone's bottom edge (compass);
-and the shaft out of the camera's view. The full team context is in
-[`docs/TEAM_HANDOFF.md`](../docs/TEAM_HANDOFF.md).
+and the shaft out of the camera's view. The product overview is the root
+[`README.md`](../README.md).
 
 **Status (2026-09-12, late):** two designs. `mount/` (screwed, this page's quick start) is a
 draft nobody has rendered. `mount_screwless/` is the live one: simulated end to end

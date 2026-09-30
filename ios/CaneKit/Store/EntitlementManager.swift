@@ -118,6 +118,12 @@ final class EntitlementManager {
     /// Idempotent. Caller: `AppModel.configurePremium()` from `RootView`'s launch task.
     func configure() {
         guard listener == nil, access == .checking else { return }
+        // Screenshot tour only. Shows the $49.99 paywall without a RevenueCat key or a purchase.
+        // A walker launch never sets this. Subscribe still needs the real store.
+        if ProcessInfo.processInfo.environment["CANEKIT_PAYWALL_PREVIEW"] == "1" {
+            applyScreenshotOffer()
+            return
+        }
         switch ProcessInfo.processInfo.environment["CANEKIT_PREMIUM"] {
         case "free": setAccess(.free); return
         case "premium": setAccess(.premium); return
@@ -153,6 +159,10 @@ final class EntitlementManager {
 
     /// Loads the `default` offering's annual package for the paywall.
     func loadOffering() async {
+        if ProcessInfo.processInfo.environment["CANEKIT_PAYWALL_PREVIEW"] == "1" {
+            applyScreenshotOffer()
+            return
+        }
         guard Purchases.isConfigured else { offering = .unavailable; return }
         offering = .loading
         do {
@@ -210,6 +220,12 @@ final class EntitlementManager {
         expirationDate = entitlement?.expirationDate
         willRenew = entitlement?.willRenew ?? false
         setAccess(entitlement?.isActive == true ? .premium : .free)
+    }
+
+    /// The paywall a screenshot tour shows. Price matches `OpenCane.storekit` ($49.99/year).
+    private func applyScreenshotOffer() {
+        setAccess(.free)
+        offering = .loaded(PaywallProduct(localizedPrice: "$49.99", localizedPerMonth: "$4.16"))
     }
 
     /// Sets `access` and tells `AppModel` when it actually changed.

@@ -77,7 +77,13 @@
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "9F3A6C18",
-          "introductoryOffer": null,
+          "introductoryOffer": {
+            "internalID": "E7C41B90",
+            "paymentMode": "free",
+            "numberOfPeriods": 1,
+            "subscriptionPeriod": "P1M",
+            "displayPrice": "0.00"
+          },
           "localizations": [
             {
               "description": "Advanced AI object detection, plus Grok Bot and Family Alerts.",

@@ -36,6 +36,10 @@ public enum LaunchFlow {
     public static let reduceMotionHoldSeconds: Double = 0.4
     /// The owner's ceiling: the splash never adds more than this to launch, seconds.
     public static let maxSplashSeconds: Double = 1.0
+    /// `CANEKIT_SHOW_SPLASH=1` only (a screenshot). A walker launch never uses this hold.
+    /// Ceiling: long enough that an XCUITest can capture the splash after `launch()` returns.
+    /// Upgrade path: snap the launch screen asset instead of holding the live splash.
+    public static let screenshotHoldSeconds: Double = 4.0
     /// `UserDefaults` / `@AppStorage` key set once onboarding finishes (Get Started or Skip).
     /// ⚠ Renaming it shows onboarding again to every walker who already finished it.
     public static let onboardingCompletedKey = "onboardingCompleted"
@@ -67,11 +71,15 @@ public enum LaunchFlow {
     ///   - reduceMotion: Settings → Accessibility → Motion → Reduce Motion.
     ///   - voiceOver: VoiceOver is running at launch.
     ///   - automation: an XCUITest, a muted e2e run or a `--demo-route` launch.
-    /// - Returns: `.skip` under VoiceOver or automation; a still `reduceMotionHoldSeconds` cut under
-    ///   Reduce Motion; otherwise `splashHoldSeconds` then a `splashFadeSeconds` fade.
-    ///   Every result is ≤ `maxSplashSeconds` (pinned by `splashNeverHoldsLongerThanASecond`).
-    public static func splash(reduceMotion: Bool, voiceOver: Bool, automation: Bool) -> Splash {
-        if voiceOver || automation { return .skip }
+    ///   - forced: `CANEKIT_SHOW_SPLASH=1`. Holds `screenshotHoldSeconds` with no fade so a
+    ///     screenshot lands. VoiceOver still skips. A walker launch never sets this.
+    /// - Returns: `.skip` under VoiceOver, or under automation unless `forced`; a still
+    ///   `reduceMotionHoldSeconds` cut under Reduce Motion; otherwise `splashHoldSeconds` then a
+    ///   `splashFadeSeconds` fade. Unforced results are ≤ `maxSplashSeconds`.
+    public static func splash(reduceMotion: Bool, voiceOver: Bool, automation: Bool, forced: Bool = false) -> Splash {
+        if voiceOver { return .skip }
+        if forced { return .show(holdSeconds: screenshotHoldSeconds, fadeSeconds: 0) }
+        if automation { return .skip }
         if reduceMotion { return .show(holdSeconds: reduceMotionHoldSeconds, fadeSeconds: 0) }
         return .show(holdSeconds: splashHoldSeconds, fadeSeconds: splashFadeSeconds)
     }

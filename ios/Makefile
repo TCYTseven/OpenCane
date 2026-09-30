@@ -129,7 +129,8 @@ tour: sim-grant
 	mkdir -p $(SHOTS)
 	TEST_RUNNER_CANEKIT_SHOTS=$(abspath $(SHOTS)) \
 	  $(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO \
-	  -only-testing:CaneKitUITests/CaneKitVisualTour test
+	  -only-testing:CaneKitUITests/CaneKitVisualTour \
+	  -only-testing:CaneKitUITests/CaneKitShipatonTour test
 
 # Dynamic Island pictures (CaneKitIslandTour, Step 47): route start → background → compact island,
 # long-press → expanded, a few seconds of simulated walk, then Stop and the island after it. PNGs

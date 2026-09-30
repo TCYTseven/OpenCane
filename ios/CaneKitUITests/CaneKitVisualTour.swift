@@ -180,3 +180,104 @@ final class CaneKitVisualTour: XCTestCase {
         else { toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.5)).tap() }
     }
 }
+
+/// Splash, onboarding, the paywall and the Settings Premium card. Separate from `CaneKitVisualTour`
+/// because those launches set `CANEKIT_SHOW_SPLASH`, `CANEKIT_SHOW_ONBOARDING` and
+/// `CANEKIT_PAYWALL_PREVIEW`, which the Guide tour must not see.
+final class CaneKitShipatonTour: XCTestCase {
+
+    private var shotIndex = 0
+
+    func testShipatonShots() {
+        continueAfterFailure = true
+        let app = XCUIApplication()
+        app.launchEnvironment["CANEKIT_UITEST"] = "1"
+        app.launchEnvironment["CANEKIT_SHOW_SPLASH"] = "1"
+        app.launch()
+        snap(app, "splash")
+        app.terminate()
+
+        app.launchEnvironment.removeValue(forKey: "CANEKIT_SHOW_SPLASH")
+        app.launchEnvironment["CANEKIT_SHOW_ONBOARDING"] = "1"
+        app.launch()
+        XCTAssertTrue(app.buttons["Next"].waitForExistence(timeout: 8))
+        snap(app, "onboarding-1")
+        app.buttons["Next"].tap()
+        pause(0.4); snap(app, "onboarding-2")
+        app.buttons["Next"].tap()
+        pause(0.4); snap(app, "onboarding-3")
+        if app.buttons["Next"].exists { app.buttons["Next"].tap(); pause(0.4) }
+        snap(app, "onboarding-permissions")
+        app.terminate()
+
+        app.launchEnvironment.removeValue(forKey: "CANEKIT_SHOW_ONBOARDING")
+        app.launchEnvironment["CANEKIT_PAYWALL_PREVIEW"] = "1"
+        app.launch()
+        XCTAssertTrue(app.buttons["Start route to CIF"].waitForExistence(timeout: 12))
+        openTab(app, "Details")
+        pause(0.5)
+        let hazard = app.switches["Hazard watch, Premium"]
+        XCTAssertTrue(hazard.waitForExistence(timeout: 6))
+        scrollTo(app, hazard)
+        let knob = hazard.switches.firstMatch
+        if knob.exists, knob != hazard { knob.tap() }
+        else { hazard.tap() }
+        let subscribe = app.buttons["Subscribe"]
+        XCTAssertTrue(subscribe.waitForExistence(timeout: 8))
+        snap(app, "paywall")
+        if app.buttons["Close"].exists { app.buttons["Close"].tap(); pause(0.4) }
+
+        openTab(app, "Guide")
+        scrollTo(app, app.buttons["Start route to CIF"])
+        app.buttons["Start route to CIF"].tap()
+        if app.buttons["Stop route"].waitForExistence(timeout: 10) {
+            openTab(app, "Details")
+            pause(0.4)
+            let locked = app.switches["Hazard watch, Premium"]
+            if locked.waitForExistence(timeout: 4) {
+                scrollTo(app, locked)
+                locked.tap()
+                pause(0.6)
+                snap(app, "paywall-refused-during-walk")
+            }
+            openTab(app, "Guide")
+            let stop = app.buttons["Stop route"]
+            if stop.waitForExistence(timeout: 4) {
+                scrollTo(app, stop)
+                stop.tap()
+            }
+        }
+
+        openTab(app, "Settings")
+        pause(0.5)
+        snap(app, "settings-premium")
+        let see = app.buttons["See OpenCane Premium"].firstMatch
+        if see.waitForExistence(timeout: 4) { see.tap(); pause(0.5); snap(app, "paywall-from-settings") }
+    }
+
+    private func openTab(_ app: XCUIApplication, _ name: String) {
+        let tab = app.buttons[name]
+        if tab.waitForExistence(timeout: 5) { tab.tap() }
+    }
+
+    private func scrollTo(_ app: XCUIApplication, _ element: XCUIElement) {
+        var ups = 0
+        while ups < 6, !(element.exists && element.isHittable) { app.swipeUp(); ups += 1 }
+    }
+
+    private func snap(_ app: XCUIApplication, _ name: String) {
+        shotIndex += 1
+        let png = XCUIScreen.main.screenshot().pngRepresentation
+        let file = String(format: "shipaton-%02d-%@", shotIndex, name)
+        if let dir = ProcessInfo.processInfo.environment["CANEKIT_SHOTS"] {
+            try? png.write(to: URL(fileURLWithPath: dir).appendingPathComponent("\(file).png"))
+        }
+        let a = XCTAttachment(uniformTypeIdentifier: "public.png", name: file, payload: png)
+        a.lifetime = .keepAlways
+        add(a)
+    }
+
+    private func pause(_ s: TimeInterval) {
+        RunLoop.current.run(until: Date().addingTimeInterval(s))
+    }
+}

@@ -100,6 +100,15 @@ struct LaunchFlowTests {
         #expect(!LaunchFlow.showsOnboarding(completed: false, priorInstall: false, automation: true, forced: false))
     }
 
+    /// `CANEKIT_SHOW_SPLASH=1` holds the splash under automation so a screenshot can land.
+    /// VoiceOver still skips. Walker launches do not set `forced`, so they stay under one second.
+    @Test func aScreenshotForceHoldsTheSplashUnderAutomation() {
+        let plan = LaunchFlow.splash(reduceMotion: false, voiceOver: false, automation: true, forced: true)
+        #expect(plan == .show(holdSeconds: LaunchFlow.screenshotHoldSeconds, fadeSeconds: 0))
+        #expect(LaunchFlow.splash(reduceMotion: false, voiceOver: true, automation: true, forced: true) == .skip)
+        #expect(LaunchFlow.screenshotHoldSeconds == 4.0)
+    }
+
     /// `CANEKIT_SHOW_ONBOARDING=1` (a UI test of the pages) wins over both.
     @Test func aForcedRunShowsOnboardingEvenAfterCompletion() {
         #expect(LaunchFlow.showsOnboarding(completed: true, priorInstall: true, automation: true, forced: true))

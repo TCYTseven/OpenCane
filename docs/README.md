@@ -1,18 +1,16 @@
 # Docs index
 
-Every document in the repo, with when to read it. New here, or just pulled? Read these in order:
-[`TEAM_BRIEF.md`](TEAM_BRIEF.md) (2 minutes), [`TEAM_HANDOFF.md`](TEAM_HANDOFF.md), the root
-[`README.md`](../README.md), then [`AGENTS.md`](../AGENTS.md), then [`ios/README.md`](../ios/README.md).
+Every document in the repo, with when to read it. New here, or just pulled? Read the root
+[`README.md`](../README.md), then [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md), then [`AGENTS.md`](../AGENTS.md),
+then [`ios/README.md`](../ios/README.md).
 Open [`CODE_REFERENCE.md`](CODE_REFERENCE.md) when you need a specific file or function, and check
 the top of [`CHANGELOG.md`](../CHANGELOG.md) for what landed most recently (newest first; at the time
 of writing Step 46 is commit `891f558` and Step 47 is the entry above it, Sat 2026-09-12 evening — the
 pin goes stale every push, so trust the file, not this sentence).
 
-**AI agents:** `AGENTS.md` first (hard rules + "How we engineer"), then `TEAM_HANDOFF.md` §10 ("How an
-agent resumes"), then `CODE_REFERENCE.md`, then ask the knowledge graph (`graphify query "<question>"`,
-see the last row of "Where do I find…"). Every status block names the date or commit it was written
-at; the top of `CHANGELOG.md` and the code are the newest truth, and the block at the top of
-`docs/todo.md` is headed "Historical (Fri 2026-09-11)" for that reason.
+**AI agents:** `AGENTS.md` first (hard rules + "How we engineer"), then `CODE_REFERENCE.md`, then
+ask the knowledge graph (`graphify query "<question>"`, see the last row of "Where do I find…").
+The code is the newest truth. The step log that used to live in `CHANGELOG.md` is in git history.
 
 **Precedence:** when documents disagree with each other, `AGENTS.md` wins over
 `docs/CODE_REFERENCE.md`. When any document disagrees with the shipped code, the code wins and the
@@ -35,7 +33,7 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 | [`PRIVACY.md`](../PRIVACY.md) | Step 69: the privacy policy the app links to (Settings → About, the paywall). Lists every way data can leave the phone. Change it in the same commit as any new upload path. |
 | [`LICENSE`](../LICENSE) | MIT (Step 69). Not Markdown; listed so it is not missed. |
 | [`CLAUDE.md`](../CLAUDE.md) | You are Claude Code. It is the short version of `AGENTS.md`, loaded automatically. |
-| [`CHANGELOG.md`](../CHANGELOG.md) | You need to know what landed in each build step, why, how it was reviewed and verified, and its "test on device" list. Newest first. Step numbers 15, 16, 17, 21, 22 and 25 each appear twice, on purpose (see the note under Step 27). Steps 38–46 also share their digits with the cue-v2 *plan* items in `docs/todo.md`, which are written "cue-v2 #38" … "#45" for that reason — a CHANGELOG "Step 41" is hazard telemetry, "cue-v2 #41" is torso haptics (shipped in Step 47). |
+| [`CHANGELOG.md`](../CHANGELOG.md) | Where this submission stands, and the on-device check for the film. The older step log is in git history. |
 | [`.jules/bolt.md`](../.jules/bolt.md) | You are touching SwiftUI views that observe the 30 Hz depth stream. One learning (Step 21): keep high-frequency observed properties in leaf views, not in `ContentView.body`. |
 | [`opencane-hardware-brief.html`](../opencane-hardware-brief.html) | You want the one-page hardware brief in a browser (added in the Step 21 bore-ring commit). For current print instructions use `hardware/3d_print_files/README.md` instead. |
 
@@ -51,22 +49,16 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 
 | Doc | Read it when |
 |---|---|
-| [`docs/TEAM_BRIEF.md`](TEAM_BRIEF.md) | **The 2-minute version, first after every pull** (Sagar, Tommy, Aarav, Tejas): status right now, what changed for you, the setup checklist, each person's tasks, installing on the phone, known quirks. |
-| [`docs/TEAM_HANDOFF.md`](TEAM_HANDOFF.md) | **Second after every pull.** Start here (5 minutes), what is proven and what is not, who does what next, pull / build / install, the mount angle, what is on or off by default and why, the decisions that are final, the Street View mock, how to find anything, how an agent resumes (§10), known risks. |
-| [`docs/CODE_REFERENCE.md`](CODE_REFERENCE.md) | You need to find or change code. It maps every file, type and function by module, with the data-flow diagram and the ⚠ invariants that tests pin. **Update the module's section in the same commit as the code change.** |
+| [`docs/CODE_REFERENCE.md`](CODE_REFERENCE.md) | You need to find or change code. It maps every file, type and function by module, with the data-flow diagram. |
 | [`docs/design.md`](design.md) | You are changing UI, colours or type, or how a cue feels, sounds or shows. §5 maps every cue to its haptic, speech and screen output (§5.1 is speech priorities and the Step 37 talk floor). §6 describes the shipped four-tab layout (Guide / Sense / Settings / Profile; §6.8 is the Profile tab, §6.5 has the Family alerts card). §9 is the accessibility-label contract table. |
 | [`docs/UX.md`](UX.md) | **Before adding a control of any kind.** Why the interface is a conversation and not a screen: what a button costs a blind walker on a cane-mounted phone (§1), the thesis and its five real failure modes (§2), ten checkable rules (§3), the design — one screen, the two-tier grammar, voice-only mode, input redundancy (§4), what would disprove it (§5). `design.md` still wins on tokens and layout; this wins on *whether a thing should be a button at all*. |
-| [`docs/cue_design_v2.md`](cue_design_v2.md) | **Before changing when OpenCane buzzes or speaks.** The Step 35 research (4 researchers + 4 fact-checkers, 74 kept findings): what blind travellers need (§1), where OpenCane violated it (§2), the proposed v2 (§3), the ranked change list (§4), open questions for a blind tester (§5), sources, and an addendum measured on the first field log. Numbers marked **[H]** are hypotheses. The approved plan (items cue-v2 #35–#45 — plan numbers, not CHANGELOG steps) is in `docs/todo.md` → "Cue design v2". |
+| [`docs/cue_design_v2.md`](cue_design_v2.md) | **Before changing when OpenCane buzzes or speaks.** The Step 35 research: what blind travellers need, where OpenCane violated it, and the proposed calmer cues. Numbers marked **[H]** are hypotheses. |
 | [`docs/auditory-load.md`](auditory-load.md) | You are adding or tuning any automatic sound. The Step 30 short research note on blind auditory overload, what OpenCane does about each point, and the open questions for tester walks. `cue_design_v2.md` is the later, fuller research. |
 | [`docs/handsfree.md`](handsfree.md) | **You are the walker, or setting the phone up for one.** Every spoken command, what the status answer means, the Settings path for the Action button (and why a locked phone asks to unlock first), what the AirPods stem and Back Tap cannot do, asking a question, and what still needs the screen. |
 | [`docs/DEMO_SCRIPT.md`](DEMO_SCRIPT.md) | Step 69: you are recording the two-minute Shipaton video (splash, onboarding, a walk, the paywall, a test purchase, the unlocked feature), with a pre-flight list and backups. |
 | [`docs/devices_setup.md`](devices_setup.md) | Before touching the AirPods or the Apple Watch, and before the untethered demo: pairing, Spatial Audio off, the watch app, the voice cache, Guided Access, on-device vision and a symptom → fix table. |
 | [`docs/route_isr_cif.md`](route_isr_cif.md) | You are editing `route_isr_cif.json` or re-recording the route on foot. It covers the evidence for every waypoint, OSM node IDs, and which points are still unverified. |
 | [`docs/stress_test_plan.md`](stress_test_plan.md) | You are planning device and field tests: facts from the code that change how you test (§0), test levels, the device test matrix (D-tests), failure injection (F-tests), the blindfolded go/no-go checklist and the demo run sheet. |
-| [`docs/todo.md`](todo.md) | You want to know what is still open. The strict build checklist, including the "Cue design v2 — items cue-v2 #35–#45" plan and one "## Step N" block per shipped step; tick it in the same commit. Its top block is a historical snapshot dated Fri 2026-09-11 and says so. |
-| [`docs/ideas.md`](ideas.md) | You want the reasoning: the verdict, the pushbacks, the pitch script, prior art and the numbers. **§9 is the decision that stands (phone-only, buy nothing).** The rest is history, with inline status markers. |
-| [`docs/superpowers/specs/2026-09-12-speech-load-design.md`](superpowers/specs/2026-09-12-speech-load-design.md) | You are touching optional speech (obstacle names, scene detail) and want the approved design for `SpeechLoadPolicy`: what may be suppressed and what never is. |
-| [`docs/superpowers/plans/2026-09-12-speech-load.md`](superpowers/plans/2026-09-12-speech-load.md) | Same topic, as the task-by-task implementation plan. It landed in commit `6bac446` (Steps 29–33: `SpeechLoadPolicy.swift` + `SpeechLoadPolicyTests.swift`); its checkboxes were never ticked, so read it as history, not as open work. |
 | [`docs/README.md`](README.md) | This file. |
 
 ### Hardware (the printed mount)
@@ -120,5 +112,5 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 | **Mount angle** | `MountTilt` in `ios/Logic/Sources/CaneKitLogic/LaneReport.swift`; live on the Mount card; derivation in `hardware/mount/DESIGN.md`. |
 | **Street View mock** | `ios/CaneKit/Depth/FrameReplay.swift`, `ios/scripts/streetview/`, `ios/scripts/vision_probe.swift`, `ios/scripts/sign_probe.swift`, `make uitest-streetview`, `make e2e SCENARIO=streetview`. Not the app: `ios/scripts/streetview_stim.py` (commit `d775d4b`, run by hand) is a stand-alone visualiser over the same frames with its own approximate navigation and template narration. |
 | **Project / targets / Info.plist / entitlements** | `ios/project.yml` (XcodeGen). Regenerate with `make gen` only when `project.yml` or the file list changed. Never hand-edit `CaneKit.xcodeproj`. |
-| **What's left to do** | [`todo.md`](todo.md) (the "Cue design v2 — items cue-v2 #35–#45" section is the live plan; the "## Step N" blocks near the end hold each shipped step's unticked device checks). The latest `CHANGELOG.md` entry lists its device checks; older entries keep their historical test notes. |
+| **Open work** | Git history holds the old step checklist. What to film is [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). |
 | **The knowledge graph** | `graphify-out/` at the repo root (`GRAPH_REPORT.md` lists the communities; `graph.html` opens in a browser; `graph.json` is the data). Ask it from the repo root with `graphify query "<question>"`, `graphify path "A" "B"` or `graphify explain "X"`. After code changes, refresh it with `graphify update .` (code only) or `/graphify . --update` in Claude Code. Install once with `uv tool install graphifyy` (the build Mac has graphifyy 0.9.44). |
