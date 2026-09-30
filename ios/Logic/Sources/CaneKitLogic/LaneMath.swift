@@ -17,7 +17,7 @@
 //      above the ground, `h = cameraHeight + depth · g(u, v)`, where `g` comes from the world-up
 //      row of ARKit's camera transform (`LaneGeometry`, the same back-projection as
 //      `GroundSampler`). Floor (< 25 cm) is dropped, 25–140 cm is torso, ≥ 140 cm is head. The
-//      heights are integer centimetres (owner decision 2026-09-13); the depths stay metres.
+// heights are integer centimetres (owner decision); the depths stay metres.
 //      A cell the camera cannot see at head height (the cane holds the phone ~45° down; at that
 //      pitch nothing above ~0.6 m is in view at 1.5 m) reports `.infinity` AND `headCoverage`
 //      false — never NaN or −1, so every `.infinity == clear` consumer behaves unchanged and only
@@ -123,7 +123,7 @@ public struct LaneGeometry: Sendable, Equatable {
 
     /// Height above the ground, in centimetres, of the sample at `(u, v)` with z-depth `depthM`
     /// metres from a camera `cameraHeightCm` above the ground. The one place the metre depth is
-    /// converted (owner decision 2026-09-13: the geometry works in integer-clean centimetres).
+    /// converted (owner decision: the geometry works in integer-clean centimetres).
     /// Pinned by `heightIsLinearInDepth`.
     @inline(__always)
     public func heightCm(u: Int, v: Int, depthM: Float, cameraHeightCm: Float) -> Float {
@@ -167,7 +167,7 @@ public struct LaneConfig: Sendable, Equatable {
     public var closeOverrideThreshold: Float = 0.35
     /// Metric mode: camera height above the ground, centimetres. The cane mount holds the phone
     /// at ≈ 95 cm (hardware/mount/DESIGN.md §4 measured 0.97 m on the prototype); a constant
-    /// tonight — calibrating it from the ground plane is in docs/todo.md.
+    /// tonight — calibrating it from the ground plane is in the code comment.
     public var cameraHeightCm: Float = 95
     /// Metric mode: a sample lower than this is floor / kerb / cane tip and is dropped from both
     /// bands (the ground detector owns what is under 25 cm). ADA ramps and a ±15 cm camera-height

@@ -5,7 +5,7 @@
 //  The list of family email addresses the Grok Bot routine should alert, and the one-off
 //  registration event that hands it over.
 //
-//  How the two halves fit together (bot contract, 2026-09-12):
+// How the two halves fit together (bot contract,):
 //    1. The walker edits the list in Settings → OpenCane POSTs one `family_contacts` event with
 //       `emails: string[]`. The bot stores the list. `send_test: true` asks it to email each
 //       address a short "you are on the OpenCane alert list" note.

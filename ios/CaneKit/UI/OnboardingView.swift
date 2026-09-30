@@ -250,7 +250,7 @@ struct PermissionsPanel: View {
 /// Reads and requests the three onboarding permissions. Main actor (project default); every
 /// system callback is a `@Sendable` closure that hops back with `Task { @MainActor in … }` — the
 /// SDK may call them on any thread, and an inferred-`@MainActor` closure called off-main traps
-/// (the mechanism behind the 2026-09-12 crash reports; see `VoiceInputEngine`).
+/// (the mechanism behind the crash reports; see `VoiceInputEngine`).
 @Observable
 final class PermissionCenter {
     /// Camera (ARKit / LiDAR obstacle detection).

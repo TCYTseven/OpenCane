@@ -24,7 +24,7 @@
 //      keep them aligned so stationary drift does not dominate the arrival distance.
 //    · HealthKit wins over the pedometer whenever it reports a count (it merges the watch).
 //    · ⚠ The pedometer handler must stay explicitly `@Sendable`: an inferred `@MainActor` closure
-//      called on CoreMotion's queue trapped the app (crash 2026-09-11 21:50). The HealthKit
+// called on CoreMotion's queue trapped the app (crash). The HealthKit
 //      handlers only extract values and hop (or resume a continuation); keep them that way.
 //  Tests: none (app target: HealthKit / CoreMotion). The summary wording has no test either;
 //  verify with the arrival card ("CIF … meters, minutes, steps") on a device walk.
@@ -219,7 +219,7 @@ final class TripTracker {
     /// (CMPedometer.h), so without it the closure is inferred `@MainActor` under the module's
     /// default isolation and the runtime traps (`swift_task_isCurrentExecutor` →
     /// `_dispatch_assert_queue_fail`) when CoreMotion calls it on `CMPedometerUpdateQueue`
-    /// (crash 2026-09-11 21:50). The body only extracts Sendable values before hopping to main.
+    /// (crash). The body only extracts Sendable values before hopping to main.
     private func startPedometer(from start: Date, generation: UInt64) {
         guard CMPedometer.isStepCountingAvailable() else { return }
         pedometer.startUpdates(from: start) { @Sendable [weak self] data, error in

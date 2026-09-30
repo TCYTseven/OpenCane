@@ -17,7 +17,7 @@
  * Fail-safe: no BLE connection for 5 s and ToF present -> LOCAL mode: buzz both
  * motors on drop-off (> baseline+250 mm) or step-up (< 60 % baseline).
  *
- * STATUS: stretch / history only. Cut on 2026-09-10 when the project went phone-only (AGENTS.md
+ * STATUS: stretch / history only. Cut on when the project went phone-only (AGENTS.md
  * "What this is": no ESP32, no external sensors). The shipping iOS app never talks to it; the
  * only client ever written is ios/stretch/CaneBLE.swift (not in any target), which speaks this
  * exact protocol. Kept so the grip can be revived; the drafts for its housing are cad/.

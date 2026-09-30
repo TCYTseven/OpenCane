@@ -191,7 +191,7 @@ targets:
         # With Always, iOS draws no blue background-location pill in the Dynamic Island while a route
         # runs with the screen locked, so OpenCane's own Live Activity owns the island the way Apple
         # Maps / Google Maps do; with When In Use only, the pill is mandatory and the activity is
-        # pushed into the minimal bubble (owner's phone pictures, 2026-09-12 21:48).
+        # pushed into the minimal bubble (owner's phone pictures,).
         NSLocationAlwaysAndWhenInUseUsageDescription: "OpenCane keeps guiding you with the screen locked. Always lets it do that without the blue location banner covering its own route card."
         NSMotionUsageDescription: "OpenCane uses motion to tell when the cane is sweeping, to track your head direction with AirPods, and to count steps."
         # Spoken commands: the push-to-talk / conversational assistant (VoiceInputEngine).

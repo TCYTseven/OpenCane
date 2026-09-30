@@ -40,7 +40,7 @@ enum RootTab: Int, CaseIterable, Identifiable, Hashable {
     var title: String {
         switch self {
         case .guide: "Guide"
-        case .sense: "Details"      // UI audit 2026-09-13: was "Sense"; now matches the page title
+        case .sense: "Details"      // UI audit: was "Sense"; now matches the page title
         case .settings: "Settings"
         case .profile: "Profile"
         }
@@ -97,7 +97,7 @@ struct CKTabBar: View {
     /// container "OpenCane tabs"; a `.selection` haptic on every change of `selection` (the only
     /// app-owned haptic besides the big-button press).
     ///
-    /// UI audit 2026-09-13: the surface now runs down under the home indicator
+    /// UI audit: the surface now runs down under the home indicator
     /// (`ignoresSafeArea(edges: .bottom)`), so there is no ivory strip below the bar on Face ID
     /// phones and the bar still sits clear of the indicator; on a Home-button phone (no bottom
     /// inset) the `xs` padding keeps it off the edge. Four equal columns fit every iPhone width.
@@ -139,7 +139,7 @@ struct CKTabBar: View {
                 withAnimation(Self.pillTravel()) { selection = tab }
             }
         } label: {
-            // UI audit 2026-09-13: a short visible word under each symbol (the icon-only bar made
+            // UI audit: a short visible word under each symbol (the icon-only bar made
             // sighted helpers guess which grid icon was which). The word is `tab.title`, the same
             // string VoiceOver reads, so what is seen and what is heard never differ.
             VStack(spacing: 2) {

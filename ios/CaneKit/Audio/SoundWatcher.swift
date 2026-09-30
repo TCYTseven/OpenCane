@@ -17,7 +17,7 @@
 //  sounds" but publishes no list of the strings, and `SNClassifySoundRequest.knownClassifications`
 //  is the documented way to get them. `start()` intersects `SoundAlerts.candidateLabels` with that
 //  array and matches only labels this iOS version actually has, logging both the matches and the
-//  misses as `sound_watch_labels`. Measured on the iPhone 17 Pro Max / iOS 27 (2026-09-11,
+// misses as `sound_watch_labels`. Measured on the iPhone 17 Pro Max / iOS 27 (
 //  trip-log `probe_f_sound_labels`): 303 known labels, of which these exist — siren,
 //  police_siren, ambulance_siren, fire_engine_siren, civil_defense_siren, emergency_vehicle,
 //  car_horn, air_horn, train_horn, bicycle_bell, car_passing_by, traffic_noise, engine,

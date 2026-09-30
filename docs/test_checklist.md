@@ -1,4 +1,4 @@
-# OpenCane — device test checklist (Sun Sep 13)
+# OpenCane — device test checklist 
 
 Tick each box on the phone (iPhone 17 Pro Max, unlocked, USB or not). Pull a trip log after each block:
 `cd ios && make audit` (copies the newest `canekit-*.jsonl`). ✅ pass · ❌ fail (write what happened).

@@ -1,6 +1,6 @@
 // cane_mount.scad - OpenCane / CaneKit: iPhone 17 Pro Max on a 28.75 mm non-metal cane.
 //
-// STATUS: NOT RENDERED. Written 2026-09-11 on a machine without OpenSCAD, so nobody has pressed
+// STATUS: NOT RENDERED. Written on a machine without OpenSCAD, so nobody has pressed
 // F5 on this file yet. Before printing anything:
 //   1. Open in OpenSCAD 2021.01 or newer (a 2024+ development snapshot with the Manifold backend
 //      renders about 100x faster). Fix any syntax error it reports (none are expected).
@@ -11,7 +11,7 @@
 // Design brief and every number's source: hardware/mount/DESIGN.md.
 // Phone numbers: Apple "iPhone 17 Pro Max - Tech Specs" (support.apple.com/en-us/125091) and
 // Apple's dimensional drawing (developer.apple.com/accessories -> Dimensional Drawings,
-// iphone-17-pro-max.pdf, dated 2025-09-09). Values marked MEASURE were scaled off that drawing or
+// iphone-17-pro-max.pdf, dated). Values marked MEASURE were scaled off that drawing or
 // are not on it: check them with calipers on the real phone before the final print.
 //
 // Parts (set `part`):
@@ -41,10 +41,10 @@ world_view = true;
 
 /* [Cane] */
 // MEASURED 27.65 by the bore coupons in hardware/mount_screwless/,
-// 2026-09-12, and independently by dial caliper on Sep 11. The 28.75
+//, and independently by dial caliper on. The 28.75
 // here was 1.132 in read off the wrong part of a tapered cane; a collar
 // bored for it has 1.10 mm of clearance and spins on the shaft. Changed
-// 2026-09-12. Do not put 28.75 back without a ring that proves it.
+//. Do not put 28.75 back without a ring that proves it.
 pole_d       = 27.65;  // mm, stick diameter at the collar spot. MEASURED.
 bore_clear   = 0.3;    // mm, added to the bore DIAMETER. Retune from test_coupons.scad bore rings.
 collar_len   = 44;     // mm, collar length along the cane. Keep = 2 x ear_disc_r so it prints flat.

@@ -6,7 +6,7 @@
 //  return a low-confidence distance (Step 38 handles that band down to 5 cm) — it returns 0 or NaN.
 //  `LaneMath` counts those as *blind* samples and reports the blind fraction per cell; a cell that
 //  is mostly blind has no distance, so it came back `.infinity`, and `.infinity` renders CLEAR in
-//  green with silence. A teammate's photo (Sat 2026-09-12, 22:44: phone against a wall, six green
+// green with silence. A teammate's photo (: phone against a wall, six green
 //  CLEAR tiles, "Depth OK") is the bug; `pointBlankLowConfidenceObstacleIsDetected` never covered
 //  it because its samples were finite.
 //

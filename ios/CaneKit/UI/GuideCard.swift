@@ -69,7 +69,7 @@ struct GuideCard: View {
     /// start, Navigate to CIF from here, Simulate walk, the route-start status, `DestinationField`);
     /// last, the route / location error line.
     ///
-    /// UI audit 2026-09-13: one tall card became a stack of focused pieces — a status card
+    /// UI audit: one tall card became a stack of focused pieces — a status card
     /// (instruction, distance, pills), the microphone and the compact row on the page ground, then
     /// a "Where to" card (idle: destination field first, then Navigate to CIF from here and
     /// Simulate walk) or a "Route tools" card (navigating / indoors). Labels, actions and the focus
@@ -253,7 +253,7 @@ struct GuideCard: View {
         }
     }
 
-    /// "Where to" card on the idle Guide. Order (owner request 2026-09-13): the destination field
+    /// "Where to" card on the idle Guide. Order (owner request): the destination field
     /// first, then Navigate to CIF from here, then Simulate walk.
     private var whereToCard: some View {
         CKCard(title: "Where to", systemImage: "mappin.and.ellipse") {

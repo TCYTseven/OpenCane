@@ -7,7 +7,7 @@
 //  with tests.
 //
 //  ⚠ **Unvalidated.** The thresholds have never been checked against a real cane going over; see
-//  FallDetector.swift and docs/todo.md. It is on by default because the owner asked for falls to
+// FallDetector.swift and the code comment. It is on by default because the owner asked for falls to
 //  be reported, but the first job on a real device is to drop a cane a few times with the trip log
 //  running and re-derive the numbers.
 //

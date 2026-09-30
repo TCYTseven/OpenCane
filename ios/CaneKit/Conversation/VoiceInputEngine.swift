@@ -45,7 +45,7 @@
 //      values into a main-actor hop (hard rule 1), mirroring `SoundResultsRelay`.
 //    · ⚠ Every framework callback closure formed in a main-actor method must be `@Sendable` (or be
 //      formed in a nonisolated relay): an inferred `@MainActor` closure invoked off main traps
-//      (Step 24 physical-device crash; 23 crash reports pulled on 2026-09-12).
+// (Step 24 physical-device crash; 23 crash reports pulled on).
 //
 //  Tests: the numbers are in CaneKitLogic — `UtteranceEndTests` (1.5 s silence, 10 s cap, 0.25 s
 //  tick), `SoundAlertsTests` (`MicrophoneStart` format retry), `SelfHearFilterTests` (3 s window,
@@ -402,7 +402,7 @@ final class VoiceInputEngine {
             // ⚠ `@Sendable`: the SDK says this block "may be called in a different thread
             // context" and its type is not NS_SWIFT_SENDABLE, so without it the closure is
             // inferred @MainActor and would trap off-main (the mechanism behind all 23 crash
-            // reports pulled from the phone on 2026-09-12; see SoundWatcher / TripTracker).
+            // reports pulled from the phone on; see SoundWatcher / TripTracker).
             AVAudioApplication.requestRecordPermission { @Sendable [weak self] granted in
                 Task { @MainActor [weak self] in
                     guard let self, self.pendingPermissionGeneration == permissionGeneration else { return }

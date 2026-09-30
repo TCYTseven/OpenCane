@@ -6,14 +6,14 @@
 //
 //  Why this file exists (Step 53): `SpeechQueue.speakNow` used to choose a backend inline — key,
 //  cache, warning priority, an `immediate` flag, a 60 s timestamp — and nothing wrote the choice
-//  down. The first cane-mounted walk (2026-09-13) alternated between the ElevenLabs voice and
+// down. The first cane-mounted walk alternated between the ElevenLabs voice and
 //  Apple's every few lines and the trip log could not say which line took which path, let alone
 //  why. The decision is now a pure function whose result is logged on every `speech_dispatch`
 //  record (`engine`, `engine_reason`) and, when it was a race, resolved by a `speech_engine`
 //  record (`race_won` / `race_timeout` / `race_failed`, `wait_ms`). `ios/scripts/cue_audit.py`
 //  counts engine flips from those fields.
 //
-//  The rules (owner decision 2026-09-13, "ElevenLabs is the one voice for everything"):
+// The rules (owner decision, "ElevenLabs is the one voice for everything"):
 //    · muted automation → no sound at all;
 //    · no key → system voice (hard rule 4: no key, no crash, no silence);
 //    · the Settings picker on System → system voice (the founder's valve at a venue with bad Wi-Fi);
@@ -83,7 +83,7 @@ public enum VoiceEngineReason: String, Sendable, Equatable, CaseIterable {
     /// ElevenLabs refused the key: quota used up (HTTP 401 `quota_exceeded`), a revoked key, or a
     /// voice / model the account cannot use (401 / 403 / 422, `VoicePrefetch.isFatal`). The whole
     /// session then speaks in the system voice — cached lines too — so the walker hears one voice,
-    /// not the natural voice for old lines and Apple's for new ones (first-launch report, 2026-09-13).
+    /// not the natural voice for old lines and Apple's for new ones (first-launch report,).
     case naturalUnavailable = "natural_unavailable"
 }
 

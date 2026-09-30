@@ -4,7 +4,7 @@
 //
 //  The latency budget of one cloud conversation turn, and the latest-wins rule (Step 57).
 //
-//  Why this exists: on the first cane-mounted walk (2026-09-13) cloud turns took 6–17 s with no
+// Why this exists: on the first cane-mounted walk cloud turns took 6–17 s with no
 //  bound, a second question during one was dropped, and the walker heard "Still working on your
 //  last question." several times. A blind walker cannot see a spinner: silence past a second or
 //  two reads as "it did not hear me", so they ask again — and the app must then answer the *new*
@@ -20,7 +20,7 @@
 //    · At `budget` the turn times out exactly once; afterwards the turn is not in flight and a late
 //      completion is refused (`timeoutAtEightSeconds`).
 //    · Step 67: 8 s, not 4. Every cloud answer logged so far took 6–17 s (first walk, and
-//      `canekit-2026-09-13T15-48-34Z.jsonl`), so 4 s made every open question "No answer.". Spoken
+// a trip log), so 4 s made every open question "No answer.". Spoken
 //      destinations no longer reach the cloud (`FastPathIntentClassifier` rule 14b), so the only
 //      turns that wait this long are real questions.
 //    · `begin` while a turn is in flight supersedes it: the old id is refused forever

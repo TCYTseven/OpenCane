@@ -4,7 +4,7 @@
 //
 //  The JSON object behind every line of the trip log: `t`, `kind`, then the event's fields.
 //  Moved out of the app's `TripLogger.event` so the rule "a field can never replace the record's
-//  own `t` or `kind`" is testable. The phone log of 2026-09-11 showed why: AppModel logged cue and
+// own `t` or `kind`" is testable. The phone log of showed why: AppModel logged cue and
 //  hazard events with a field named "kind", which replaced the record kind ("hazard" → "sign"),
 //  so tooling looking for `kind == "hazard"` found nothing.
 //

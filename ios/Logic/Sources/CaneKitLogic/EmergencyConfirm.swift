@@ -135,7 +135,7 @@ public struct EmergencyConfirm: Sendable, Equatable {
     /// Poll from a ticker: true exactly once when a pending prompt's window has lapsed with no
     /// answer (speak `canceledLine`). Pinned by `expiryIsReportedOnce`.
     /// - Parameter now: the caller's clock.
-    /// The microphone opened for the answer: the window restarts now (review 2026-09-13,
+    /// The microphone opened for the answer: the window restarts now (review,
     /// Antigravity + OpenCode). The prompt itself takes ~4–7 s to speak (a race plus the read-back
     /// number), which left the walker a second or two — or nothing — of the 8 s window. No-op when
     /// nothing is pending. Pinned by `answerWindowRestartsWhenTheMicrophoneOpens`.

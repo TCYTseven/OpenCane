@@ -3,7 +3,7 @@
 //  CaneKit
 //
 //  Shown once the last waypoint fires: distance, minutes, steps — the "fitness hook without a
-//  fitness app" (docs/ideas.md §5.4). Also visible while walking so the teammate sees the trip.
+// fitness app" (the arrival summary). Also visible while walking so the teammate sees the trip.
 //
 //  Implements docs/design.md §6.4 (Arrival card: three tabular stats). Deviation: it is an inline
 //  card on the root scroll view (titled "This trip" while walking, "Arrived" after), not a sheet,

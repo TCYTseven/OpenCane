@@ -1,4 +1,4 @@
-# Two-minute demo script (RevenueCat Shipaton 2026)
+# Two-minute demo script (RevenueCat Shipaton)
 
 The video judges watch: splash, onboarding, a real walk with obstacle detection, a tap on a
 Premium feature, the paywall, a test purchase, and the unlocked feature working. Times are

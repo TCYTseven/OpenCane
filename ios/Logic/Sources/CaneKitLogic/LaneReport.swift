@@ -291,7 +291,7 @@ public enum TileLevel: Sendable {
 /// Publish-rate cap for depth reports. ARKit delivers frames every 1/30 s (or 1/60 s); a plain
 /// `now − last ≥ 1/15` check fails by floating-point hair on the second 33.3 ms frame (66.66 ms <
 /// 66.67 ms) and waits for the third, so a 15 Hz cap ran at exactly 10 Hz on the real iPhone
-/// (first device run, 2026-09-11). A small tolerance (a quarter of a 60 Hz frame) fixes it.
+/// (first device run,). A small tolerance (a quarter of a 60 Hz frame) fixes it.
 /// Pinned by `publishGateHitsFifteenHertzFromThirtyHertzFrames`.
 public struct PublishGate: Sendable {
     /// Cap in Hz. `DepthFrameProcessor` rewrites it on every frame from `ProcessorSettings.maxRate`

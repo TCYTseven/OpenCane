@@ -13,7 +13,7 @@
 //      rule 1b) for the indoor-then-outdoor walk (`IndoorRoute.swift`).
 //    · Step 67: rule 14b — a travel verb anywhere in the sentence ("I just wanna get from here to
 //      Granger library", "how do I get to CIF", "can you take me to the Union please") routes on the
-//      phone. Spoken destinations never go to the cloud: on `canekit-2026-09-13T15-48-34Z.jsonl` that
+// phone. Spoken destinations never go to the cloud: on a trip log that
 //      sentence missed every rule, the cloud turn hit its budget and the walker heard "No answer.".
 //    · Review round Steps 67–68 (Codex, Muse, Antigravity): rule 1 drops polite fillers ("please
 //      stop"); rule 1c sends any whole-word "emergency" / "911" to the emergency confirmation before

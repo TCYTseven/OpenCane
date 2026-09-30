@@ -2,9 +2,9 @@
 // Clamps a 12.7 mm cane shaft, aims the sensor down-forward at the ground ahead.
 // DRAFT: unrendered. Verify the sensor pocket against your actual breakout.
 // Print: PETG, hood opening up, may need supports under the hood lip.
-// LEGACY (ESP32 era, cut 2026-09-10 when the app went phone-only): do not print for the demo.
+// LEGACY (ESP32 era, cut when the app went phone-only): do not print for the demo.
 // Sized for a 12.7 mm aluminium/graphite shaft; the prototype stick is 27.65 mm (measured
-// 2026-09-12), so nothing here fits it. The live mount is hardware/mount_screwless/ (see
+//), so nothing here fits it. The live mount is hardware/mount_screwless/ (see
 // cad/README.md and hardware/README.md). Not rendered by any script (scripts/build_stl.ps1 covers
 // hardware/ only); no tests; no owner on the current team. Units: millimetres throughout.
 // Why it existed: the VL53L1X ground-distance sensor for the grip firmware's local drop-off /

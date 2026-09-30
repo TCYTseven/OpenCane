@@ -170,7 +170,7 @@ final class HapticPlayer {
                 // ⚠ Both handlers must stay `@Sendable`: `CHHapticEngineResetHandler` /
                 // `StoppedHandler` are not `NS_SWIFT_SENDABLE` and CHHapticEngine.h says
                 // "callbacks arrive on a non-main thread"; without it they would be inferred
-                // `@MainActor` (the isolation trap behind the 2026-09-11 pedometer crash).
+                // `@MainActor` (the isolation trap behind the pedometer crash).
                 e.resetHandler = { @Sendable [weak self] in
                     // Media server reset: the engine must be restarted and players rebuilt.
                     Task { @MainActor [weak self] in self?.rebuildAfterReset() }

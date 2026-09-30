@@ -35,7 +35,7 @@
 //      mishearings are added as exact aliases instead ("Granger Library", "C I F"; Step 67).
 //    · ⚠ CIF and ISR coordinates are the last / first waypoint of route_isr_cif.json
 //      (`gazetteerEndpointsAreTheRouteFileEntrances`). The other entrances are OSM entrance nodes
-//      queried 2026-09-11 and have NOT been walked: verify on site.
+// queried and have NOT been walked: verify on site.
 //    · Every `name` is itself an alias (`everyCampusPlaceNameRoundTripsThroughMatch`, Step 62).
 //    · ⚠ The ids are the raw values of the app's `CampusDestination` AppEnum
 //      (`campusPlaceIdsArePinned`): rename both together.
@@ -82,7 +82,7 @@ public enum CampusPlaces {
 
     /// Every known place, in the order the app's AppEnum lists them.
     /// Sources: CIF / ISR = route_isr_cif.json waypoints 9 / 1; the rest are OpenStreetMap
-    /// entrance nodes (Overpass, queried 2026-09-11), verify on site before relying on them.
+    /// entrance nodes (Overpass, queried), verify on site before relying on them.
     public static let all: [CampusPlace] = [
         CampusPlace(id: "cif", name: "the CIF east entrance",
                     // route_isr_cif.json WP9 (the demo route's arrival point).
@@ -102,7 +102,7 @@ public enum CampusPlaces {
                     // OSM entrance node 5296014632, Springfield Avenue side. Verify on site.
                     coordinate: Coordinate(latitude: 40.1125612, longitude: -88.2272830),
                     // "Granger" is the common speech-recognition mishearing of "Grainger"
-                    // (phone log 2026-09-13T15-48-34Z: "… to Granger library"). Step 67 adds the
+                    // (phone log: "… to Granger library"). Step 67 adds the
                     // longer mishearings. ⚠ Not "library" alone: that is also the Main Library.
                     aliases: ["Grainger", "Grainger Library", "Grainger Engineering Library",
                               "Grainger Engineering Library Information Center",

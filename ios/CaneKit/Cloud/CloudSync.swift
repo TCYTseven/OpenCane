@@ -199,7 +199,7 @@ final class CloudSync {
     ///
     /// ⚠ A route can start before `register_cane` has returned — on a cold launch the walker can
     /// press Start in well under the round trip, and the e2e scenarios do it every run. Measured
-    /// 2026-09-13: an e2e walk wrote zero `trips`, because this method used to `guard let
+    ///: an e2e walk wrote zero `trips`, because this method used to `guard let
     /// walkerID` and give up. The open is therefore *deferred*, not dropped: it is held until
     /// registration lands and then sent with the start time it actually had.
     func beginTrip(destination: String?, cueLevel: String, cuePlace: String, batteryPct: Int,

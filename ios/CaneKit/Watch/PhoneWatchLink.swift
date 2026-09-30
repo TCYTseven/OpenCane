@@ -177,7 +177,7 @@ final class PhoneWatchLink {
     /// set `lastError` (only the error's text crosses — `Error` is not Sendable).
     /// ⚠ `@Sendable` is required: WCSession's `errorHandler` block is not `NS_SWIFT_SENDABLE`
     /// (WCSession.h), so without it the closure is inferred `@MainActor` and the runtime traps
-    /// when WatchConnectivity invokes it on its own queue (same mechanism as the 2026-09-11
+    /// when WatchConnectivity invokes it on its own queue (same mechanism as the 
     /// pedometer crash; the watch side already does this in `WatchModel.send`).
     private func deliver(_ dict: [String: Any], session: WCSession) {
         session.sendMessage(dict, replyHandler: nil) { @Sendable [weak self] error in

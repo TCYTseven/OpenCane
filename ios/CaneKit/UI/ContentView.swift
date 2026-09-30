@@ -79,7 +79,7 @@ struct ContentView: View {
                     .frame(height: keyboardUp ? 0 : nil)
                     .opacity(keyboardUp ? 0 : 1)
                     .clipped()
-                    // UI audit 2026-09-13: the bar's fill runs under the home indicator. Drawn here,
+                    // UI audit: the bar's fill runs under the home indicator. Drawn here,
                     // after `.clipped()`, because the clip cut the bar's own safe-area background
                     // and left an ivory strip under the tabs on Face ID iPhones.
                     .background {
@@ -480,7 +480,7 @@ private struct SettingsPage: View {
     /// Cues first (the settings a walker changes most), then Haptics, Voice (Step 53), Watch, Mount,
     /// Family alerts, Record indoor route (Step 62), This phone.
     ///
-    /// UI audit 2026-09-13: two labelled groups. "Everyday" holds what a walker or family member
+    /// UI audit: two labelled groups. "Everyday" holds what a walker or family member
     /// changes (Alerts, Voice, Phone on cane, Family alerts); the second group holds the kit
     /// checks (Vibration, Watch, Record an indoor route, This phone). The
     /// XCUITest labels are unchanged; `testHapticTestButtonsAndSilenceToggle` taps elements (which
@@ -594,7 +594,7 @@ private struct SettingsPage: View {
                 .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
             CKRowDivider()
-            // Moved here from the Haptics card (UI audit 2026-09-13): it is an everyday alert
+            // Moved here from the Haptics card (UI audit): it is an everyday alert
             // setting, and the caption above refers to it.
             CKToggleRow(title: "Speak obstacle names",
                         subtitle: "Says “door”, “seat” or “table” when one is straight ahead",
@@ -605,7 +605,7 @@ private struct SettingsPage: View {
         .foregroundStyle(CKColor.textPrimary)
     }
 
-    /// "Voice" card (Step 53; owner decision 2026-09-13 "ElevenLabs is the one voice for everything").
+    /// "Voice" card (Step 53; owner decision "ElevenLabs is the one voice for everything").
     ///
     /// Section 1, the voice: a segmented "Voice" picker, Natural / System (`AppModel.naturalVoiceEnabled`,
     /// persisted). Natural is the one voice for every line; System is the founder's valve for a venue
@@ -655,7 +655,7 @@ private struct SettingsPage: View {
     private var cueLevelCaption: String {
         var parts: [String]
         switch model.cueLevel {
-        // UI audit 2026-09-13: same facts, everyday words ("torso obstacles" → "things at body
+        // UI audit: same facts, everyday words ("torso obstacles" → "things at body
         // height", "continuous centre taps" → "steady taps"). Keep every sentence true to
         // `TorsoHapticPolicy` and the names / signs rules above.
         case .quiet: parts = ["Quiet: reads safety signs only and names nothing. No taps for things at body height — head-height and ground warnings stay on."]
@@ -719,7 +719,7 @@ private struct SettingsPage: View {
     /// switch that silently does nothing is worse than one that says why.
     /// - Parameter model: the `@Bindable` model from `body`.
     private func familyAlertsCard(_ model: Bindable<AppModel>) -> some View {
-        // UI audit 2026-09-13: plain words; no webhook / key / model names on screen. The wording
+        // UI audit: plain words; no webhook / key / model names on screen. The wording
         // contract above still holds — nothing here says the family *was* notified.
         CKCard(title: "Family alerts", systemImage: "person.2.fill",
                caption: "Let family know if something goes wrong on a walk.") {
@@ -945,7 +945,7 @@ private struct SceneEngineCard: View {
             if let gate = SceneEngineSummary.gate(f) { row("Check", gate) }
             TimelineView(.periodic(from: .now, by: Self.ageRefresh)) { timeline in
                 let live = facts(at: timeline.date)
-                // UI audit 2026-09-13: an explicit leading VStack. Two rows straight inside the
+                // UI audit: an explicit leading VStack. Two rows straight inside the
                 // TimelineView were laid out by an implicit stack that centred the shorter "LIGHT"
                 // row under the "WATCH" sentence.
                 VStack(alignment: .leading, spacing: CKSpacing.md) {
@@ -986,7 +986,7 @@ private struct SceneEngineCard: View {
     ///   - caption: the row's word, drawn uppercased in `CKFont.pill`.
     ///   - line: the visible text and its VoiceOver sentence.
     private func row(_ caption: String, _ line: SceneEngineLine) -> some View {
-        // UI audit 2026-09-13: caption stacked over the sentence, so long sentences use the full
+        // UI audit: caption stacked over the sentence, so long sentences use the full
         // card width instead of a ragged column beside captions of different widths.
         VStack(alignment: .leading, spacing: 2) {
             Text(caption.uppercased()).font(CKFont.pill).kerning(0.6).foregroundStyle(CKColor.textSecondary)

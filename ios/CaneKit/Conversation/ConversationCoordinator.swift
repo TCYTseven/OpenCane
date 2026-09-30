@@ -17,7 +17,7 @@
 //    4. Cloud model: `ConversationPrompt` + a camera frame → `ConversationResponseParser` → at most
 //       one tool call (`executeTool`) + one spoken sentence.
 //  Every answer is spoken at `.scene` (the lowest band: route, obstacle and safety lines always
-//  pre-empt it) in the one natural voice (Step 54, owner decision 2026-09-13): a cached answer plays
+// pre-empt it) in the one natural voice (Step 54, owner decision): a cached answer plays
 //  at once, a novel one races the ElevenLabs fetch for at most 2.5 s (`VoiceEngineChoice`), and the
 //  system voice speaks only when that fetch fails. Step 31's `immediate: true` is gone. Effects that
 //  announce themselves (`setHapticsSilenced`, `setOption`, `stopRoute`, `navigate(to:)`) are not
@@ -250,7 +250,7 @@ final class ConversationCoordinator {
     /// refused `budget.finished`) and logs `conv_turn {superseded: true}` without speaking.
     /// The app went to the background (lock, switch away): drop the cloud turn in flight so its
     /// answer — built from the frame before the lock — can never speak after the unlock (Codex review
-    /// 2026-09-13). The budget refuses the turn, so `runCloudTurn` neither speaks nor runs a tool.
+    ///). The budget refuses the turn, so `runCloudTurn` neither speaks nor runs a tool.
     /// Logs `conv_error {reason: backgrounded}` only when a turn was actually live.
     /// Caller: `AppModel.scenePhaseChanged(.background)`.
     func cancelForBackground() {

@@ -18,7 +18,7 @@
 //
 //  The classifier and the body detector are *different models*: on the real phone the 1,303-class
 //  classifier can return 1,303 observations and none over the 0.25 confidence floor
-//  (`vision_error: "no labels (1303 raw)"`, iPhone trip log 2026-09-11), while the body detector
+// (`vision_error: "no labels (1303 raw)"`, iPhone trip log), while the body detector
 //  still finds the people in the frame. That is why this file no longer relies on one model.
 //
 //  Owners / callers: `OnDeviceVLMClient` is built once by `VLMClientFactory.resolved(context:)` and

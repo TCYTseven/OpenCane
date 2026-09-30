@@ -5,8 +5,8 @@
 //  The voice shell's face (Step 58): one giant round microphone in the middle of the Guide page,
 //  inside ~40 thin, hand-drawn-looking contour rings. Tap anywhere on the rings to talk.
 //
-//  Why this exists: the first cane-mounted walk (2026-09-13) showed a blind walker cannot find a
-//  108 pt "Talk to OpenCane" tile among eleven buttons. Owner decision 2026-09-13: the launch
+// Why this exists: the first cane-mounted walk showed a blind walker cannot find a
+// 108 pt "Talk to OpenCane" tile among eleven buttons. Owner decision: the launch
 //  screen is a giant microphone dead-centre (reference image: a circle of concentric wavy contour
 //  rings around a clear centre). The whole ring area — at least 60 % of the page height — is one
 //  button, so a thumb that lands anywhere near the middle of the phone talks. The rings say what
@@ -58,7 +58,7 @@ struct VoiceTile: View {
                         .accessibilityHidden(true)
                 }
                 .frame(maxWidth: .infinity)
-                // UI audit 2026-09-13: 0.6 → 0.46 of the visible page so the compact row (Where am I /
+                // UI audit: 0.6 → 0.46 of the visible page so the compact row (Where am I /
                 // Start route) sits above the tab bar on a 17 Pro Max instead of cut in half, and
                 // stays reachable on smaller iPhones. Still the largest target on the page.
                 .containerRelativeFrame(.vertical) { height, _ in height * 0.46 }

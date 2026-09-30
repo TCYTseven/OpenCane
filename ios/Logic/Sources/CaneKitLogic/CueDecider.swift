@@ -24,7 +24,7 @@
 //    · the zone still clears with the 0.15 m hysteresis (→ `.stop`, as before), but the episode
 //      ends `headClearSeconds` (2 s) after the zone cleared on a trusted frame; a sweep (untrusted
 //      frame) freezes state but neither ends nor restarts that clock (a cane sweeps every second —
-//      restarting it held episodes open all walk, review 2026-09-13); a re-entry inside the live
+// restarting it held episodes open all walk, review); a re-entry inside the live
 //      episode is silent unless a closer band is crossed;
 //    · a quiet head episode (no onset, no band to cross) does not own the hand: the next cue
 //      (centre loop, sides) plays under it, and a band crossing takes over again;
@@ -130,7 +130,7 @@ public struct CueThresholds: Sendable, Equatable {
     /// Overhang signature (Step 52): a head cell counts only when its torso cell is at least this
     /// much farther (metres), non-finite or uncovered. `HeadGate.candidate`.
     public var overhangGapM: Float = 0.5
-    /// Whether the overhang signature is required. ON by default (owner decision 2026-09-13;
+    /// Whether the overhang signature is required. ON by default (owner decision;
     /// pushed from `CueRules.requireOverhangSignature` by `AppModel.applyCueRules`). Off = any
     /// covered head cell under `head` is a head cue, as before Step 52.
     public var requireOverhangSignature = true
@@ -230,7 +230,7 @@ public final class CueDecider {
     public func update(_ r: LaneReport, now: TimeInterval) -> CueOutput? {
         guard r.depthAvailable else { return nil }
         // Freeze while sweeping. A sweep neither ends nor restarts the head episode's clear clock
-        // (review 2026-09-13, Antigravity + OpenCode): a cane sweeps every second, so restarting the
+        // (review, Antigravity + OpenCode): a cane sweeps every second, so restarting the
         // clock on every smeared frame kept an episode open for the rest of the walk and turned the
         // next real overhang's onset — its "Head height." — into a silent re-entry.
         guard r.isTrusted else { return nil }
@@ -277,7 +277,7 @@ public final class CueDecider {
 
         // Priority: head > centre > left > right — but only while the head cue has something to
         // say. Inside a live episode with no closer band to cross, the head zone is quiet and the
-        // next cue plays (review 2026-09-13, OpenCode: the old branch `.stop`ped the centre loop and
+        // next cue plays (review, OpenCode: the old branch `.stop`ped the centre loop and
         // left the walker with no proximity feedback until a band was crossed).
         // An onset needs a finite gated distance on *this* frame (Step 66, `noHeadOnsetOnANonFiniteDistance`):
         // the point-blank dropout latch may keep the zone (and a live episode) alive across a blind

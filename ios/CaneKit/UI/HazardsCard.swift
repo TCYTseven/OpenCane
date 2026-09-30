@@ -73,7 +73,7 @@ struct HazardsCard: View {
     /// (binds through `AppModel.setTorch`, never refused); and the debug self tests when the
     /// launch flag is set.
     ///
-    /// UI audit 2026-09-13: one card with eleven switches became three focused cards — "Hazards"
+    /// UI audit: one card with eleven switches became three focused cards — "Hazards"
     /// (what to warn about, what was found, the map), "Hands-free" (nod, head tracking) and
     /// "Camera" (live view, both cameras, flashlight) — each switch a `CKToggleRow` with a plain
     /// subtitle. Switch labels, bindings, disabling and every refusal caption are unchanged.

@@ -147,7 +147,7 @@ public struct OpenCaneEvent: Codable, Sendable, Equatable {
     public var type: OpenCaneEventType
     /// Omit to let the bot infer (fall / sos ⇒ critical).
     public var severity: OpenCaneSeverity?
-    /// ISO-8601 UTC ("2026-09-12T20:30:00Z"). `stamped(at:)` fills it when absent.
+    /// ISO-8601 UTC ("YYYY-MM-DDTHH:MM:SSZ"). `stamped(at:)` fills it when absent.
     public var timestamp: String?
     public var lat: Double?
     public var lng: Double?
@@ -230,7 +230,7 @@ public struct OpenCaneEvent: Codable, Sendable, Equatable {
         self.sendTest = sendTest
     }
 
-    /// ISO-8601 UTC text for `date`, e.g. "2026-09-12T20:30:00Z". Second resolution: the bot reads
+    /// ISO-8601 UTC text for `date`, e.g. "YYYY-MM-DDTHH:MM:SSZ". Second resolution: the bot reads
     /// it as a human-facing time, and fractional seconds only make the SMS uglier.
     public static func iso8601(_ date: Date) -> String {
         date.formatted(.iso8601

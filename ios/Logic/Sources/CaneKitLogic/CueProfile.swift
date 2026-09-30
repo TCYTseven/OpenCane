@@ -11,7 +11,7 @@
 //  walls) and that silence has to mean "nothing to act on" (research P1, P3, P7). A level lets the
 //  walker choose; a place makes indoor clutter quieter.
 //
-//  ⚠ Default Detailed + Outdoors = today's behaviour (owner decision 2026-09-12, AGENTS.md "How we
+// ⚠ Default Detailed + Outdoors = today's behaviour (owner decision, AGENTS.md "How we
 //  engineer" 6): the calmer levels are opt-in until a trip log from the MOUNTED cane tunes them
 //  (`ios/scripts/cue_audit.py` says whether a log was mounted). The one Detailed change is that it
 //  never names walls — a spoken-line reduction, the cane trails walls.
@@ -116,7 +116,7 @@ public struct CueRules: Sendable, Equatable {
 
     /// Whether a head cue needs the overhang signature (Step 52, `HeadGate`): the torso cell of
     /// the same lane ≥ 0.5 m farther, non-finite or uncovered. ON by default — owner decision
-    /// 2026-09-13 ("keep it on for now, we'll keep testing"); it supersedes the Steps 34–37 note
+    /// ("keep it on for now, we'll keep testing"); it supersedes the Steps 34–37 note
     /// "Walls still get 'Head height.' (owner: 'Leave as is')". `AppModel.applyCueRules` pushes it
     /// into `CueThresholds.requireOverhangSignature`; `AppModel.cueRules` reads the valve
     /// `Settings.bool("overhangSignature", default: true)` (no UI; hard rule 9 labels untouched).
@@ -126,7 +126,7 @@ public struct CueRules: Sendable, Equatable {
     /// - Parameters:
     ///   - level: verbosity level.
     ///   - place: outdoors or indoors.
-    ///   - requireOverhangSignature: the Step 52 head gate (default ON, owner decision 2026-09-13).
+    /// - requireOverhangSignature: the Step 52 head gate (default ON, owner decision).
     public init(level: CueLevel, place: CuePlace, requireOverhangSignature: Bool = true) {
         self.level = level
         self.place = place

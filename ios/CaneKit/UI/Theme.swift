@@ -521,7 +521,7 @@ struct CKStatusPill: View {
 struct CKCard<Content: View>: View {
     /// Optional card heading; also the container's VoiceOver label.
     var title: String? = nil
-    /// Optional SF Symbol drawn in a small badge before the title (UI audit 2026-09-13). Hidden
+    /// Optional SF Symbol drawn in a small badge before the title (UI audit). Hidden
     /// from VoiceOver: the title carries the meaning.
     var systemImage: String? = nil
     /// Optional one-sentence plain-language caption under the title: what the card is for.
@@ -567,7 +567,7 @@ struct CKCard<Content: View>: View {
     }
 }
 
-// MARK: - Settings rows (UI audit 2026-09-13)
+// MARK: - Settings rows (UI audit)
 
 /// A small rounded-square badge holding an SF Symbol: the leading mark of a card title or a
 /// settings row, the way iOS Settings marks its rows. Decoration only, hidden from VoiceOver.

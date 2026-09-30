@@ -3,7 +3,7 @@
 **Legacy, do not print for the demo.** These drafts are from the ESP32 plan (XIAO grip module,
 VL53L1X sensor pod, coin motors), which the phone-only CaneKit app replaced. They also assume a
 12.7 mm aluminum/graphite shaft; the prototype stick is **27.65 mm, non-metal** (a broom handle,
-measured by the bore rings on 2026-09-12; the earlier 28.75 mm reading was wrong), so none of the
+measured by the bore rings on ; the earlier 28.75 mm reading was wrong), so none of the
 clamps below fit it. The phone-to-cane mount now lives in [`hardware/`](../hardware/README.md): the
 live design is [`hardware/mount_screwless/`](../hardware/mount_screwless/) (slice locally — see
 [`hardware/3d_print_files/README.md`](../hardware/3d_print_files/README.md)); [`hardware/mount/`](../hardware/mount/)

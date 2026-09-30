@@ -59,7 +59,7 @@
 //      than 20 m or older than 12 s — a stale fix dated from the 5 s guidance pause), "GPS weak."
 //      again after 60 s, "GPS back." after 10 s good and at most once per 2 min.
 //      Before it, a phone standing still indoors (a fix every ~6 s, stale after 5 s) said
-//      "GPS weak…" / "GPS back." 25 times in 145 s (log 2026-09-13T15-48-34Z).
+// "GPS weak…" / "GPS back." 25 times in 145 s (log).
 //  Tests: ⚠ no unit test covers this class (app target). The decisions it delegates are pinned by
 //  `GeoMathTests` (GeofenceTracker, OffCourseDetector incl. `aStopMidDriftRestartsTheHold`),
 //  `NavSupportTests` (TurnSettle), `CourseSmootherTests`; the class itself only end to end, by

@@ -23,7 +23,7 @@
 
     WHY THIS SCRIPT EXISTS, AND WHY IT PRINTS A VERIFICATION BLOCK
 
-    On 2026-09-12 a plate was sliced for PETG and carried to a printer whose
+    A plate was sliced for PETG and carried to a printer whose
     CFS had four PLA spools in it. The file would have run its own
     `START_PRINT EXTRUDER_TEMP=250 BED_TEMP=80` against PLA. It was caught by
     reading the G-code header by hand, which is not a process you can rely on
@@ -44,7 +44,7 @@
     agree - which is why the output tells you the slot to use by name.
 
     MATERIAL -> SLOT
-    The slot numbers below are for the machines in the room on 2026-09-12 and
+    The slot numbers below are for the machines in the room and
     are NOT a property of the design. Check the Filament Selection screen
     before every print: not every machine has PETG loaded, and on one of them
     all four slots are PLA. If the screen shows `PETG -> [blank]`, that
@@ -57,7 +57,7 @@
       dovetail - 3 tenon/socket pairs. Settles dt_clear.
       coupons  - all three rows on one plate.
       next     - thread row + dovetail row: the plate to print once the bore
-                 rings have been read (they have, 2026-09-12: pole_d = 27.65).
+                 rings have been read (they have: pole_d = 27.65).
       arm      - the arm. The one REAL part that needs no measurement first:
                  its tenons are drawn at dt_section(0) and the pawl is fixed
                  geometry, so neither pole_d nor dt_clear reaches it.
@@ -153,7 +153,7 @@ foreach ($p in @($machineProfile, $processProfile, $filamentProfile)) {
 # overwritten on the next run with the same overrides; it is never cleaned up.
 #
 # SUPPORT. The vendor profile has it OFF and the CLI does not turn it on by
-# itself - the 2026-09-12 plate had it on because it was ticked in the GUI,
+# itself - the plate had it on because it was ticked in the GUI,
 # and the first headless cradle slice (same day) shipped with
 # enable_support = 0 in its footer. The cradle stands on its dovetail block
 # with the back plate, the rails and the corner caps 7 mm off the bed, so
@@ -241,7 +241,7 @@ $argv = @('--load-settings', "$machineProfile;$processProfile",
 # slice runs to completion. This is the OPPOSITE of scripts/build_stl.ps1,
 # where 2>&1 must be avoided because it trips $? on OpenSCAD's clean exits -
 # same shell, same version, opposite fix, because the two exes use the
-# streams differently. Verified both ways on 2026-09-12.
+# streams differently. Verified both ways on.
 #
 # Relaxing $ErrorActionPreference - with the redirect in place the stderr
 # lines arrive as ErrorRecords, and under 'Stop' the first one still aborts.
@@ -313,7 +313,7 @@ if ($nozzleT -ne $expect) {
 }
 
 # Output name: <Material>_<slot>__<plate><poleTag>_<print time>.gcode, e.g.
-# PETG_slot2__collar_1h43m27s.gcode. The slot is the room's 2026-09-12
+# PETG_slot2__collar_1h43m27s.gcode. The slot is the room's 
 # loading (see .DESCRIPTION), baked into the name so the person at the
 # printer sees it; hardware/3d_print_files/README.md uses these names.
 $slot = if ($Material -eq 'PETG') { 'slot2' } else { 'slot3or4' }

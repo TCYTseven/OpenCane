@@ -41,7 +41,7 @@ struct LaneGridView: View {
     /// "Obstacles" card: the trust pill right-aligned ("Trusted" = the gyro gate accepted the
     /// frame, "Sweeping" = warnings paused while the cane swings), then the Head and Torso rows.
     var body: some View {
-        // UI audit 2026-09-13: pill beside the title's caption instead of alone on its own row;
+        // UI audit: pill beside the title's caption instead of alone on its own row;
         // "Trusted" / "Sweeping" → "Steady" / "Swinging" (what the cane is doing, in plain words).
         CKCard(title: "Obstacles", systemImage: "square.grid.3x2",
                caption: "Nearest thing in each direction, at head and body height.") {
@@ -160,7 +160,7 @@ struct LaneTile: View {
         case .far: return "FAR"
         case .clear: return "CLEAR"
         case .noData: return "NO DATA"
-        case .noCover: return "NOT SEEN"   // UI audit 2026-09-13: was "NO COVER"
+        case .noCover: return "NOT SEEN"   // UI audit: was "NO COVER"
         }
     }
 

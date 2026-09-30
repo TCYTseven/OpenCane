@@ -329,8 +329,8 @@ final class DepthEngine {
     /// skip the `session.run`, so the stored configuration still describes the world as it was
     /// before the walker changed anything. Replaying it brought the session back *without* the
     /// feature while every flag, every trip-log field and every UI readout said it was on. Not
-    /// hypothetical: on 2026-09-12 the walker turned on "Head tracking without AirPods"
-    /// (`canekit-2026-09-12T02-40-53Z.jsonl`, t=17.583) while "Both cameras" had ARKit paused
+    /// hypothetical: on the walker turned on "Head tracking without AirPods"
+    /// (a trip log, t=17.583) while "Both cameras" had ARKit paused
     /// (t=5.772), so `userFaceTrackingEnabled` was requested and never actually run in that
     /// process — the first session that really ran with it was the next cold launch, which died
     /// inside the ARKit warm-up. A settings change has to reach ARKit at the next resume, or it
@@ -400,7 +400,7 @@ final class DepthEngine {
     /// Whether the front (TrueDepth) camera also tracks the walker's face, for head yaw without
     /// AirPods (`ARWorldTrackingConfiguration.userFaceTrackingEnabled`).
     ///
-    /// Measured on the iPhone 17 Pro Max (2026-09-11, `probe_a_world_plus_face` in the trip log):
+    /// Measured on the iPhone 17 Pro Max (`probe_a_world_plus_face` in the trip log):
     /// with `userFaceTrackingEnabled = true`, LiDAR `sceneDepth` keeps arriving on every frame and
     /// `capturedImage` is still the **rear** camera's 1920×1440 — the front camera contributes an
     /// `ARFaceAnchor` and nothing else. See `SensorProbe` for the full measurement.
@@ -526,7 +526,7 @@ final class DepthEngine {
         if faceTrackingEnabled, Self.supportsFrontCameraWithLiDAR {
             config.userFaceTrackingEnabled = true
         }
-        // Measured on the iPhone 17 Pro Max (2026-09-11): world tracking with LiDAR exposes only
+        // Measured on the iPhone 17 Pro Max: world tracking with LiDAR exposes only
         // the 1x wide camera, up to 60 fps (no ultra-wide, no 120). Use the full 4:3 frame (widest
         // view; the sign-range numbers assume it) at 30 fps by default, 60 when `highFrameRate`.
         let formats = ARWorldTrackingConfiguration.supportedVideoFormats

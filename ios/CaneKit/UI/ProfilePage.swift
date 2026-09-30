@@ -25,7 +25,7 @@ struct ProfilePage: View {
 
     var body: some View {
         @Bindable var model = model
-        // UI audit 2026-09-13: Medical ID first (what a responder needs), then Activity, then
+        // UI audit: Medical ID first (what a responder needs), then Activity, then
         // Privacy. `testAccessibilityLabelsExist` waits for each label, which scrolls nothing but
         // finds off-screen elements in this non-lazy stack.
         pageScroll {

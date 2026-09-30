@@ -1,13 +1,12 @@
-# OpenCane stress test and end-to-end test plan (the 24 h before the demo)
+# OpenCane stress test and end-to-end test plan
 
-Written Fri 2026-09-11 against HEAD `7b15256` plus the uncommitted working tree, then re-checked
-against the working tree once it added the hazards layer, the Files app keys and the review round 5
-fixes. Every number here comes from the code: `CaneKitLogic`
+Written against the hazards layer, the Files app keys and the review fixes, then re-checked
+once those were in the tree. Every number here comes from the code: `CaneKitLogic`
 defaults, `NavigationEngine`, `SpeechQueue`, `BeaconEngine` and `route_isr_cif.json`. If the code
 and another doc disagree, the code is right; §0 lists the disagreements. If a number in the code
 changes, update this file.
 
-**Re-checked Sat 2026-09-12 after Step 37 (HEAD `076fcaa`)** against `SpeechQueue`, `SpeechResume`,
+**Re-checked after Step 37** against `SpeechQueue`, `SpeechResume`,
 `CueRules`, `TorchSwitch`, `DualCameraRotation`, `FaceTrackingChange`, `ios/scripts/cue_audit.py` and
 CHANGELOG Steps 34–37: §0.12, §1.0–§1.4, D7, D8, D15 changed, and **D19–D24** are new (flashlight
 settle, both cameras refusal + rotation, face-tracking refusal, cue level × place, talk-floor resume +
@@ -68,7 +67,7 @@ D = device matrix (§2) · F = failure injection (§3) · G = go/no-go (§4).
    fires within 15 m of the node. Intermediate fences need accuracy ≤ 20 m and speed > 0.5 m/s. Speed
    is −1 when standing, which fails the gate.
 10. **`docs/route_isr_cif.md` matches the JSON** (its tables were regenerated from it on
-    2026-09-11): WP3, WP6 and WP8 are 12 m, WP9 is 20 m, and WP3 is **not** a crossing. Crossings are
+    ): WP3, WP6 and WP8 are 12 m, WP9 is 20 m, and WP3 is **not** a crossing. Crossings are
     WP4, WP6 and WP7. If the two ever disagree, the JSON is the truth.
 11. **Watch and cane haptics** (`WatchModel`, `HapticPlayer`; design.md §5.3 / §6.6 agree). Wrist:
     turnLeft `.directionUp`, turnRight `.directionDown`, crossing `.notification`, arrived `.success`,

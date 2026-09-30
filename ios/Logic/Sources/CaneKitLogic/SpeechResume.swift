@@ -8,8 +8,8 @@
 //  Why: "Head height." has to cut a direction at once (a walker reaches a 1.5 m overhang in ~1.5 s,
 //  so the words cannot wait — Muse review of the first talk-floor plan). What made that sound like
 //  the app "interrupting itself" was the second half: the cut direction restarted from its first
-//  word. Trip log 2026-09-12T22-20-53Z had 5 such restarts in 58 lines, and 9 line starts < 1 s apart.
-//  Owner decision 2026-09-12: "Cut in, then resume" — the warning is instant, and the direction
+// word. Trip log had 5 such restarts in 58 lines, and 9 line starts < 1 s apart.
+// Owner decision: "Cut in, then resume" — the warning is instant, and the direction
 //  continues from the clause it was cut in, after a short audible pause.
 //
 //  Units: offsets are UTF-16 code units, the unit `AVSpeechSynthesizerDelegate.willSpeakRangeOf…`

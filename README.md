@@ -143,15 +143,37 @@ Subscription**. For UI tests without a store, launch with `CANEKIT_PREMIUM=free`
 
 ## Team
 
-Built at 54FoundersHack (Champaign-Urbana, Sep 12–13 2026) and polished for the RevenueCat
-Shipaton 2026. **Aritro**, **Aarav**, **Tejas** (software / iOS app); **Sagar**, **Tommy**
-(hardware, 3D printing, CAD).
+Built at 54FoundersHack in Champaign-Urbana and polished for the RevenueCat Shipaton.
+**Aritro**, **Aarav**, **Tejas** (software / iOS app); **Sagar**, **Tommy** (hardware, 3D printing, CAD).
+
+The team is at the University of Illinois Urbana-Champaign and is working with the university
+and the [Landuyt Center for Entrepreneurship](https://landuyt.illinois.edu/).
 
 Inside the repo the code is still called **CaneKit**: the Xcode project, targets, the `CaneKitLogic`
 module, the `ios/CaneKit/…` paths and the bundle id `com.aritro.canekit`. Only what a person sees
 or hears says OpenCane. [`AGENTS.md`](AGENTS.md) → "The name split" explains why.
 
 Start at this README, then [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) for the two-minute film.
+If you are about to change code, read [For the next agent](#for-the-next-agent) before you edit.
+
+## Recognition
+
+- **First place overall** at 54FoundersHack, 1st of 250.
+- **Third place** on the SpaceX track at the same hackathon. SpaceXAI ambassadors are working with the team.
+- The launch posts passed **100,000 impressions** on LinkedIn. **More than 100 schools** across the country have written in.
+- Funding is in place to keep building.
+
+## For the next agent
+
+Read [`AGENTS.md`](AGENTS.md) before the first edit. It wins when documents disagree. The shipped
+code wins when a document disagrees with the code: fix the document in the same change.
+
+1. Find the file in [`docs/CODE_REFERENCE.md`](docs/CODE_REFERENCE.md). The data-flow diagram is at the top of that file.
+2. A rule with a number in it goes in `ios/Logic` (`CaneKitLogic`) with a Swift Testing test. From `ios/`, `make test` must pass on its own exit code. Never judge it through `| tail`.
+3. OpenCane Premium is the one third-party dependency (RevenueCat `purchases-ios`). The gate is [`Premium.swift`](ios/Logic/Sources/CaneKitLogic/Premium.swift), the store client is [`EntitlementManager.swift`](ios/CaneKit/Store/EntitlementManager.swift), the screen is [`PaywallView.swift`](ios/CaneKit/UI/PaywallView.swift), and the walk lock is [`AppModel+Premium.swift`](ios/CaneKit/App/AppModel+Premium.swift). The paywall does not open during a walk. The local product is [`OpenCane.storekit`](ios/StoreKit/OpenCane.storekit): `opencane_premium_annual`, $49.99/year, one month free.
+4. Spoken and visible strings say OpenCane. Types, paths, the module and the bundle id stay CaneKit.
+5. These paths were removed on purpose. Do not recreate them: `docs/todo.md`, `docs/TEAM_BRIEF.md`, `docs/TEAM_HANDOFF.md`, `docs/ideas.md`, `docs/superpowers/`. The step log is `git log`. [`CHANGELOG.md`](CHANGELOG.md) stays the short submission note.
+
 
 ## Repo map
 

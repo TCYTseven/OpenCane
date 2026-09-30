@@ -4,7 +4,7 @@ Read `AGENTS.md` first (hard rules, layout, commands, deliberate oddities), then
 `docs/CODE_REFERENCE.md` for the file/type/function map. Trust them over anything you guess, but the
 shipped code is the truth: when a doc and the code disagree, fix the doc in the same commit.
 
-- Swift 6 strict concurrency, main-actor default; iOS 26 APIs only; no third-party packages.
+- Swift 6 strict concurrency, main-actor default; iOS 26 APIs only. The one third-party package is RevenueCat (`purchases-ios`), isolated in `ios/CaneKit/Store/EntitlementManager.swift`. The paywall never opens during a walk (`Premium.swift`).
 - Decisions with numbers live in `ios/Logic` with tests; run `cd ios && make test` before every commit
   (judge it by its own exit code, never through `| tail`).
 - Simulator target is the iPhone 17 Pro Max on iOS 27 (`make sim17` once). Demo runs untethered on the phone.
@@ -14,8 +14,8 @@ shipped code is the truth: when a doc and the code disagree, fix the doc in the 
   (communities in `graphify-out/GRAPH_REPORT.md`); `graphify update .` after code changes.
 - Automated runs are silent: the app mutes itself under `CANEKIT_MUTE=1` / `CANEKIT_UITEST=1`.
 - Measure before tuning a cue: `cd ios && make audit` (`ios/scripts/cue_audit.py` on a trip log; a
-  handheld log must not tune a distance). Cue research and plan: `docs/cue_design_v2.md`,
-  `docs/todo.md` → "Cue design v2".
+  handheld log must not tune a distance). Cue research: `docs/cue_design_v2.md`. There is no
+  the code comment.
 - **Deliberate, do not "fix"** (details, why and tests in AGENTS.md → "Steps 34–37 and the rotation
   fix"): flashlight state comes from KVO, never `isTorchActive` read right after setting; Both
   cameras is refused for the whole route and face tracking mid-route; `speech_dispatch` is a separate
@@ -31,8 +31,10 @@ shipped code is the truth: when a doc and the code disagree, fix the doc in the 
 - **Engineering bar (AGENTS.md → "How we engineer"):** evidence before claims; test first in
   `ios/Logic` for every numeric rule (a bug fix starts with a failing test); after every chunk run an
   adversarial multi-agent review **and** Muse **and** Antigravity (on a repo copy), verify each
-  finding yourself, fix or reject with evidence in `CHANGELOG.md`; verify end to end silently
+  finding yourself, fix or reject with evidence; verify end to end silently
   (`make test sim uitest e2e`); new untuned features ship off by default; document every file and
-  function in the same commit.
-- Muse-review the plan (large or risky changes) and the diff before committing; commit messages end
-  with `test on device: …`; add a `CHANGELOG.md` entry; tick `docs/todo.md`.
+  function in the same commit. Update `docs/CODE_REFERENCE.md` when the map changes.
+- Muse-review the plan (large or risky changes) and the diff before committing. Commit messages end
+  with `test on device: …`. `CHANGELOG.md` stays the short submission note; the step log is `git log`.
+  Do not recreate `docs/todo.md`, `docs/TEAM_BRIEF.md`, `docs/TEAM_HANDOFF.md`, `docs/ideas.md` or
+  `git history`.

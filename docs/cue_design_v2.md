@@ -1,4 +1,4 @@
-<!-- Research workflow output, 2026-09-12. 4 researchers + 4 source fact-checkers (74 findings kept, 10 dropped as unsupported) + synthesis. Numbers marked [H] are hypotheses, not measurements. -->
+<!-- Research workflow output, . 4 researchers + 4 source fact-checkers (74 findings kept, 10 dropped as unsupported) + synthesis. Numbers marked [H] are hypotheses, not measurements. -->
 
 # OpenCane cue design v2: what blind travellers need, and how to make the cane calmer
 
@@ -120,7 +120,7 @@
 | **Episode end** | No candidate for ≥ 2.0 s of *trusted* frames. Untrusted sweep frames do not count toward clearing. A decider `.stop` no longer ends the episode by itself. | 2.0 s |
 | **Same overhang again** | A new onset in the same lane within 1.0 m of camera travel since the last onset (ARKit camera position, to be added to `LaneReport`) continues the old episode. Same pattern as `GroundHazardPolicy`. | 1.0 m; 30 s cap |
 | **Standing still** | No new head speech. The haptic still fires at onset. | still = < 0.3 m of travel in 2 s |
-| **Shipped (Step 51, 2026-09-13)** | Gravity-corrected height from the camera transform's world-up row (not the tilt scalar: it also compensates roll), per sample: "head" means ≥ 140 cm above the ground, floor < 25 cm is dropped, and a band the camera cannot see at 150 cm is NO COVER (`LaneGrid.headCoverage`). `LaneGeometryTests`. | camera 95 cm; head ≥ 140 cm; cover range 150 cm; head cover to ≈ 19° down |
+| **Shipped (Step 51, )** | Gravity-corrected height from the camera transform's world-up row (not the tilt scalar: it also compensates roll), per sample: "head" means ≥ 140 cm above the ground, floor < 25 cm is dropped, and a band the camera cannot see at 150 cm is NO COVER (`LaneGrid.headCoverage`). `LaneGeometryTests`. | camera 95 cm; head ≥ 140 cm; cover range 150 cm; head cover to ≈ 19° down |
 
 **Target for the same 2-minute indoor walk:** ≤ 2 "Head height." lines, ≤ 6 head haptics. **Must not regress:** on a taped rig (a cardboard sign hung at 1.5–1.7 m, a wall cabinet door ajar, the underside of a stair approached from the side), 10 of 10 approaches cue at ≥ 1.0 m.
 
@@ -132,7 +132,7 @@
 - `SpokenPhrasesTests` L87 (the exact line text)
 - The ⚠ comment on `AppModel.speakCueIfNeeded` requires an on-device head-height test before any new gating path.
 
-~~Because of AGENTS.md "How we engineer" rule 6, the overhang signature ships behind a setting that is **off by default** until the rig test passes on the cane.~~ **Owner decision 2026-09-13: the overhang signature ships ON** ("keep it on for now, we'll keep testing"; `CueRules.requireOverhangSignature`, valve `Settings.bool("overhangSignature")`, Step 52). The first cane walk had 587 of 625 head cells near in the torso band too. **Shipped in Step 52:** the "what counts as head" rule (without the side-lane threshold), no time-based re-fire, band re-fires at 1.0 / 0.6 m ≥ 1.5 s apart, the 2 s trusted-clear episode end, a second line only under 0.6 m. **Not shipped:** the closing requirement for the onset line, "same overhang again" by camera travel, the standing-still rule — the onset always speaks (hard rule 8), subject to the 4 s limiter.
+~~Because of AGENTS.md "How we engineer" rule 6, the overhang signature ships behind a setting that is **off by default** until the rig test passes on the cane.~~ **Owner decision : the overhang signature ships ON** ("keep it on for now, we'll keep testing"; `CueRules.requireOverhangSignature`, valve `Settings.bool("overhangSignature")`, Step 52). The first cane walk had 587 of 625 head cells near in the torso band too. **Shipped in Step 52:** the "what counts as head" rule (without the side-lane threshold), no time-based re-fire, band re-fires at 1.0 / 0.6 m ≥ 1.5 s apart, the 2 s trusted-clear episode end, a second line only under 0.6 m. **Not shipped:** the closing requirement for the onset line, "same overhang again" by camera travel, the standing-still rule — the onset always speaks (hard rule 8), subject to the 4 s limiter.
 
 ### 3.3 Everything else, by verbosity level
 
@@ -195,7 +195,7 @@ Defaults: **Quiet** for daily travel; **Standard** for the demo if the founder w
 | 4 | Speech de-chop: drop interrupted `.obstacle`/`.scene` lines, one voice for cue lines, drop-if-late 1.5 s | `SpeechQueue.swift`, new `ReplayPolicy.swift` | `interruptedObstacleLineIsDropped`, `navLineResumesOnce`, `lateOptionalLineIsDropped` | low–med (touches the queue) | M |
 | 5 | Follow the user's speech rate | `SpeechQueue.swift` | none (no number; the override rate lives in a `CueProfile` test) | low | S |
 | 6 | Head **haptic** re-fires on distance bands, not 1 Hz — **shipped Step 52** (`headFiresAtOnsetThenOnlyOnCloserBands`, `aJumpAcrossBothBandsFiresOnce`, `headOnsetIsNeverHeldByTheRepeatFloor`) | `CueDecider.swift`, design.md §5.2 | `headRefiresOnlyWhenCrossingACloserBand`, `headDoesNotRefireWhileDistanceHolds`; rewrite `headCueKeepsRefiringWhileObstaclePersists` | **med** (safety rule; needs the rig test) | S–M |
-| 7 | **Overhang signature** (head < torso − 0.5 m; invalid torso fails safe), behind a setting off by default — **shipped Step 52, ON by default** (owner decision 2026-09-13; `HeadGate`; `wallNearInBothBandsIsNotHead`, `hangingSignWithClearTorsoIsHead`, `torsoHalfAMetreFartherIsHead`, `torsoNoDataFailsSafeToHead`, `torsoWithoutCoverageFailsSafeToHead`, `overhangSignatureCanBeSwitchedOff`; side-lane threshold not done) | `LaneMath.swift` (cell validity), `LaneReport.swift`, new `HeadGate.swift`, `CueDecider.swift` | `wallNearInBothBandsIsNotHead`, `hangingSignWithClearTorsoIsHead`, `invalidTorsoCellFailsSafeToHead`, `sideLaneHeadUsesShorterThreshold`; rewrite `headBeatsCenterBeatsSides` | **high** if on by default; low while off | M |
+| 7 | **Overhang signature** (head < torso − 0.5 m; invalid torso fails safe), behind a setting off by default — **shipped Step 52, ON by default** (owner decision ; `HeadGate`; `wallNearInBothBandsIsNotHead`, `hangingSignWithClearTorsoIsHead`, `torsoHalfAMetreFartherIsHead`, `torsoNoDataFailsSafeToHead`, `torsoWithoutCoverageFailsSafeToHead`, `overhangSignatureCanBeSwitchedOff`; side-lane threshold not done) | `LaneMath.swift` (cell validity), `LaneReport.swift`, new `HeadGate.swift`, `CueDecider.swift` | `wallNearInBothBandsIsNotHead`, `hangingSignWithClearTorsoIsHead`, `invalidTorsoCellFailsSafeToHead`, `sideLaneHeadUsesShorterThreshold`; rewrite `headBeatsCenterBeatsSides` | **high** if on by default; low while off | M |
 | 8 | Crossing and stationary hold for non-safety speech and torso taps | new `MotionState.swift`, `SpeechBudget.swift`; `AppModel.handle`; `DepthFrameProcessor` (camera travel into `LaneReport`) | `noOptionalSpeechWhileStill`, `crossingSettleHoldsObstacleTier`, `safetyPassesDuringCrossingHold` | med | M |
 | 9 | Centre torso: two-level onset taps replace the Geiger loop (Standard); side taps only in Detailed with shoreline suppression | `CueDecider.swift`, `HapticPlayer.swift` | `centerTapsOnceOnClosingOnset`, `centerStrongTapBelowSixtyCentimetres`, `steadySideDistanceIsShoreline` | med (changes how the demo feels) | M |
 | 10 | Verbosity levels + Indoor/Outdoor profile with an announced switch | `CueProfile.swift`, `AppModel.swift`, Settings UI, Watch | `indoorProfileThresholds`, `autoIndoorSuggestionNeedsTwentySecondsPoorGPS`, `profileChangeProducesOneLine` | med (UI labels are a test contract, hard rule 9) | M–L |
@@ -309,7 +309,7 @@ Pay testers. Have a sighted spotter present. Always run a cane-only baseline fir
 - /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/CueDeciderTests.swift
 - /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/NavSupportTests.swift
 - /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/SpeechLoadPolicyTests.swift
-## Addendum: measured on the field log (trip log canekit-2026-09-12T20-57-17Z)
+## Addendum: measured on the field log (trip log a trip log)
 
 
 

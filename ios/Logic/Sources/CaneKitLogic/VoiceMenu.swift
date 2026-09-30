@@ -5,7 +5,7 @@
 //  The eight words of the voice shell (Step 56): route, where am I, describe, status, repeat,
 //  quiet, help, emergency — each also reachable by its digit, one to eight.
 //
-//  Why this exists: the first cane-mounted walk (2026-09-13) showed the app was usable only with
+// Why this exists: the first cane-mounted walk showed the app was usable only with
 //  eyes — four tabs, a 108 pt Talk tile, one utterance at a time, then nothing. A blind walker
 //  needs a *phone-menu*: a short spoken list, then one word or one digit, matched on the phone in
 //  under a millisecond and never sent to the cloud. This file is that grammar. Words are primary,
@@ -27,7 +27,7 @@
 //
 //  Owner / callers: `FastPathIntentClassifier.classify` (rule 0: `match`, `verb`, `confirmation`),
 //  `ConversationCoordinator.executeAction` (`confirmationLine`, `helpLine`), `SpokenPhrases.shellLines`.
-//  Step 67: there is no launch menu. The owner, on `canekit-2026-09-13T15-48-34Z.jsonl`: "when it
+// Step 67: there is no launch menu. The owner, on a trip log: "when it
 //  immediately pops up there's a lot of jargon. It should just be 'OpenCane ready'". `menuLine`,
 //  `shortMenuLine` and `launchMenuLine(firstLaunch:)` were deleted; the only list the shell reads is
 //  `helpLine`, when the walker says "help", "menu", "options" or "seven".
@@ -218,7 +218,7 @@ public enum VoiceMenu {
         "yes", "yeah", "yep", "yes please", "confirm", "yes call", "call", "do it",
     ]
 
-    /// Refusals for the emergency prompt. Bare "cancel" is deliberately not one (review 2026-09-13,
+    /// Refusals for the emergency prompt. Bare "cancel" is deliberately not one (review,
     /// OpenCode): mid-route it meant "stop" and answered "Nothing to confirm."; it goes on to the
     /// rest of the classifier ("cancel route" stops).
     private static let noForms: Set<String> = [

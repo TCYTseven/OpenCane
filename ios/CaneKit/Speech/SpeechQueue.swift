@@ -11,7 +11,7 @@
 //  interrupter, so a crossing instruction cut by a head-height warning is never lost
 //  (docs/design.md §5: crossing / arrival / head are P0, obstacle names P1).
 //
-//  Two backends, one queue, one voice (Steps 53–54, owner decision 2026-09-13 "ElevenLabs is the one
+// Two backends, one queue, one voice (Steps 53–54, owner decision "ElevenLabs is the one
 //  voice for everything"):
 //    · ElevenLabs (natural voice) when a key is configured and the Settings "Voice" picker is on
 //      Natural — cached mp3s play instantly; a cache miss races a fetch for 2.5 s and falls back to…
@@ -57,7 +57,7 @@
 //      actually spoken, even if it is playing right now).
 //    · TTL: each queued line expires (`say` default 8 s, `sayAgain` 12 s); expired lines are
 //      purged whenever a line ends, so a stale instruction is never spoken late.
-//    · Resume (Step 37, owner decision 2026-09-12 "Cut in, then resume"): an interrupted line goes
+// · Resume (Step 37, owner decision "Cut in, then resume"): an interrupted line goes
 //      back to the front of its band and continues from the start of the clause it was cut in
 //      (CaneKitLogic `SpeechResume`) — a direction cut by "Head height." is never restarted from
 //      its first word. It resumes at most 3 times and never from an earlier point than last time;
@@ -239,7 +239,7 @@ final class SpeechQueue {
     /// Restore a refused-key latch written by a previous launch, before the first line can be
     /// dispatched. A warm mp3 cache never calls ElevenLabs (`ElevenLabsVoice.prefetch`), so without
     /// this the next launch mixes cached ElevenLabs lines with Apple's until the first miss
-    /// (trip log `canekit-2026-09-13T08-51-14Z`). Caller: `AppModel.start()`, after the Voice
+    /// (trip log a trip log). Caller: `AppModel.start`, after the Voice
     /// picker is pushed and before `prefetch` / `say`.
     func applyPersistedNaturalVoiceLatch() {
         guard Settings.bool(NaturalVoiceLatch.settingsKey, default: false) else { return }
@@ -598,7 +598,7 @@ final class SpeechQueue {
     /// ⚠ Why: `speech` trip-log records are written by *callers* (cues, route lines), so lines said
     /// straight through `say` — the both-cameras refusal, flashlight confirmations — left no trace,
     /// and a device log could not tell "dropped by the queue" from "dispatched" (trip log
-    /// 2026-09-12T20-57-17Z, t = 84 s). ⚠ Dispatched is not heard: the line may still be cut by a
+    ///, t = 84 s). ⚠ Dispatched is not heard: the line may still be cut by a
     /// higher priority, fail to fetch, or be muted automation — it proves the queue did not drop
     /// it, nothing more (Step 34 review). Arguments: whole text, priority, replay count (> 0 when a
     /// cut line resumes, so a resumed line appears twice), the UTF-16 offset it starts from
@@ -665,7 +665,7 @@ final class SpeechQueue {
     ///     session is left untouched, so push-to-talk can never replace the sound watcher's route
     ///     observer or restore `.playback` under it.
     ///
-    /// Measured on the iPhone 17 Pro Max (2026-09-11, trip-log `probe_e_audio_session`): with no
+    /// Measured on the iPhone 17 Pro Max (trip-log `probe_e_audio_session`): with no
     /// headphones, `.playAndRecord` + these options left the output at `Speaker` and added
     /// `MicrophoneBuiltIn` as an input, and restoring `.playback` worked. The AirPods case is
     /// **not** measured yet, which is why the continuous watch above exists rather than a promise.
@@ -1190,7 +1190,7 @@ final class SpeechQueue {
     }
 
     /// Put the line now playing back at the *front* of its priority band, to resume from the clause it
-    /// was cut in (Step 37, owner decision 2026-09-12 "Cut in, then resume"): a direction cut by
+    /// was cut in (Step 37, owner decision "Cut in, then resume"): a direction cut by
     /// "Head height." continues "…then the path west" instead of restarting from "Route started".
     ///
     /// Progress: the system voice's last `willSpeakRange` word (heard in full — it stops at a word

@@ -374,7 +374,7 @@ final class AppModel {
         didSet { Settings.set(obstacleNamesEnabled, "obstacleNamesEnabled") }
     }
     /// Settings → Voice: Natural (ElevenLabs, the one voice for every line — owner decision
-    /// 2026-09-13) or System (Apple's voice, the founder's valve for a venue with bad Wi-Fi). Default
+    ///) or System (Apple's voice, the founder's valve for a venue with bad Wi-Fi). Default
     /// Natural; persisted like every other switch (Step 53 moved it out of `SpeechQueue`'s own
     /// UserDefaults key). Pushed into `speech.useNaturalVoice` in `start()` and on every change, and
     /// each change logs `voice_backend {natural, by: "settings"}`. Without a key the picker is disabled
@@ -414,7 +414,7 @@ final class AppModel {
     }
     /// Cue verbosity level (Settings → Cues). Persisted as `CueLevel.rawValue` under `cueLevel`.
     /// ⚠ Default `.detailed` = today's behaviour until a trip log from the MOUNTED cane tunes the
-    /// calmer levels (owner decision 2026-09-12; AGENTS.md "How we engineer" 6). A change is
+    /// calmer levels (owner decision; AGENTS.md "How we engineer" 6). A change is
     /// applied (`applyCueRules`), spoken once at `.nav` ("Quiet cues.") and logged `cue_profile`.
     var cueLevel: CueLevel = CueLevel(rawValue: Settings.string("cueLevel", default: CueLevel.detailed.rawValue)) ?? .detailed {
         didSet { cueProfileChanged(levelChanged: cueLevel != oldValue, placeChanged: false) }
@@ -431,7 +431,7 @@ final class AppModel {
         CueRules(level: cueLevel, place: cuePlace, requireOverhangSignature: overhangSignatureEnabled)
     }
     /// Step 52 valve for the head gate's overhang signature: ON unless `overhangSignature` is set
-    /// false in the defaults (owner decision 2026-09-13; no UI, so no hard rule 9 label). Read once
+    /// false in the defaults (owner decision; no UI, so no hard rule 9 label). Read once
     /// at launch: `cueRules` is read on every depth report.
     @ObservationIgnored private let overhangSignatureEnabled = Settings.bool("overhangSignature", default: true)
 
@@ -551,7 +551,7 @@ final class AppModel {
     ///
     /// Default **on** — the owner asked for falls to be reported, and it only ever sends anything
     /// while family alerts are also on. ⚠ It is nonetheless the least validated thing in the app:
-    /// the thresholds have never been measured against a real cane (docs/todo.md), so if it cries
+    /// the thresholds have never been measured against a real cane (the code comment), so if it cries
     /// wolf on the phone, turn it off here rather than living with it.
     var fallDetectionEnabled: Bool = Settings.bool("fallDetectionEnabled", default: true) {
         didSet { Settings.set(fallDetectionEnabled, "fallDetectionEnabled"); applyFallWatcher() }
@@ -623,7 +623,7 @@ final class AppModel {
     /// The flashlight state machine (CaneKitLogic `TorchSwitch`): optimistic display, confirmation
     /// by device report, failure only after its settle deadline. ⚠ It exists because reading
     /// `isTorchActive` right after setting it returned the old value on the phone and snapped the
-    /// switch back on every press (trip log 2026-09-12T20-57-17Z; `TorchSwitchTests`).
+    /// switch back on every press (trip log; `TorchSwitchTests`).
     @ObservationIgnored private var torchSwitch = TorchSwitch()
     /// The back camera device the torch is set and observed on. Stored, not re-fetched: KVO holds
     /// its target weakly and must watch the same instance the torch is set through (Step 34
@@ -897,14 +897,14 @@ final class AppModel {
     /// (~1–2 s of depth), which is why it is a *setting* and not something the app flips itself.
     ///
     /// ⚠ **Not persisted**, for the same reason the microphone switch below is not — and this one
-    /// was learned the hard way. It *was* persisted, and on 2026-09-12 that made the app
+    /// was learned the hard way. It *was* persisted, and on that made the app
     /// unstartable. The evidence, from the phone:
-    ///   · `canekit-2026-09-12T02-40-53Z.jsonl`, t=17.583:
+    /// · a trip log, t=17.583:
     ///     `{"kind":"face_tracking","supported":true,"enabled":true}` — the switch went on. "Both
     ///     cameras" was running at the time (t=5.772), so ARKit was paused and
     ///     `DepthEngine.setFaceTracking` only stored the flag; the session was never actually run
     ///     with it in that process.
-    ///   · `canekit-2026-09-12T02-41-13Z.jsonl`, the next launch: three records —
+    /// · a trip log, the next launch: three records —
     ///     `session` (t=0.641), `start` with `"face_head_tracking":true` (t=0.667) and
     ///     `multicam_depth` (t=0.827) — and the file stops. `TripLogger` buffers and flushes every
     ///     2 s, so those reached disk at the t≈2 s flush and nothing survived the t≈4 s one: the
@@ -982,7 +982,7 @@ final class AppModel {
     ///     swinging, in the wind. What the classifier hears on a real walk has never been measured,
     ///     so the false-alarm rate of a feature that now says "do not start crossing" is unknown.
     ///   · The route guard that reverts to `.playback` the moment the output moves was hardened on
-    ///     2026-09-11 but has **not** been exercised with AirPods on a walk. If it is wrong, the
+    /// but has **not** been exercised with AirPods on a walk. If it is wrong, the
     ///     cost is the HRTF beacon and the natural voice — two primary channels — to gain one
     ///     advisory line.
     /// Flip it on by hand at the top of a demo walk (one switch, zero launch-time risk) until a
@@ -1454,7 +1454,7 @@ final class AppModel {
         logger.event("start", ["lidar": lidarSupported, "mesh": meshClassificationSupported,
                                "haptics": haptics.isHealthy,
                                // ⚠ `haptics: false` used to be the whole story, and it is not a
-                               // story: on 2026-09-12 three consecutive launches logged it with no
+                               // story: on three consecutive launches logged it with no
                                // way to tell a dead Taptic Engine from a failed
                                // `CHHapticEngine.start()`. `HapticPlayer` already holds the
                                // reason — write it down (AGENTS.md "make the invisible visible").
@@ -1485,7 +1485,7 @@ final class AppModel {
         // Warnings never wait for the network — a cache miss is spoken by the system voice at once
         // — so the only way a warning is ever heard in the natural voice is for it to be on disk
         // already. Without this the walker heard route lines in the ElevenLabs voice and warnings
-        // in Apple's, alternating line by line (user report, 2026-09-11).
+        // in Apple's, alternating line by line (user report,).
         // `backgroundLines` rather than one batch here because the first warning that misses the
         // cache calls `prefetch` itself, which would otherwise cancel this batch half-done; as a
         // standing tail it is resumed by every later batch instead. Fire-and-forget on a detached
@@ -1528,7 +1528,7 @@ final class AppModel {
 
     /// Launch: once the launch line ("OpenCane ready.") has drained, open the microphone once — the
     /// listening tone is the whole instruction. Step 67 removed the launch menu (owner, on
-    /// `canekit-2026-09-13T15-48-34Z.jsonl`: "when it immediately pops up there's a lot of jargon. It
+    /// a trip log: "when it immediately pops up there's a lot of jargon. It
     /// should just be 'OpenCane ready' and then boom"); "help" / "menu" / "options" read the list.
     /// `VoiceShellPolicy.launchListen` decides; the permission inputs are "not refused" rather than
     /// "granted": on a first launch the owner wants the microphone and speech prompts to appear right
@@ -1603,7 +1603,7 @@ final class AppModel {
         switch verdict {
         case .open(let seconds):
             // The emergency answer gets the whole confirmation window, walking or not (review
-            // 2026-09-13, OpenCode: 3 s while navigating was shorter than the 8 s the prompt promises).
+            //, OpenCode: 3 s while navigating was shorter than the 8 s the prompt promises).
             let window = wasQuestion ? EmergencyConfirm.confirmWindow : seconds
             logger.event("voice_followup", ["action": "opened", "seconds": window, "emergency": wasQuestion])
             if wasQuestion { conversation.emergencyListenOpened() }
@@ -1616,7 +1616,7 @@ final class AppModel {
     /// Waits until nothing is speaking and nothing is queued, at most `VoiceShellPolicy.speechDrainCap`
     /// seconds, plus `SelfHearFilter.tailSeconds` so the recogniser does not open on the last word.
     /// - Returns: false when the cap passed with speech still playing or queued — the caller skips
-    ///   the listen rather than open the microphone over a warning (review 2026-09-13, OpenCode).
+    /// the listen rather than open the microphone over a warning (review, OpenCode).
     private func waitForSpeechToDrain() async -> Bool {
         let deadline = Date().addingTimeInterval(VoiceShellPolicy.speechDrainCap)
         while Date() < deadline, speech.isSpeaking || speech.queuedLineCount > 0 {
@@ -1634,7 +1634,7 @@ final class AppModel {
 
     /// Step 67: launch grace + debounce for Camera Control / volume presses — a hand gripping the
     /// phone fired three scene descriptions in the first four seconds of
-    /// `canekit-2026-09-13T15-48-34Z.jsonl`. Review round Steps 67–68: grip burst, debounce from the
+    /// a trip log. Review round Steps 67–68: grip burst, debounce from the
     /// last accepted press, one deferred press. Re-created in `start()` so the grace runs from the
     /// real launch. Advanced by `cameraControlPressed` and `watchPendingCameraControl`.
     @ObservationIgnored private var cameraControlGate = CameraControlGate(launchedAt: ProcessInfo.processInfo.systemUptime)
@@ -1949,7 +1949,7 @@ final class AppModel {
             voiceInput.cancel()
             // A launch or follow-up listen still waiting for speech to drain must not open the
             // microphone after the unlock, and a cloud answer about the pre-lock scene must not
-            // speak (Codex review 2026-09-13).
+            // speak (Codex review).
             voiceShellGeneration &+= 1
             conversation.cancelForBackground()
             // Same reason as the conversation cancel: a "Where am I" JPEG captured before the
@@ -2278,7 +2278,7 @@ final class AppModel {
 
     /// Step 51: log a `depth_geometry` record when the metric bands' intrinsics first appear or
     /// change — the evidence for re-bucketing a trip log offline (`cue_audit.py`) and for checking
-    /// the portrait orientation on hardware. Heights in centimetres (owner decision 2026-09-13).
+    /// the portrait orientation on hardware. Heights in centimetres (owner decision).
     /// Fields: `fx`, `fy`, `cx`, `cy` (depth-map px), `up` (the world-up components at that
     /// frame), `pitch_deg`, `cam_h_cm`, `floor_max_cm`, `head_min_cm`, `cover_range_cm`,
     /// `half_fov_long_deg`, `head_cover_limit_deg`. Called from `handle(_:)` on every report.
@@ -2763,7 +2763,7 @@ final class AppModel {
             severity: severity
         )
         // Field "type", not "kind": a "kind" field used to replace the record's own kind
-        // ("hazard" → "sign"), so e2e.py never saw a hazard record (phone trip log, 2026-09-11).
+        // ("hazard" → "sign"), so e2e.py never saw a hazard record (phone trip log,).
         var eventFields: [String: Any] = ["type": kind, "text": text, "source": source.rawValue]
         if let distanceM { eventFields["distance_m"] = distanceM }
         if let heightM { eventFields["height_m"] = heightM }
@@ -2798,7 +2798,7 @@ final class AppModel {
         if ahead.isFinite, ahead < 3 {
             parts.append("\(SpokenDistance.leadingCapitalized(SpokenDistance.phrase(ahead))) ahead, obstacle.")
         }
-        // The decider's live thresholds (Muse review 2026-09-13): with the overhang valve off the
+        // The decider's live thresholds (Muse review): with the overhang valve off the
         // describer must agree with the haptic, not with the defaults.
         if HeadGate.candidate(in: r.grid, enter: t.head,
                               overhangGap: t.requireOverhangSignature ? t.overhangGapM : nil) != nil {
@@ -4288,7 +4288,7 @@ final class AppModel {
     /// Step 67: judged first by `CameraControlGate` — refused in the first 5 s after launch, while
     /// the voice shell is listening or the launch line is pending (a gripping hand fired three
     /// descriptions and two busy earcons in the first four seconds of
-    /// `canekit-2026-09-13T15-48-34Z.jsonl`). Review round Steps 67–68: also refused as a grip burst
+    /// a trip log). Review round Steps 67–68: also refused as a grip burst
     /// (≥ 3 presses in 1.5 s) and within 2 s of the last ACCEPTED press (a refused press no longer
     /// extends the lockout); a single press refused only by the launch states is kept pending and
     /// answered when they end (`watchPendingCameraControl`). A refused press makes no sound and
@@ -4621,7 +4621,7 @@ enum Settings {
     /// last launch. `bool(_:default:)` therefore forces it, and Swift's `static let` gives that
     /// exactly-once, thread-safe semantics for free.
     ///
-    /// Why a recovery at all: on 2026-09-12 a persisted optional feature (front-camera head
+    /// Why a recovery at all: on a persisted optional feature (front-camera head
     /// tracking) made the app die ~2–4 s into launch, on every launch, with the switch that would
     /// have turned it off on a screen the app never reached. `LaunchRecovery` (CaneKitLogic, with
     /// the trip-log evidence and the tests) is the rule that no optional feature may ever hold the

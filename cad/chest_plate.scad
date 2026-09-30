@@ -2,13 +2,13 @@
 // so the jackw01 phone clamp (2-prong male) snaps on. Hedge against motion blur on the cane.
 // DRAFT: unrendered. Check prong spacing against your printed phone clamp before relying on it.
 // Print: flat, PETG, no supports.
-// LEGACY (ESP32 era, cut 2026-09-10 when the app went phone-only): do not print for the demo.
+// LEGACY (ESP32 era, cut when the app went phone-only): do not print for the demo.
 // Sized for a 12.7 mm aluminium/graphite shaft; the prototype stick is 27.65 mm (measured
-// 2026-09-12), so nothing here fits it. The live mount is hardware/mount_screwless/ (see
+//), so nothing here fits it. The live mount is hardware/mount_screwless/ (see
 // cad/README.md and hardware/README.md). Not rendered by any script (scripts/build_stl.ps1 covers
 // hardware/ only); no tests; no owner on the current team. Units: millimetres throughout.
 // Why it existed: the plan's hedge if the phone on the cane blurred too much — the same GoPro-knuckle
-// phone holder snaps onto the chest instead (docs/ideas.md "Hedge": a 2025 study measured cane-mounted
+// phone holder snaps onto the chest instead (a 2025 study measured cane-mounted
 // camera tracking at 55-58 % outdoors vs > 98 % head-mounted). Never printed or tested; the
 // phone-only app assumes the cane mount.
 

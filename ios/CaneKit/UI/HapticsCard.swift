@@ -38,7 +38,7 @@ struct HapticsCard: View {
     /// test", and the audio-session error in red.
     var body: some View {
         @Bindable var model = model
-        // UI audit 2026-09-13: titled "Vibration"; "Speak obstacle names" moved to the Alerts card.
+        // UI audit: titled "Vibration"; "Speak obstacle names" moved to the Alerts card.
         CKCard(title: "Vibration", systemImage: "iphone.radiowaves.left.and.right",
                caption: "Feel each pattern and check the voice.") {
             HStack(spacing: CKSpacing.sm) {
@@ -74,7 +74,7 @@ struct HapticsCard: View {
                 // key would otherwise paint a green pill over lines coming out in Apple's voice.
                 // Step 54: the spoken label names the last line's engine *and* why
                 // (`VoiceEngineChoice.describe`), and says so when the breaker holds the system voice.
-                // UI audit 2026-09-13: "Natural" / "iPhone voice" on screen instead of the vendor
+                // UI audit: "Natural" / "iPhone voice" on screen instead of the vendor
                 // name; the tone still follows `backendName` (what actually spoke).
                 CKStatusPill(text: model.speech.naturalVoice == nil || model.speech.backendName != "ElevenLabs"
                                  ? "iPhone voice" : "Natural voice",

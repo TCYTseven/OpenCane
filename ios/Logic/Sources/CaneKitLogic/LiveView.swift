@@ -31,7 +31,7 @@ import Foundation
 
 /// The camera's video-format frame rate. `DepthEngine.makeConfiguration` picks the ARKit video
 /// format with this rate; `LiveView.state` renders at it. Measured on the iPhone 17 Pro Max
-/// (2026-09-11): world tracking with LiDAR offers the wide camera at up to 60 fps.
+///: world tracking with LiDAR offers the wide camera at up to 60 fps.
 /// Pinned by `cameraFrameRateFollowsTheSwitch`.
 public enum CameraRate {
     /// 60 with the Mount card's "60 fps camera (warmer)" switch, else 30.
@@ -130,7 +130,7 @@ public enum BothCameras: Equatable, Sendable {
         guard foreground else { return .off }
         // The whole route, whatever the switch shows: `AppModel.setBothCameras` snaps a refused
         // switch back to off at once, so keying this on `enabled` hid the reason (measured,
-        // trip log 2026-09-12T20-57-17Z; `bothCamerasExplainTheRefusalForTheWholeRoute`).
+        // trip log; `bothCamerasExplainTheRefusalForTheWholeRoute`).
         if navigating { return .blockedByRoute }
         guard enabled else { return .off }
         return supported ? .live : .unsupported
@@ -141,7 +141,7 @@ public enum BothCameras: Equatable, Sendable {
 ///
 /// Turning `ARWorldTrackingConfiguration.userFaceTrackingEnabled` on **or** off makes
 /// `DepthEngine.setFaceTracking` pause and re-run the AR session: ~1–2 s with no obstacle frames.
-/// Measured on the phone (trip log 2026-09-12T20-57-17Z, t = 80.7 s) it was switched on mid-route
+/// Measured on the phone (trip log, t = 80.7 s) it was switched on mid-route
 /// with no warning. So, like the two-camera mode, it is refused while a route guides or starts.
 /// Caller: `AppModel.faceHeadTrackingEnabled`'s `didSet` and `startFaceTrackingSelfTest`.
 /// Pinned by `LiveViewTests.faceTracking*`.
@@ -167,15 +167,15 @@ public enum FaceTrackingChange: Equatable, Sendable {
 /// ⚠ Per camera, on measured evidence (the owner's iPhone 17 Pro Max, clamped portrait): every
 /// attempt to use one `AVCaptureDevice.RotationCoordinator` angle for BOTH cameras fixed one feed
 /// and broke the other — preview-for-both left the back feed sideways (trip log
-/// 2026-09-12T22-02-03Z: `back_rotation: 0`), capture-for-both tilted the front inset. With the
-/// per-camera rule the back feed logged `back_rotation: 90` (trip log 2026-09-12T22-20-53Z).
+///: `back_rotation: 0`), capture-for-both tilted the front inset. With the
+/// per-camera rule the back feed logged `back_rotation: 90` (trip log).
 ///
 /// The interface is portrait-only (Info.plist `UISupportedInterfaceOrientations`), so what the
 /// walker sees never rotates and the right angle does not follow the phone:
 ///   · back: 90, the portrait-up angle — NOT the coordinator's capture angle, which follows the
 ///     phone's physical orientation and reads 0 / 180 when Both cameras starts with the phone held
 ///     sideways or flat (Muse review, Step 36: that would be the sideways feed again);
-///   · front: 0, measured upright (trip log 2026-09-12T22-20-53Z `front_rotation: 0`), then 270 —
+/// · front: 0, measured upright (trip log `front_rotation: 0`), then 270 —
 ///     not the coordinator's preview angle, which is sampled once at connect and reads wrong if Both
 ///     cameras starts with the phone flat or sideways (Muse, Step 37 review), and never the capture
 ///     angle, which tilted the inset (103d548).

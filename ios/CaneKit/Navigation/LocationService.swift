@@ -182,7 +182,7 @@ final class LocationService: NSObject, @MainActor CLLocationManagerDelegate {
     /// a When-In-Use app keeps receiving fixes only through a `CLBackgroundActivitySession`, and
     /// that session makes iOS draw the blue location pill in the Dynamic Island — which is what
     /// pushed OpenCane's own Live Activity into the minimal bubble on the owner's phone (pictures
-    /// 2026-09-12 21:48: a blue arrow in the pill, our head-height glance in a detached circle).
+    ///: a blue arrow in the pill, our head-height glance in a detached circle).
     /// Apple Maps and Google Maps own the island because they hold Always. iOS shows the upgrade
     /// prompt once (and may grant provisional Always first); a walker who declines keeps today's
     /// behaviour (session + pill). Idempotent; a no-op once answered. Caller: `AppModel.startRouteNow`

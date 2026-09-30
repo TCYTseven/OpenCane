@@ -5,7 +5,7 @@
 //  Plays the calm-feedback tones (Step 65, `Earcon` in CaneKitLogic) — a tap, a tick, a bell —
 //  through the app's existing audio session, with a matching soft haptic felt on the cane.
 //
-//  Why this exists: owner, 2026-09-13 — "maybe a little tap or bell and then it releases something;
+// Why this exists: owner, — "maybe a little tap or bell and then it releases something;
 //  don't over-stimulate the blind person too much or else they won't listen." The waiting words
 //  ("One moment.", "Still describing the previous scene.", the warm-up sentence) became tones.
 //

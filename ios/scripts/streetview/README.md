@@ -20,7 +20,7 @@ walking direction. They let us test the camera features without walking the rout
 screenshot the window at 1493×812, crop rows 185–700 (drops the Maps overlays), save as
 `<file>` next to `frames.json`.
 
-## Step 12 findings (2026-09-11, afternoon) and fixes
+## Step 12 findings and fixes
 
 | Found | Fix |
 |---|---|
@@ -29,7 +29,7 @@ screenshot the window at 1493×812, crop rows 185–700 (drops the Maps overlays
 | At that range a STOP sign (for drivers) would be read at every stop-controlled corner | "STOP" removed from the sign phrases; "PUSH BUTTON" added |
 | The e2e "passed" with no trace of the camera | trip-log `scan`, `hazard_watch`, `describe_result` records; the streetview scenario fails unless ≥ 8 of 10 corners are described |
 
-## What the first 2026-09-11 run showed
+## What the first run showed
 
 | Where | On-device Vision saw | Notes |
 |---|---|---|

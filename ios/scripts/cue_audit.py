@@ -35,7 +35,7 @@ It answers, from the log alone:
      which should be 0 once the cache is warm.
 
 Run from ios/:
-    scripts/cue_audit.py path/to/canekit-2026-09-12T20-57-17Z.jsonl
+    scripts/cue_audit.py path/to/canekit.jsonl
     scripts/cue_audit.py --pull              # copy the newest log off the phone in local.mk first
     scripts/cue_audit.py --json log.jsonl    # machine-readable
     scripts/cue_audit.py --selftest          # the fixture checks below (no device, no simulator)
@@ -48,7 +48,7 @@ Read-only: never writes into the log or the repo.
 # Owner / callers: `make audit` in ios/Makefile (runs `--selftest`, then this script on LOG=path or
 # `--pull`); by hand from ios/. Nothing in the app or the build imports it. Python 3, stdlib only.
 # Why it exists: Step 35's device report ("choppy", "overstimulating") had no numbers behind it; the
-# cue design v2 plan (docs/cue_design_v2.md, docs/todo.md) is judged against this script's output
+# cue design v2 plan (docs/cue_design_v2.md, the code comment) is judged against this script's output
 # on a mounted walk (CHANGELOG.md Step 35). Step 37 added the resume / cross-band pause metrics.
 # Tests: `selftest()` below (fixture asserts, no device). It is NOT part of `make test` or CI.
 # Inputs it depends on (renaming any of these in the app silently zeroes a section): record kinds
@@ -240,7 +240,7 @@ def head_gate_replay(records: list[dict], gap: float | None = SIGNATURE_GAP_M,
     for r in frames:
         now = r.get("ar_t", r.get("t", 0))
         if not r.get("trusted", True):
-            continue                              # a sweep freezes the clock (review 2026-09-13)
+            continue                              # a sweep freezes the clock (review)
         cover = None
         if estimate_cover and r.get("bands") != "metric":
             cover = [frame_head_cover(r, limit) is not False] * 3

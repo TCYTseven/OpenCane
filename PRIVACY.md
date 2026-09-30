@@ -1,7 +1,5 @@
 # OpenCane privacy policy
 
-_Last updated: September 29, 2026_
-
 OpenCane is an iPhone app that helps blind and low-vision people walk with a white cane. It is
 built so that the parts that keep you safe work on the phone alone. This page lists every way
 information can leave your phone, and which of them you control.

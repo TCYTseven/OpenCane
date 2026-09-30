@@ -149,7 +149,7 @@ public enum TextRequest {
     ///
     /// ⚠ This budget has to cover a REASONING model's thinking, not just its two sentences, and
     /// the visible answer is ~60 tokens of it. Measured against the real Muse endpoint on
-    /// 2026-09-12, one alert prompt:
+    ///, one alert prompt:
     ///
     /// | max_completion_tokens | reasoning_effort | reasoning tokens | result |
     /// |---|---|---|---|

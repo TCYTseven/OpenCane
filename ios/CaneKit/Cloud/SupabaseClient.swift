@@ -33,7 +33,7 @@
 //    · `bulkInsert` sends an array. ⚠ Every row must carry the same key set — see
 //      `CloudSchema`/`CloudSchemaTests`; PostgREST rejects the whole batch otherwise.
 //  Tests: none (network I/O). The REST contract was verified against the live project on
-//  2026-09-13 with curl — register, bulk insert, patch, RPC and a storage upload — and the row
+// with curl — register, bulk insert, patch, RPC and a storage upload — and the row
 //  shapes are unit-tested in `CloudSchemaTests`.
 //
 

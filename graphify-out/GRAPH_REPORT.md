@@ -1,4 +1,4 @@
-# Graph Report - 54FoundersHack  (2026-09-13)
+# Graph Report - 54FoundersHack 
 
 ## Corpus Check
 - 302 files · ~761,976 words
@@ -107,7 +107,7 @@
 - SoundRecognitionGuard
 - OpenCane: the iOS app for the phone-only smart cane
 - FamilyContactsTests.swift
-- Team brief: OpenCane / CaneKit at HEAD `076fcaa` (Sat 2026-09-12 evening)
+- Team brief: OpenCane / CaneKit at HEAD `076fcaa` 
 - WorkoutRelay
 - AirPods + Apple Watch — setup and what the app does about them
 - OpenCane: a smart-cane kit that clips an iPhone onto the cane you already own
@@ -189,7 +189,7 @@
 - GPSAnnouncer
 - ProbeOutputDelegate
 - ConversationBudget
-- Step 47 — The Dynamic Island from its first pictures, cue levels that differ on the cane, a Details tab that says which model answered, and the Guide tile pair (Sat Sep 12, evening)
+- Step 47 — The Dynamic Island from its first pictures, cue levels that differ on the cane, a Details tab that says which model answered, and the Guide tile pair 
 - ActionRateLimit
 - SceneVocabulary
 - Module `family-alerts` — cane events → the Grok Bot routine (Step 39)
@@ -198,7 +198,7 @@
 - .sighting
 - IndoorGuide
 - LiveActivityController
-- OpenCane — device test checklist (Sun Sep 13)
+- OpenCane — device test checklist 
 - SceneEngineSummary
 - ConnectionState
 - SceneEngineSummaryTests.swift
@@ -213,8 +213,8 @@
 - Module `depth-haptics` — `ios/CaneKit/Depth/*.swift`, `ios/CaneKit/Haptics/HapticPlayer.swift`
 - ArrivalCardView
 - StopRouteConfirmation
-- Step 14 — The night before: what was broken and what is new (Fri Sep 11, simulator only)
-- Historical note — Step 16 — Emergency sirens + hands-free integrated (Sat Sep 12, uncommitted)
+- Step 14 — The night before: what was broken and what is new (simulator only)
+- Historical note — Step 16 — Emergency sirens + hands-free integrated (uncommitted)
 - CameraControlGate
 - TorsoSuppressReason
 - VoiceInputState
@@ -234,7 +234,7 @@
 - LiveView.swift
 - Event
 - IslandAlertThrottle
-- Historical (Fri 2026-09-11, 19:45) — the "WHERE WE ARE" snapshot
+- Historical — the "WHERE WE ARE" snapshot
 - .start
 - .event
 - FamilyContactsEditor
@@ -243,7 +243,7 @@
 - VoiceInputFailure
 - PostStore
 - CallbackBox
-- TONIGHT (live checklist, Fri 2026-09-11 evening; updated with every push)
+- TONIGHT (live checklist, ; updated with every push)
 - DualCameraFrameRelay
 - OpenCaneControls.swift
 - VoiceBreaker
@@ -375,7 +375,7 @@ Nodes (23): .current, CodingKeys, bearingNextDeg, crossing, curved, id, lat, lon
 
 ### Community 11 - "docs/README.md"
 Cohesion: 0.22
-Nodes (6): Hard rules, CaneKit — Claude Code project rules, LIVE TRACKER — Sun Sep 13 (updated as work lands; newest first), CI workflow (manual trigger only), sim-build job (macOS, informational), gen.sh script
+Nodes (6): Hard rules, CaneKit — Claude Code project rules, LIVE TRACKER — (updated as work lands; newest first), CI workflow (manual trigger only), sim-build job (macOS, informational), gen.sh script
 
 ### Community 12 - "CKBigButton"
 Cohesion: 0.07
@@ -575,7 +575,7 @@ Nodes (15): .pitchDownDeg, HeadCoverNotice, LaneReport, .head, MeshHit, MountTil
 
 ### Community 61 - "CaneKit — strict build checklist"
 Cohesion: 0.05
-Nodes (39): CaneKit — strict build checklist, Cross-cutting, Cue design v2 — items cue-v2 #35–#45 (approved 2026-09-12 evening; talk floor inserted as #37 the same night, later items renumbered +1 — CHANGELOG entries before Step 37 use the old numbers), Step 0 — phone-only reset, Step 10 — Review fixes + UI tests (pre-device), Step 11 — Hazards the maps don't know, on-device vision, stress harness (pre-device), Step 12 — Google Street View mock of ISR → CIF (pre-device), Step 1 — project scaffold (+31 more)
+Nodes (39): CaneKit — strict build checklist, Cross-cutting, Cue design v2 — items cue-v2 #35–#45 (approved ; talk floor inserted as #37 the same night, later items renumbered +1 — CHANGELOG entries before Step 37 use the old numbers), Step 0 — phone-only reset, Step 10 — Review fixes + UI tests (pre-device), Step 11 — Hazards the maps don't know, on-device vision, stress harness (pre-device), Step 12 — Google Street View mock of ISR → CIF (pre-device), Step 1 — project scaffold (+31 more)
 
 ### Community 62 - "GroundHazard"
 Cohesion: 0.16
@@ -663,7 +663,7 @@ Nodes (20): .familyContext, AlertContext, AlertContextPrompt, Bool, Data, Double
 
 ### Community 85 - "CaneKit changelog"
 Cohesion: 0.03
-Nodes (74): CaneKit changelog, Fix — Both cameras: the back feed was sideways again; rotation is now chosen per camera (Sat Sep 12), Historical note — Step 15 — Front-inset tilt, second attempt (Sat Sep 12, compiled + installed), Historical note — Step 17 — App icon (Sat Sep 12, on phone and launched), Historical note — Step 21 — Bolt: Decouple 30 Hz depth stream from ContentView root to prevent full-screen SwiftUI re-renders (Sat Sep 12), Historical note — Step 22 — Gate route start on fresh trusted LiDAR depth (implementation precursor; superseded by Step 25 heading above) (Sat Sep 12), Historical note — Step 25 — Camera interlock adversarial hardening and documentation sync (Sat Sep 12), Historical note — Step 45 (initial backend) — Supabase cloud backend integration for Medical ID, mobility stats, hazard map, and family alert feeds (Sat Sep 12) (+66 more)
+Nodes (74): CaneKit changelog, Fix — Both cameras: the back feed was sideways again; rotation is now chosen per camera , Historical note — Step 15 — Front-inset tilt, second attempt (compiled + installed), Historical note — Step 17 — App icon (on phone and launched), Historical note — Step 21 — Bolt: Decouple 30 Hz depth stream from ContentView root to prevent full-screen SwiftUI re-renders , Historical note — Step 22 — Gate route start on fresh trusted LiDAR depth (implementation precursor; superseded by Step 25 heading above) , Historical note — Step 25 — Camera interlock adversarial hardening and documentation sync , Historical note — Step 45 (initial backend) — Supabase cloud backend integration for Medical ID, mobility stats, hazard map, and family alert feeds (+66 more)
 
 ### Community 86 - ".session"
 Cohesion: 0.26
@@ -671,7 +671,7 @@ Nodes (6): ARCamera, ARAnchor, ARFrame, ARSession, Error, Task
 
 ### Community 87 - "AGENTS.md — rules for anyone (human or AI) editing OpenCane / CaneKit"
 Cohesion: 0.20
-Nodes (10): AGENTS.md — rules for anyone (human or AI) editing OpenCane / CaneKit, Commands, Hardware / OpenSCAD — traps that have already cost us a night, How we engineer (the bar for every change, human or AI), Layout, Steps 34–37 and the rotation fix (Sat 2026-09-12) — do not "simplify" these, The name split — OpenCane to a human, CaneKit in the code (deliberate, do not "fix"), Things that look wrong but are deliberate (+2 more)
+Nodes (10): AGENTS.md — rules for anyone (human or AI) editing OpenCane / CaneKit, Commands, Hardware / OpenSCAD — traps that have already cost us a night, How we engineer (the bar for every change, human or AI), Layout, Steps 34–37 and the rotation fix — do not "simplify" these, The name split — OpenCane to a human, CaneKit in the code (deliberate, do not "fix"), Things that look wrong but are deliberate (+2 more)
 
 ### Community 88 - "Every doc"
 Cohesion: 0.22
@@ -693,9 +693,9 @@ Nodes (11): 1. Day-0 checklist, 2. Verified spec deviations (don't "fix" these b
 Cohesion: 0.12
 Nodes (19): FamilyContacts, Bool, String, Data, Encoder, familyContactRegistrationIsNeverAnAlertRow(), normalizeCapsTheList(), normalizeDropsInvalidEntries() (+11 more)
 
-### Community 93 - "Team brief: OpenCane / CaneKit at HEAD `076fcaa` (Sat 2026-09-12 evening)"
+### Community 93 - "Team brief: OpenCane / CaneKit at HEAD `076fcaa` "
 Cohesion: 0.20
-Nodes (10): Aarav (walker), Historical: status as written earlier on Sat 2026-09-12 (after Step 28), If you change code, Installing on the phone (Aritro), Known quirks, Sagar and Tommy (hardware), Setup checklist (do these in order), Status right now — read this first (+2 more)
+Nodes (10): Aarav (walker), Historical: status as written earlier on (after Step 28), If you change code, Installing on the phone (Aritro), Known quirks, Sagar and Tommy (hardware), Setup checklist (do these in order), Status right now — read this first (+2 more)
 
 ### Community 94 - "WorkoutRelay"
 Cohesion: 0.12
@@ -719,7 +719,7 @@ Nodes (5): Bill of materials, Files, hardware/: phone-to-cane mount, Quick start
 
 ### Community 99 - "Street View route frames (local test input)"
 Cohesion: 0.67
-Nodes (3): Step 12 findings (2026-09-11, afternoon) and fixes, Street View route frames (local test input), What the first 2026-09-11 run showed
+Nodes (3): Step 12 findings and fixes, Street View route frames (local test input), What the first run showed
 
 ### Community 100 - ".classify"
 Cohesion: 0.12
@@ -1017,7 +1017,7 @@ Nodes (6): AVCaptureVideoDataOutputSampleBufferDelegate, ProbeOutputDelegate, AV
 Cohesion: 0.20
 Nodes (10): ConversationBudget, .fillerSpoken, Event, none, thinking, timeout, Bool, Double (+2 more)
 
-### Community 178 - "Step 47 — The Dynamic Island from its first pictures, cue levels that differ on the cane, a Details tab that says which model answered, and the Guide tile pair (Sat Sep 12, evening)"
+### Community 178 - "Step 47 — The Dynamic Island from its first pictures, cue levels that differ on the cane, a Details tab that says which model answered, and the Guide tile pair "
 Cohesion: 0.20
 Nodes (10): A. Dynamic Island — evidence first, then a redesign, B. Guide — the two-up pair is a pair, C. Cue levels that differ on the cane (cue design v2 item 41 — torso haptics by level), D. Details — which model answered, why, how long, when, E. Medical ID — privacy-safe defaults, F. Documentation drift audit (three read-only agents, corrections applied), Not done / could not do, Reviews (four reviewers on the diff; every finding verified by hand) (+2 more)
 
@@ -1053,7 +1053,7 @@ Nodes (19): IndoorGuide, .guideLine, .recordedDirectory, .statusClause, OutsideR
 Cohesion: 0.12
 Nodes (20): Activity, AlertConfiguration, LiveActivityController, RequestSpec, Any, Bool, Date, Double (+12 more)
 
-### Community 187 - "OpenCane — device test checklist (Sun Sep 13)"
+### Community 187 - "OpenCane — device test checklist "
 Cohesion: 0.17
 Nodes (11): 0. Before you start, 1. Launch and the voice shell, 2. Emergency (do NOT say "yes" unless the contact expects a call), 3. Obstacles on the cane (phone mounted, ~45° down), 4. Indoor → outdoor (ISR → CIF), 5. Record the real indoor route (sighted teammate, once), 6. Outdoor route (ISR → CIF), 7. Dynamic Island / Live Activity (Step 64) (+3 more)
 
@@ -1113,9 +1113,9 @@ Nodes (6): ArrivalCardView, .body, Double, String, TimeInterval, .body
 Cohesion: 0.22
 Nodes (10): PressResult, armed, confirmed, StopRouteConfirmation, .isArmed, Bool, TimeInterval, stopRouteExpiredConfirmationMustBeRearmed() (+2 more)
 
-### Community 202 - "Step 14 — The night before: what was broken and what is new (Fri Sep 11, simulator only)"
+### Community 202 - "Step 14 — The night before: what was broken and what is new (simulator only)"
 Cohesion: 0.67
-Nodes (3): Found broken, fixed, New, all off by default, Step 14 — The night before: what was broken and what is new (Fri Sep 11, simulator only)
+Nodes (3): Found broken, fixed, New, all off by default, Step 14 — The night before: what was broken and what is new (simulator only)
 
 ### Community 204 - "CameraControlGate"
 Cohesion: 0.20
@@ -1185,9 +1185,9 @@ Nodes (18): Event, answer, cloudFailed, describerBusy, listenEmpty, listenHeardW
 Cohesion: 0.16
 Nodes (11): IslandAlertLevel, curb, head, near, none, .rank, stop, IslandAlertThrottle (+3 more)
 
-### Community 223 - "Historical (Fri 2026-09-11, 19:45) — the "WHERE WE ARE" snapshot"
+### Community 223 - "Historical — the "WHERE WE ARE" snapshot"
 Cohesion: 0.22
-Nodes (9): Branch state (updated 2026-09-12 morning), Historical (Fri 2026-09-11, 19:45) — the "WHERE WE ARE" snapshot, Honest capability table — what the demo can and cannot claim, Keys (git-ignored `ios/CaneKit/Resources/Secrets.plist`, never committed), MEASURED ON THE PHONE: both cameras AND depth is possible, without ARKit, Open findings from the Muse review of the sensor layer (2026-09-11, xhigh), The merge gate (nothing lands on main that fails any step), What is NOT proven on the phone yet (+1 more)
+Nodes (9): Branch state (updated ), Historical — the "WHERE WE ARE" snapshot, Honest capability table — what the demo can and cannot claim, Keys (git-ignored `ios/CaneKit/Resources/Secrets.plist`, never committed), MEASURED ON THE PHONE: both cameras AND depth is possible, without ARKit, Open findings from the Muse review of the sensor layer (xhigh), The merge gate (nothing lands on main that fails any step), What is NOT proven on the phone yet (+1 more)
 
 ### Community 224 - ".start"
 Cohesion: 0.12
@@ -1221,9 +1221,9 @@ Nodes (5): PostStore, .fileURL, Bool, String, URL
 Cohesion: 0.16
 Nodes (9): AVSpeechSynthesisVoice, AVSpeechSynthesizer, AVSpeechSynthesizerDelegate, AVSpeechUtterance, CallbackBox, DelegateRelay, Speech, Bool (+1 more)
 
-### Community 232 - "TONIGHT (live checklist, Fri 2026-09-11 evening; updated with every push)"
+### Community 232 - "TONIGHT (live checklist, ; updated with every push)"
 Cohesion: 0.33
-Nodes (6): ElevenLabs setup (2 minutes, Aritro only — nobody else can do this), Gemini setup (optional, 3 minutes, Aritro only), Hardware, later that evening (Windows machine) — see CHANGELOG Step 25, Hardware tonight (Sagar, Windows machine), Scene understanding: the decision, and why (researched 2026-09-11, 65 agents), TONIGHT (live checklist, Fri 2026-09-11 evening; updated with every push)
+Nodes (6): ElevenLabs setup (2 minutes, Aritro only — nobody else can do this), Gemini setup (optional, 3 minutes, Aritro only), Hardware, later that evening (Windows machine) — see CHANGELOG Step 25, Hardware tonight (Sagar, Windows machine), Scene understanding: the decision, and why (researched , 65 agents), TONIGHT (live checklist, ; updated with every push)
 
 ### Community 233 - "DualCameraFrameRelay"
 Cohesion: 0.16

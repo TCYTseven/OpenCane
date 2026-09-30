@@ -31,7 +31,7 @@
 //  Key invariants:
 //    · **Uniform keys.** PostgREST rejects a bulk insert whose objects do not all carry the same
 //      key set ("All object keys must match", PGRST102, measured against the live project on
-//      2026-09-13). `TripEventRow` therefore encodes every column on every row, writing an
+//). `TripEventRow` therefore encodes every column on every row, writing an
 //      explicit JSON null rather than omitting the key. Never make one of its fields "omit when
 //      nil" — it silently 400s a whole batch, and the batch is a walk.
 //    · ⚠ A new persisted setting still needs a case in `DeviceSettingsRow` and a line in

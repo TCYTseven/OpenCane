@@ -23,7 +23,7 @@
 //      obstacle path, and never a `speech` log record (e2e.py asserts on `speech`). Every line and
 //      decision is logged as `indoor {action, index, count, steps, walked, script, …}` instead.
 //    · ⚠ The CMPedometer handlers are explicitly `@Sendable` and hop to main (TripTracker's crash note:
-//      an inferred `@MainActor` closure called on CoreMotion's queue trapped the app 2026-09-11).
+// an inferred `@MainActor` closure called on CoreMotion's queue trapped the app).
 //    · The device-motion handler is delivered `to: .main`, so `MainActor.assumeIsolated` is provably
 //      correct there (AGENTS.md hard rule 1, the HeadPoseTracker pattern).
 //    · Simulator / demo: `CANEKIT_INDOOR_ROUTE=1` starts the ISR script at launch;

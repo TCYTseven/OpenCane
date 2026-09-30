@@ -44,7 +44,7 @@
 
     The preview cannot do any of this: it draws overlaps in colour and
     they look like nothing at all. Each of these checks caught a real
-    defect on 2026-09-12; see CHANGELOG.md, Step 25 (the pass that built
+    defect; see CHANGELOG.md, Step 25 (the pass that built
     this harness), and Step 21 for the thread and bore findings.
 
 .PARAMETER Quick
@@ -141,7 +141,7 @@ if (-not $Quick) {
     # 0.58), so the radial clearance shifts the female flank outward AND
     # sideways. slack = thr_axial/2 + thr_clear * slope = 0.225 + 0.45 * 0.58
     # = 0.49 mm at the shipped numbers. The chord-profile thread that
-    # preceded 2026-09-12 had near-vertical flanks and no such term, which
+    # preceded had near-vertical flanks and no such term, which
     # is why the bench's [0.35, 0.25] nut jammed on it and why a printed
     # ring on this thread rocks about 1 mm at the top when loose - and not
     # at all once it bears on the cone.

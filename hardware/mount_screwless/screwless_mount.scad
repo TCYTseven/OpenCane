@@ -59,7 +59,7 @@ joint = "dovetail"; // [dovetail, ball]
 world_view = true;  // ghost cane + phone in the assembly preview
 
 /* [Cane] */
-// 27.65 mm, dial caliper, Sagar, Sep 11 2026. THIS IS THE NUMBER IN USE.
+// 27.65 mm, dial caliper, Sagar,. THIS IS THE NUMBER IN USE.
 //
 // It disagrees with everything before it and the disagreement is not a
 // rounding error: hardware/mount/cane_mount.scad and the hardware brief
@@ -68,7 +68,7 @@ world_view = true;  // ghost cane + phone in the assembly preview
 // clearance - far too big to absorb. A collar bored for 28.75 would just
 // spin on a 27.65 shaft.
 //
-// MEASURED, 2026-09-12, by the bore coupons against the real cane. This
+// MEASURED,, by the bore coupons against the real cane. This
 // is no longer a disputed number. Two sets of rings (yellow and white)
 // were slid onto the cane at the collar spot:
 //   1 notch  27.75  barely went on          <- the bound
@@ -76,7 +76,7 @@ world_view = true;  // ghost cane + phone in the assembly preview
 //   3 notches 28.35  went on decently (both colours agreed)
 //   4,5             not needed, larger still
 // pole_d = (smallest ring that goes on at all) - 0.10 = 27.65, which is
-// exactly what the dial caliper read on Sep 11 by a completely different
+// exactly what the dial caliper read on by a completely different
 // method. Two independent measurements to 0.01 mm.
 //
 // The rival 28.75 figure is WRONG and is now retired. It survived in
@@ -129,7 +129,7 @@ cone_taper   = 1.60;   // mm, radius lost from the bottom of the cone to the top
 // the cone at the thread's MAJOR radius, 0.75 mm outside those crests, and
 // the ring's top crest hit the cone's base with 3.8 mm still to go: the
 // ring stopped there, which is what happened on the first printed pair.
-// Measured on 2026-09-12 by lifting the ring in the model: 0.165 cm3 of
+// Measured on by lifting the ring in the model: 0.165 cm3 of
 // solid overlap at every height from 6 mm up. The cone base now sits
 // cone_relief inside the crests, so the threaded band passes it freely
 // and only the ring's own cone ever touches it.
@@ -147,7 +147,7 @@ thr_depth    = 1.20;   // mm, thread radial depth.
 // [thr_clear, thr_axial] = the bench's four-nut coupon (coupons.scad, thr_tests)
 // steps radial and axial clearance separately; nut 3 = [0.45, 0.45] is
 // the expected winner and is what the collar and ring are cut to here.
-// [0.35, 0.25] is what the bench ran on 2026-09-12 and it JAMMED two turns
+// [0.35, 0.25] is what the bench ran on and it JAMMED two turns
 // in - which the model agrees with: 0.125 mm per flank is under one line
 // of over-extrusion. When a nut has been read, put ITS pair here.
 thr_clear    = 0.45;   // mm, radial clearance, ring thread vs collar thread. = nut 3.
@@ -302,7 +302,7 @@ arm_w        = 30.0;   // mm, fin depth ALONG the cane axis (Z), at the root.
 // phone from the arm, and the only route from the collar to that plate
 // that does not pass through the phone goes around its bottom edge. The
 // first version put the block at mid-height and the fin went straight
-// through the phone - 6.9 cm3 of overlap, measured on 2026-09-12 - and
+// through the phone - 6.9 cm3 of overlap, measured on - and
 // the assembly preview did not show it because the colours overlap too.
 // sock_y is the cradle-frame Y (0 = the phone's bottom edge) of the tenon
 // centre; the block, its stop and the pawl window all hang off it.
@@ -440,7 +440,7 @@ assert(tip_clear >= 8,
 // r = 17 and a 3 mm pitch is THIRTY MICRONS - a seventh of a layer. It
 // renders, it passes every assert, it looks like a thread in preview,
 // and it slices away to a smooth cylinder. That is exactly what this
-// file did until 2026-09-12, and the ring spun freely on the collar.
+// file did until, and the ring spun freely on the collar.
 //
 // So the bump is built as an ANGULAR SECTOR: an axial half-width of a mm
 // is thr_ang(a) = a * 360 / thr_pitch degrees of arc, at every radius.
@@ -457,7 +457,7 @@ thr_arc = 16;   // polygon segments per arc. 16 is under 0.02 mm of chord.
 // closest approach to the axis is r = 15.65 against a minor of 17.03, so
 // union() with circle(minor) swallowed the whole outer half of the tooth
 // and the root came out 0.738 mm wide instead of the 1.500 mm thr_duty
-// asks for - measured, 2026-09-12, by a radial pin through the band.
+// asks for - measured,, by a radial pin through the band.
 // The tooth was square, thr_duty was inert above ~0.155 and INVERTED
 // above it (raising it made the tooth narrower), and both asserts below
 // guarded a shape the geometry never produced. Walking angle and radius

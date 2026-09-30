@@ -5,7 +5,7 @@
 //  The natural voice's circuit breaker: after a live fetch fails or misses its deadline, no line
 //  races the network again until a *background* fetch has proven the network is back.
 //
-//  Why it is session-sticky (Step 54, owner decision 2026-09-13 "one voice"): the old breaker was
+// Why it is session-sticky (Step 54, owner decision "one voice"): the old breaker was
 //  a timestamp — 60 s after a failure the next uncached line raced the network again, failed
 //  again after 2.5 s in silence, and flipped to the system voice again. Over a long outage that is
 //  a wrong-voice line, late, every minute. Now a trip opens the breaker and only proof closes it:

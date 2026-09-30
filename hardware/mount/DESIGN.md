@@ -1,7 +1,7 @@
 # Cane mount for the iPhone 17 Pro Max: design brief
 
-Owner: Sagar (hardware, printing, CAD). App-side checks: Aritro. Written 2026-09-11 for the Sat
-2026-09-12 demo. Files: `cane_mount.scad` (parametric model), `test_coupons.scad` (fit tests),
+Owner: Sagar (hardware, printing, CAD). App-side checks: Aritro. Written for the Sat
+ demo. Files: `cane_mount.scad` (parametric model), `test_coupons.scad` (fit tests),
 `pitch_model.py` (the tilt and clearance numbers in sections 4 and 5).
 
 **Status: the SCAD files have not been rendered.** No OpenSCAD was installed where they were
@@ -20,8 +20,8 @@ trust any of it.
    still gets its near-field reference at 5° (section 4). Pitching steeper needs a software
    change first (section 13).
 
-   > **Update 2026-09-13 (software Step 51).** The first cane walk held the phone at **45° down**
-   > (trip log `canekit-2026-09-13T04-36-32Z`, tilt median 45.3°), and the row bands then read
+   > **Update (software Step 51).** The first cane walk held the phone at **45° down**
+   > (trip log a trip log, tilt median 45.3°), and the row bands then read
    > knee-high things as "head" and the floor as "torso". `LaneMath` now gravity-corrects: every
    > depth sample is bucketed by its height above the ground (camera 95 cm; floor < 25 cm dropped;
    > head ≥ 140 cm), so pavement is never an obstacle at any pitch. The 3–8° window is no longer a
@@ -53,7 +53,7 @@ rear. Operating ambient 0–35 °C. Dual-frequency GPS.
 
 Apple's dimensional drawing for accessory makers
 ([iphone-17-pro-max.pdf](https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-17-pro-max.pdf),
-dated 2025-09-09) gives the values below, all in mm. Button positions are **centre ± half-length,
+dated ) gives the values below, all in mm. Button positions are **centre ± half-length,
 measured from the top edge**. "Left" and "right" are as seen from the screen.
 
 | Feature | Value | Used for |
@@ -85,7 +85,7 @@ drawing.
 | Software fact (file) | Consequence for the mount |
 |---|---|
 | `LaneMath` portrait remap (`rotateForPortrait = true`); Mount toggle "Phone held upright (portrait)" | Phone upright in portrait, top up, rear camera facing forward. |
-| `LaneMath` (since Step 51, 2026-09-13): each sample bucketed by height above ground from the ARKit pose — floor < 25 cm dropped, torso 25–140 cm, head ≥ 140 cm; a band not visible at 1.5 m reports NO COVER. Before the first pose only: the old rows (bottom 25 % skipped, head 0–37.5 %, torso 37.5–75 %). 10th-percentile depth per cell. | Pitch ≤ ~15° down for head-height cover (limit ≈ 19°, section 4 note); pavement no longer caps the pitch. |
+| `LaneMath` (since Step 51, ): each sample bucketed by height above ground from the ARKit pose — floor < 25 cm dropped, torso 25–140 cm, head ≥ 140 cm; a band not visible at 1.5 m reports NO COVER. Before the first pose only: the old rows (bottom 25 % skipped, head 0–37.5 %, torso 37.5–75 %). 10th-percentile depth per cell. | Pitch ≤ ~15° down for head-height cover (limit ≈ 19°, section 4 note); pavement no longer caps the pitch. |
 | `CueDecider`: head < 1.5 m, centre < 2.0 m (clears at 2.15), side < 1.2 m | Pavement must read above ~2.2 m in the torso band. A 1.8 m overhang must still be in the head band 1.5 m away. |
 | `GroundSampler` + `GroundHazardDetector`: gravity-aligned; needs ≥ 12 samples 0.8–1.5 m ahead as the ground reference; scans 1.5–3.5 m; ignores depth < 0.3 m (the cane shaft) and > 4.5 m | The ground from ~1.2 m out must be in view, which holds at ≥ 3° down. A shaft in view closer than 0.3 m is harmless. |
 | Sweep gate: frames with \|gyro\| ≥ 0.6 rad/s are untrusted (`ios/README.md` §6) | A wobbly mount adds gyro spikes and loses frames, so the mount must be stiff. |
@@ -166,7 +166,7 @@ in `CaneKitLogic`, with a test, and accept a lower head band. The better fix is 
 ground cut in `LaneMath` that uses the ARKit camera pitch. Either is a Logic change for Aritro
 (AGENTS.md rule 3). The mount can already reach those angles.
 
-> **Update 2026-09-13 (Step 51): the gravity-aware cut shipped.** The "Torso band reads bare
+> **Update (Step 51): the gravity-aware cut shipped.** The "Torso band reads bare
 > pavement" and "`groundSkipFraction` needed" columns above describe the old row bands and apply
 > only before ARKit has a pose. With metric bands the pitch limit comes from head cover alone: the
 > top ray (half FOV 33.5°) reaches 140 cm at 1.5 m of z-depth up to θ = acos(0.3 · cos 33.5°) −
@@ -380,10 +380,10 @@ Run in order. Record pass/fail and numbers in `CHANGELOG.md` under "test on devi
   after the demo.
 - **Software: none of this is in `hardware/`, so it is for Aritro.**
   (a) ~~If T3 fails at every usable pitch, raise `LaneConfig.groundSkipFraction`~~ — superseded.
-  (b) Done 2026-09-13 (Step 51): `LaneMath` is gravity-aware (metric bands, coverage flags). (c) Done:
+  (b) Done (Step 51): `LaneMath` is gravity-aware (metric bands, coverage flags). (c) Done:
   `lanes.tilt`, `lanes.bands`, `lanes.head_cover` / `torso_cover` and a `depth_geometry` record
   (intrinsics, camera height) are in every trip log. Still open: the camera height is a constant
-  95 cm, not calibrated from the ground plane (docs/todo.md).
+  95 cm, not calibrated from the ground plane (the code comment).
 - The old `cad/` drafts (12.7 mm cane, ESP32 grip, sensor pod) are the superseded
   pre-phone-only plan. This folder replaces `cad/` for the phone mount.
 
@@ -398,5 +398,5 @@ Run in order. Record pass/fail and numbers in `CHANGELOG.md` under "test on devi
 - [Peak Design: Universal Bar Mount](https://www.peakdesign.com/products/universal-bar-mount) (22–35 mm, magnetic/mechanical SlimLink)
 - Repo: `ios/README.md` §6, `ios/Logic/Sources/CaneKitLogic/LaneMath.swift`, `CueDecider.swift`,
   `Hazards.swift`, `ios/CaneKit/Depth/GroundSampler.swift`, `ios/CaneKit/Haptics/HapticPlayer.swift`,
-  `ios/CaneKit/Navigation/LocationService.swift`, `docs/ideas.md` §7 and §9 (stick 28.75 mm,
+  `ios/CaneKit/Navigation/LocationService.swift`, an older note (stick 28.75 mm,
   3 printers, Lamicall 15–40 mm)

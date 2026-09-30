@@ -170,7 +170,7 @@ final class TripLogger {
     /// Any discrete happening: cue fired, waypoint reached, speech line, error…
     /// Appends `{"t", "kind", …fields}` to the buffer. A field can never replace the record's
     /// `t` or `kind`: `TripLogRecord.make` (CaneKitLogic, `fieldsNeverOverwriteTheRecordTimeOrKind`)
-    /// keeps a colliding field as `field_t` / `field_kind` (the 2026-09-11 phone log had hazard
+    /// keeps a colliding field as `field_t` / `field_kind` (the phone log had hazard
     /// records turned into `"kind": "sign"` that way). Flushes early past 16 K characters.
     /// Silently drops objects `JSONSerialization` rejects (e.g. a NaN passed without `num`).
     /// No-op while disabled. `t` is wall-clock seconds since `t0` (3 dp).

@@ -14,7 +14,7 @@
 //  owned by `DepthEngine` (`depth.arSession`). The view only *displays* that session: it never
 //  runs or pauses it and never touches `session.delegate` / `delegateQueue` — `DepthEngine` owns
 //  the lifecycle and its `SessionObserver` must stay the delegate (frames feed the obstacle lanes).
-//  Evidence (headless probes in the iOS 27 simulator, 2026-09-11): assigning an ARSession whose
+// Evidence (headless probes in the iOS 27 simulator,): assigning an ARSession whose
 //  delegate and delegateQueue were set to `ARSCNView.session` left both identical, also after the
 //  view was deallocated; a fresh ARSCNView's own session has a nil delegate (the view is not a
 //  session delegate, it observes the session internally); and an `ARSession` subclass saw no

@@ -31,7 +31,7 @@ If it shows `PETG -> [blank]`, that machine has no PETG — do not map it onto a
 ## Print in this order
 
 Do not skip step 1 — three clearances in it are printer-specific and every part depends on
-them. The bore rings are **already done** (`pole_d` = 27.65 mm, measured 2026-09-12); their
+them. The bore rings are **already done** (`pole_d` = 27.65 mm, measured ); their
 files are generated for completeness only.
 
 | # | Job (in local `gcode/`) | Slot | ≈ Time | Then |

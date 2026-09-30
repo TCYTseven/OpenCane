@@ -9,7 +9,7 @@
 #   2. XcodeGen #1613 — on Xcode 26+ the watch app must live in the parent app's Watch/ folder
 #      with the right dstSubfolderSpec; 2.46.0 emits a copy phase Xcode 26 rejects. The embedded
 #      python3 block below rewrites it in the Watch copy phase ONLY (it was a whole-file sed until
-#      2026-09-11, which also broke the widget embed), then asserts both embed phases and exits 1 if
+#, which also broke the widget embed), then asserts both embed phases and exits 1 if
 #      either is wrong. Set PATCH_WATCH_EMBED=0 to skip if a newer XcodeGen already does it right
 #      (the assertions are skipped with it, and with WATCH=0).
 #
@@ -81,7 +81,7 @@ if [ "$WATCH" = "1" ] && [ "$PATCH_WATCH_EMBED" = "1" ]; then
     # also rewrote the WIDGET's "Embed Foundation Extensions" phase from 13 (PlugIns) to 16 (the
     # products directory) — and a widget outside PlugIns is not loaded, so `Activity.request`
     # failed silently and the Live Activity / Dynamic Island never existed in any installed build.
-    # Verified on 2026-09-11: zero `dstSubfolderSpec = 13` in the pbxproj and no `PlugIns/` inside
+    # Verified on: zero `dstSubfolderSpec = 13` in the pbxproj and no `PlugIns/` inside
     # CaneKit.app, with CaneKitWidget.appex sitting loose beside it.
     python3 - "$PBX" <<'PATCH'
 import re, sys

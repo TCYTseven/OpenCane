@@ -5,7 +5,7 @@
 //  When a Camera Control / volume press may start a scene description (Step 67; review round
 //  Steps 67–68).
 //
-//  Why this exists: phone log `canekit-2026-09-13T15-48-34Z.jsonl`. The phone is gripped or clamped,
+// Why this exists: phone log a trip log. The phone is gripped or clamped,
 //  and the hand holding it pressed Camera Control three times in the first four seconds (t = 1.71,
 //  2.89, 3.56, each `describe {trigger: cameraControl}`), while "OpenCane ready." was still
 //  speaking. The walker heard two busy earcons stack up and, at 14.9 s, a scene description nobody

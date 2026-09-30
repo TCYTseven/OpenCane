@@ -135,7 +135,7 @@ public struct StatusFacts: Sendable, Equatable {
 }
 
 /// Whether the one natural voice can carry every line right now (Step 54, owner decision
-/// 2026-09-13 "ElevenLabs is the one voice for everything"). Gathered by `AppModel.voiceFacts()`
+/// "ElevenLabs is the one voice for everything"). Gathered by `AppModel.voiceFacts`
 /// from `SpeechQueue`; worded by `StatusSummary.voiceLine`.
 public struct VoiceFacts: Sendable, Equatable {
     /// An ElevenLabs key is configured (`SpeechQueue.naturalVoice != nil`).

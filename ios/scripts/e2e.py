@@ -439,7 +439,7 @@ def obstacle_cues(events: list[dict]) -> list[str]:
 # Report-only list of announced hazards; no scenario asserts on it.
 def hazards(events: list[dict]) -> list[dict]:
     """Announced hazards (`kind: hazard`): `type` (dropOff / sign / vision …), `text`, `source`.
-    Before the 2026-09-11 fix the app wrote the type as `kind`, replacing "hazard", so this list
+    Before the fix the app wrote the type as `kind`, replacing "hazard", so this list
     was always empty."""
     return [{"type": e.get("type", ""), "text": e.get("text", ""), "source": e.get("source", "")}
             for e in events if e.get("kind") == "hazard"]
@@ -457,16 +457,16 @@ def fix_cadence(events: list[dict]) -> tuple[int, float, float, float]:
 
     The replay feeds one fix per second (`--interval=1`), so anything else means the app or the
     simulator was starved — almost always a second xcodebuild / simulator job on the same device.
-    Every assertion below then describes a walk that never really happened (seen on 2026-09-11:
+    Every assertion below then describes a walk that never really happened (seen once:
     `wrong_turn` reported "no arrival (last waypoint index 3)" and no veer cue while a UI-test run
     shared the simulator; alone it arrives in 296 s with the veer).
 
     Three numbers, because one is not enough. A run starved *in the middle* keeps a healthy median
-    — the same 2026-09-11 session produced a `clean` run whose median was 1.01 s and which still
+    — the same session produced a `clean` run whose median was 1.01 s and which still
     failed with "no arrival (last waypoint index 5)", because its 141 fixes covered only 141 s of
     a 340 s run: the app was starved in long stretches, not uniformly slowed. So `check` also
     compares the **span** against the scenario's wall-clock seconds, and watches the largest gap.
-    Healthy reference (four scenarios, 2026-09-11, machine idle): median 1.01 s, max 6.5-6.9 s
+    Healthy reference (four scenarios, machine idle): median 1.01 s, max 6.5-6.9 s
     (simctl pauses an interval at every path vertex), span within 4% of the run.
     """
     ts = [e["t"] for e in events if e.get("kind") == "gps" and isinstance(e.get("t"), (int, float))]
@@ -509,7 +509,7 @@ def check(name: str, events: list[dict], seconds: float = 0.0) -> list[str]:
     fixes, median_dt, max_dt, span = fix_cadence(events)
     # Uniformly slow (median), stalled for a stretch (max gap), or simply absent for most of the
     # run (span vs elapsed) — a run can be starved in any of the three ways and only the last one
-    # caught the 2026-09-11 `clean` failure. `seconds` includes launch and the post-arrival wait,
+    # caught the `clean` failure. `seconds` includes launch and the post-arrival wait,
     # so a healthy span is ~96% of it; 60% is comfortably clear of that and of any simctl pause.
     starved = (median_dt > 1.5 or fixes < 30 or max_dt > 15
                or (seconds > 0 and span < 0.6 * seconds))

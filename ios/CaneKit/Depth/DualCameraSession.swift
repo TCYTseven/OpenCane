@@ -315,7 +315,7 @@ final class DualCameraSession {
                 // AVFoundation teardown rule ("set the delegate and queue to nil before you
                 // release the output, to avoid deadlocks"). ⚠ That sentence is *not* in the
                 // iOS 27 SDK's AVCaptureVideoDataOutput.h nor in the current online reference
-                // (both checked, 2026-09-11): it is legacy wording, so treat it as belt and
+                // (both checked,): it is legacy wording, so treat it as belt and
                 // braces rather than a documented guarantee. What is documented is that nil is
                 // the one allowed value for the queue here ("may not be NULL, except when setting
                 // the sampleBufferDelegate to nil"), and that this is what stops delivery.
@@ -415,7 +415,7 @@ final class DualCameraSession {
         // PER CAMERA, via `DualCameraRotation.angle` (CaneKitLogic, pinned by LiveViewTests). One
         // angle for both cameras failed three times on the owner's phone, each fix breaking the
         // other feed: preview-for-both (1caff45) left the BACK feed sideways — trip log
-        // 2026-09-12T22-02-03Z `back_rotation: 0` plus the owner's screenshot — and capture-for-both
+        // `back_rotation: 0` plus the owner's screenshot — and capture-for-both
         // (103d548) tilted the FRONT inset. The UI is portrait-only, so the back gets the fixed
         // portrait-up 90 (the coordinator's capture angle follows the phone's physical orientation
         // and would read 0 if Both cameras started with the phone sideways — Muse, Step 36), and the
@@ -571,7 +571,7 @@ final class DualCameraSession {
             "back_opened": backOpened,
             "front_frames": relays["front"]?.frameCount ?? 0,
             // Delivered buffer size after rotation ("1440x1920" is portrait, i.e. upright for this
-            // screen): evidence for `DualCameraRotation`, not a guess (owner report 2026-09-12).
+            // screen): evidence for `DualCameraRotation`, not a guess (owner report).
             "front_size": relays["front"]?.frameSize ?? "",
             "back_size": relays["back"]?.frameSize ?? "",
             // `DualCameraRotation.isPortrait` of the latest buffer (false before the first frame).

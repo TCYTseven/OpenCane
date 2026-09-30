@@ -1,6 +1,6 @@
 // test_coupons.scad - quick prints that tune cane_mount.scad before the long prints.
 //
-// STATUS: NOT RENDERED (written 2026-09-11 without OpenSCAD installed). Open, F5, fix anything
+// STATUS: NOT RENDERED (written without OpenSCAD installed). Open, F5, fix anything
 // it reports, F6, export one STL per `coupon` choice (or "all" as one plate).
 // Parameters mirror cane_mount.scad: if you change a value there, change it here too.
 // How to read each coupon: hardware/mount/DESIGN.md section 12 (step T0) and hardware/README.md.
@@ -21,10 +21,10 @@ coupon = "all"; // [all, rings, corners, rosettes]
 
 /* [Mirrored from cane_mount.scad] */
 // MEASURED 27.65 by the bore coupons in hardware/mount_screwless/,
-// 2026-09-12, and independently by dial caliper on Sep 11. The 28.75
+//, and independently by dial caliper on. The 28.75
 // here was 1.132 in read off the wrong part of a tapered cane; a collar
 // bored for it has 1.10 mm of clearance and spins on the shaft. Changed
-// 2026-09-12. Do not put 28.75 back without a ring that proves it.
+//. Do not put 28.75 back without a ring that proves it.
 pole_d       = 27.65;  // mm, stick diameter. MEASURED.
 phone_w      = 78.0;   // mm
 phone_h      = 163.4;  // mm

@@ -5,7 +5,7 @@
 > Sliced files are gitignored — they are ~85 MB of build output, not source.
 
 The only new hardware in OpenCane / CaneKit is a mount. It clamps the iPhone 17 Pro Max upright to
-the 27.65 mm non-metal stick (measured by the bore rings on 2026-09-12; it is a broom handle
+the 27.65 mm non-metal stick (measured by the bore rings on ; it is a broom handle
 standing in for a cane), near the grip, with the LiDAR and rear camera facing forward and
 ~5° down. The phone's own buzz has to be felt through the cane. Everything else (AirPods Pro,
 Apple Watch) is off the shelf. This folder replaces the old `cad/` drafts for the phone mount;
@@ -20,7 +20,7 @@ phone's buzz is felt in the handle, with nothing magnetic near the phone's botto
 and the shaft out of the camera's view. The product overview is the root
 [`README.md`](../README.md).
 
-**Status (2026-09-12, late):** two designs. `mount/` (screwed, this page's quick start) is a
+**Status :** two designs. `mount/` (screwed, this page's quick start) is a
 draft nobody has rendered. `mount_screwless/` is the live one: simulated end to end
 (`scripts/verify_mount.ps1`: 32 PASS/FAIL lines in a full run, 17 with `-Quick`; all green at Step 25),
 sliced, bore rings printed and read; the rest is not yet printed. See `CHANGELOG.md` Steps 21 and 25.
@@ -101,6 +101,6 @@ still.
 | Who | Owns |
 |---|---|
 | **Sagar**, **Tommy** (hardware) | Calipers, OpenSCAD render and fixes, coupons, all prints, inserts, assembly, setting the hinge angle, T0 fit, T7 shake, T8 drop, reprints |
-| **Aritro**, **Aarav**, **Tejas** (app) | Phone charged; Guided Access (triple-click the side button in OpenCane → Options: Touch, Side Button, Volume Buttons, Keyboards Off, Motion On → Start; then the watch is the only input, see `docs/devices_setup.md` step 4) and the Camera Control setting; app-side tests T2–T6, T9, T10; trip logs; `CHANGELOG.md` / `docs/todo.md` entries (AGENTS.md rule 10); any `CaneKitLogic` change the tests call for (e.g. `groundSkipFraction`, `DESIGN.md` §13) |
+| **Aritro**, **Aarav**, **Tejas** (app) | Phone charged; Guided Access (triple-click the side button in OpenCane → Options: Touch, Side Button, Volume Buttons, Keyboards Off, Motion On → Start; then the watch is the only input, see `docs/devices_setup.md` step 4) and the Camera Control setting; app-side tests T2–T6, T9, T10; trip logs; a `CODE_REFERENCE.md` update when the map changes (AGENTS.md rule 10); any `CaneKitLogic` change the tests call for (e.g. `groundSkipFraction`, `DESIGN.md` §13) |
 | **Walker** (blindfolded tester) | Holds the cane in their own natural pose for the angle measurement (T1); identifies haptic patterns (T6); walks |
 | **Spotter** (sighted teammate) | Walks beside the walker on every outdoor test and films it with a second phone (`ios/README.md`) |

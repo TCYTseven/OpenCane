@@ -17,7 +17,7 @@ compute, the battery and the speaker. If the retrofit that turns an ordinary whi
 cane into a smart cane is *one spool of filament and nothing else*, then anyone with
 a printer can make one, and the reason a smart cane costs $850 stops being obvious.
 
-**Status (2026-09-12, evening):** designed, rendered clean, and **simulated** - every
+**Status :** designed, rendered clean, and **simulated** - every
 pair of parts that must not touch has been intersected in the model and comes out empty,
 the thread has been driven through its travel in the model, and each printable is a single
 shell in its print orientation (`.\scripts\verify_mount.ps1`, 30 checks, all green).
@@ -31,14 +31,14 @@ cane - the prototype shaft is a **broom handle**; real long canes are 9.5–13 m
 > operator runbook: which file, which filament slot, which temperatures, in what order,
 > and how to read each coupon.
 >
-> **The thread did not exist until 2026-09-12.** `linear_extrude(twist=)` maps *angle*
+> **The thread did not exist until .** `linear_extrude(twist=)` maps *angle*
 > to height, so the tooth — drawn as a flat offset in y — came out 0.031 mm thick and
 > sliced away to a smooth cylinder. The collar's clamp was a plain tube. It is rewritten
 > as an angular sector and measures 0.62–0.75 mm, but **that has never been printed.**
 > The thread coupon is the first physical proof either way, and if the ring will not
 > thread onto the stub, do not print the collar.
 >
-> **The first printed thread pair jammed two turns in (2026-09-12), and the model says
+> **The first printed thread pair jammed two turns in , and the model says
 > why - twice.** First, the tooth was not the tooth the parameters described: the flank was a
 > straight chord that dipped inside the minor circle, so the union with the core swallowed it and
 > the printed root was 0.74 mm instead of 1.5 (Step 21 measured it; the profile is polar now).
@@ -63,7 +63,7 @@ faults were found by looking at it: the dovetail sockets were on the wrong axis,
 collar's pad was shorter than the dovetail, and the phone's bottom corner cleared the
 shaft by 1.1 mm. Render it after any change; if the red ray does not come out roughly
 horizontal, tipped slightly down, and miss the shaft, the arm is wrong. **But it cannot
-show an overlap** - two parts drawn through each other look like two parts. On 2026-09-12
+show an overlap** - two parts drawn through each other look like two parts. On 
 it was hiding 6.9 cm³ of arm inside the phone. The test is `verify.scad` run by
 `.\scripts\verify_mount.ps1`: it renders the *intersection* of every pair that must not
 touch (empty = pass), the intersections that must exist (the collet squeeze), the thread
@@ -85,7 +85,7 @@ and cane-specific, and every part depends on them.
 Volumes are measured off the rendered STLs at 100% infill. At 25% gyroid the real
 mass is well under half.
 
-**Sliced, per part, 2026-09-12 (evening)** - see the table in [`PRINTING.md`](PRINTING.md).
+**Sliced, per part, (evening)** - see the table in [`PRINTING.md`](PRINTING.md).
 Every plate is a separate file written by `slice_gcode.ps1`, which is also the only thing that
 knows to turn support on for the cradle. The old `opencane_mount_plate.3mf` (six parts, 4 h 31)
 predates the redesign below and must not be printed.
@@ -229,8 +229,8 @@ Every one of these is currently a number someone read off a drawing or a caliper
 
   | Source | Value |
   |---|---|
-  | Dial caliper, Sagar, Sep 11 — **what this folder uses** | **27.65 mm** |
-  | `1.128 in`, quoted Sep 11 | 28.65 mm |
+  | Dial caliper, Sagar, — **what this folder uses** | **27.65 mm** |
+  | `1.128 in`, quoted | 28.65 mm |
   | `hardware/mount/cane_mount.scad` + the hardware brief | 28.75 mm |
 
   This is a 1.1 mm spread. That is not a rounding difference — it is three times any
@@ -245,7 +245,7 @@ Every one of these is currently a number someone read off a drawing or a caliper
   also buried 28.65 and 28.75 inside one 0.50 mm gap.
 
   Read them with `pole_d = (smallest ring that goes on) − 0.10` — **not −0.35**, which
-  is what `coupons.scad` said until 2026-09-12 and was wrong by about 0.25 mm. For a
+  is what `coupons.scad` said until and was wrong by about 0.25 mm. For a
   collet that is the difference between gripping the cane and never reaching it. Full
   procedure in [`PRINTING.md`](PRINTING.md).
 
@@ -253,7 +253,7 @@ Every one of these is currently a number someone read off a drawing or a caliper
   folders is wrong**, so say which in `CHANGELOG.md` once you know. Measure at the
   exact spot the collar sits; canes taper.
 
-  **Settled: 27.65 mm, by the bore rings, 2026-09-12** (ring 1 = 27.75 barely went on, 2 and 3
+  **Settled: 27.65 mm, by the bore rings, ** (ring 1 = 27.75 barely went on, 2 and 3
   went on, both colours agreed; see Step 21). 28.75 is retired everywhere. For the day a
   different shaft turns up, `.scriptsuild_stl.ps1 -PoleD 28.75` writes a collar and ring for it
   next to the 27.65 ones and `slice_gcode.ps1 -Plate collar -PoleD 28.75` slices them; only those

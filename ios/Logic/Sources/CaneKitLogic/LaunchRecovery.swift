@@ -4,11 +4,11 @@
 //
 //  The rule that stops an optional feature from being able to keep the app from starting.
 //
-//  Why this file exists (the evidence, from the phone, 2026-09-12):
-//    · `canekit-2026-09-12T02-40-53Z.jsonl`, t=17.583 —
+// Why this file exists (the evidence, from the phone,):
+// · a trip log, t=17.583 —
 //      `{"kind":"face_tracking","supported":true,"enabled":true}`. The walker turned on "Head
 //      tracking without AirPods". That switch was persisted in `UserDefaults`.
-//    · `canekit-2026-09-12T02-41-13Z.jsonl` — the very next launch. Three records and then the
+// · a trip log — the very next launch. Three records and then the
 //      file stops: `session` (t=0.641), `start` (t=0.667) carrying
 //      `"face_head_tracking":true, "haptics":false`, and `multicam_depth` (t=0.827). `TripLogger`
 //      buffers and flushes every 2 s, so those three reached disk at the t≈2 s flush and nothing
@@ -62,7 +62,7 @@ public enum LaunchRecovery {
     /// Seconds a launch must survive before it counts as healthy.
     ///
     /// ⚠ Must be longer than a cold ARKit start: on the phone the healthy session
-    /// `canekit-2026-09-12T02-40-53Z.jsonl` published its first `lanes` record at t=3.117 s and the
+    /// a trip log published its first `lanes` record at t=3.117 s and the
     /// crashed one (`…02-41-13Z`) died before reaching that point. Ten seconds clears that warm-up
     /// with room for a slow first frame, and is short enough that a walker who launches and starts
     /// walking is past it long before the first waypoint. Pinned by

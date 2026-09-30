@@ -8,7 +8,7 @@
 //  `AppModel.cameraControlPressed()`, which runs "Where am I" (trip-log `describe {trigger:
 //  cameraControl}`) unless `CameraControlGate` refuses it — first 5 s after launch, while the voice
 //  shell listens or the launch line is pending, within 2 s of the previous press — and then writes
-//  `describe_skipped {reason, trigger}` instead (Step 67: the phone log 2026-09-13T15-48-34Z shows
+// `describe_skipped {reason, trigger}` instead (Step 67: the phone log shows
 //  the device does deliver presses under ARKit, and a gripping hand delivers them by accident). (The debug footer that used to count presses on screen was
 //  removed in Step 11; the trip log is the only readout now.) If a device log never shows that
 //  record, delete this file and rely on the Action button, the watch, and the on-screen button.

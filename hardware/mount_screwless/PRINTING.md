@@ -8,7 +8,7 @@ check the Filament Selection screen before every job.
 
 | # | File | Slot | Time | Then |
 |---|---|---|---|---|
-| ~~0~~ | bore rings | — | — | **Done.** `pole_d` = 27.65 mm (2026-09-12). Do not reprint |
+| ~~0~~ | bore rings | — | — | **Done.** `pole_d` = 27.65 mm . Do not reprint |
 | 1 | `PETG_slot2__next_*.gcode` | PETG | 3 h 33 | Thread row + dovetail row. Read it — "Reading the thread set" and "Reading the dovetail pair" below. On two machines: `PETG_slot2__thread_*` (2 h 24) + `PLA_slot3or4__dovetail_*` (42 min) |
 | 2 | `PETG_slot2__arm_*.gcode` | PETG | 39 min | Needs no coupon. Any free machine, any time |
 | 3 | `PETG_slot2__collar_*.gcode` | PETG | 1 h 43 | After step 1 is read. Cut to thread nut 3 and dovetail 2; if other coupons win, put their numbers in `screwless_mount.scad`, run `verify_mount.ps1`, rebuild, re-slice |
@@ -24,7 +24,7 @@ prototype shaft is a broom handle — nothing from this geometry has been printe
 This is the how-to. [`README.md`](README.md) is the why. If you are standing at a
 printer and want to know which file to send, you are in the right document.
 
-Everything here was established on the night of 2026-09-12 on the SPARKX i7s in the
+Everything here was established on the night of on the SPARKX i7s in the
 room, mostly by getting it wrong first. Where a number came from a measurement it says
 so; where it is still a guess it says that too.
 
@@ -113,7 +113,7 @@ from `pole_d`, so none of them can be sliced honestly until the bore rings have 
 
 | # | Plate | Material | Time | What it settles |
 |---|---|---|---|---|
-| ~~1~~ | ~~`-Plate bore -Walls 4`~~ | PLA | 52m48s, 22.4 g | **DONE 2026-09-12: `pole_d` = 27.65.** Do not reprint unless the shaft changes |
+| ~~1~~ | ~~`-Plate bore -Walls 4`~~ | PLA | 52m48s, 22.4 g | **DONE : `pole_d` = 27.65.** Do not reprint unless the shaft changes |
 | 2 | `-Plate next -Walls 4` | PETG | 3h33m, 54.3 g | `thr_clear`/`thr_axial` (stub + four nuts) **and** `dt_clear` (three dovetail pairs) in one job |
 | 2a | `-Plate thread -Walls 4` | PETG | 2h24m, 31.8 g | the thread row alone, if you only want that |
 | 2b | `-Plate dovetail` | PLA | 41m57s, 15.2 g | the dovetail row alone |
@@ -121,7 +121,7 @@ from `pole_d`, so none of them can be sliced honestly until the bore rings have 
 | 4 | `-Plate collar` + `-Plate ring` | PETG | 1h43m + 55m, 23.1 + 15.1 g | the clamp, cut to nut 3 [0.45, 0.45]; rebuild if a different nut wins |
 | 5 | `-Plate cradle` | PETG | 1h34m, 33.3 g (support on) | the phone holder |
 
-The gcode for every row is in `hardware/mount_screwless/gcode/` as of 2026-09-12 (late),
+The gcode for every row is in `hardware/mount_screwless/gcode/` as of (late),
 named by material, slot, plate and time. The thread row's time doubled against the earlier
 two-ring plate because it is now the four-nut bracket from Step 21.
 
@@ -207,7 +207,7 @@ travel is preload. A ring that reaches the shoulder with the cane in means the b
 big for that cane. A ring that stops more than ~5 mm short with the cane *out* is binding,
 and the thread set above is how you find out why.
 
-This is the coupon that matters most right now. Until 2026-09-12 the thread generator
+This is the coupon that matters most right now. Until the thread generator
 produced no thread at all: a twisted `linear_extrude` maps **angle** to height, and the
 tooth was drawn as a flat offset in y, so it came out **0.031 mm** thick and sliced away
 to a smooth cylinder. The collar's "clamp" was a plain tube. It measures 0.62–0.75 mm

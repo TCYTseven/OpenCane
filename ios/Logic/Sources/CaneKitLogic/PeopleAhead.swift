@@ -6,7 +6,7 @@
 //  wants: "About 3 meters ahead, two people."
 //
 //  Why it exists: the 1,303-class scene classifier is a whole-frame guess and it fails silently.
-//  The real iPhone trip log of 2026-09-11 has `describe_result` with
+// The real iPhone trip log of has `describe_result` with
 //  `vision_error: "no labels (1303 raw)"` — 1,303 observations, not one over the 0.25 confidence
 //  floor — so "Where am I" said only the LiDAR template and never named the people in front of
 //  the walker. `DetectHumanRectanglesRequest` and `RecognizeAnimalsRequest` are separate, much

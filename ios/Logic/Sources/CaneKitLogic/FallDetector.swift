@@ -19,7 +19,7 @@
 //
 //  ⚠ **These thresholds are educated guesses, not measurements.** Nothing in this file has been
 //  validated against a real cane going over — AGENTS.md "evidence before claims" is not satisfied
-//  here and the numbers must be re-derived from device logs (docs/todo.md). They are deliberately
+// here and the numbers must be re-derived from device logs (the code comment). They are deliberately
 //  conservative: every one of them errs toward missing a marginal fall rather than inventing one.
 //
 //  Owner: `FallWatcher` (app) feeds it `CMDeviceMotion` at 20 Hz and reports to `FamilyAlerts`.

@@ -80,7 +80,7 @@ struct PremiumSettingsCard: View {
         }
     }
 
-    /// "Renews on 29 September 2027" / "Ends on …" / nothing known.
+    /// "Renews on 29 " / "Ends on …" / nothing known.
     private var renewalLine: String {
         guard let date = model.store.expirationDate else { return "Thank you for supporting OpenCane." }
         let day = date.formatted(date: .long, time: .omitted)

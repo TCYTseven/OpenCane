@@ -6,7 +6,7 @@
 //
 //  Why this file exists: Step 61 latched `SpeechQueue.naturalVoiceUnavailable` for the rest of
 //  *this* session, but a warm mp3 cache never calls the API (`ElevenLabsVoice.prefetch` documents
-//  that), so the latch only armed after the first miss. Trip log `canekit-2026-09-13T08-51-14Z`
+// that), so the latch only armed after the first miss. Trip log a trip log
 //  and the first launch after a restart then played cached lines in ElevenLabs and new ones in
 //  Apple's. The latch must survive the process, and a later prefetch must not wipe the HTTP 401
 //  off the Haptics card.

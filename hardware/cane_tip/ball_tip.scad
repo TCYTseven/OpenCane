@@ -11,7 +11,7 @@
 // ---------------------------------------------------------------- FIT
 // WHAT THIS IS FITTED TO, stated plainly because it matters:
 // shaft_d defaults to 27.65 mm, which is a BROOM HANDLE. It is the
-// prototype shaft, measured 2026-09-12 by the bore-ring coupons in
+// prototype shaft, measured by the bore-ring coupons in
 // hardware/mount_screwless/. It is NOT a white cane.
 //
 // Real long canes are much thinner, and the sources disagree with our
@@ -113,7 +113,7 @@ bead_drop   = 1.00;   // mm, how far the retaining bead sits below the lip.
 // Answer that on a 6 g part, not a 60 g one.
 test_ball   = 25.0;   // mm, ball diameter for the swivel test coupon.
 // The test coupon needs its OWN stem radius, and forgetting that was a
-// real bug on 2026-09-12: stem_r comes from the 27.65 mm broom handle
+// real bug on: stem_r comes from the 27.65 mm broom handle
 // and is 17.2, so the stem measures 37.6 mm across its bead while a
 // 25 mm test ball has a mouth only 21.0 mm across. The stem could not
 // enter the ball it was meant to test, and the plate rendered as 2
@@ -253,7 +253,7 @@ module stem(bd = ball_d, sr = -1, bore = true, sock = -1) {
 
 // Lowest point of the stem, so a caller can sit it on the bed without
 // guessing. Hand-computed offsets are what floated the ball 12.5 mm above
-// the plate and buried the stem 9.8 mm under it on 2026-09-12.
+// the plate and buried the stem 9.8 mm under it on.
 function stem_bottom(bd) = -(bd / 2 - ball_wall) + thrust_gap;
 
 // ------------------------------------------------------------- swivel test

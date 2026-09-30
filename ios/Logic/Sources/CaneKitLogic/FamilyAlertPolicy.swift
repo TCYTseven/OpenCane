@@ -140,7 +140,7 @@ public struct FamilyAlertPolicy {
     /// Suspected fall. Never rate-limited and always `critical` — a second fall report while the
     /// first is still being handled is information, not noise.
     /// - Note: **OpenCane has no fall detector yet.** This builds the event; nothing in the app
-    ///   calls it except the debug test-send. See docs/todo.md.
+    /// calls it except the debug test-send. See the code comment.
     public static func fall(lat: Double?, lng: Double?, note: String?) -> OpenCaneEvent {
         OpenCaneEvent(type: .fall, severity: .critical, lat: lat, lng: lng,
                       note: note ?? "Possible fall detected")

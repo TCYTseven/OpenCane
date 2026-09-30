@@ -8,7 +8,7 @@
 // where it is.
 //
 // Why this exists: the assembly preview draws every part in a colour and
-// overlaps look like nothing at all. On 2026-09-12 it was hiding 6.9 cm3
+// overlaps look like nothing at all. On it was hiding 6.9 cm3
 // of arm inside the phone, a top latch drawn straight through the phone,
 // and a ring whose thread crests hit the collar's cone 3.8 mm from home.
 // Render the overlap and there is nowhere for that to hide.

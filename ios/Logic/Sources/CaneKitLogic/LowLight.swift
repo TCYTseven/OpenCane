@@ -8,7 +8,7 @@
 //  "Where am I" (`SceneDescriber`) and the hazard watch. LiDAR depth, the gyro gate, GPS, the compass
 //  and haptics do not care. So the app has to notice the dark for the walker, say what still works,
 //  light the torch when that is safe, and stop the vision features from guessing (Step 49, the
-//  owner's question of 2026-09-12 22:50).
+// owner's question of).
 //
 //  Why it is here: the decision has numbers in it (lux thresholds, dwell times, a smoothing constant),
 //  so it lives in the logic package with tests (AGENTS.md hard rule 3), fed by the app with ARKit's

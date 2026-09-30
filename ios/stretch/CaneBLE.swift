@@ -12,7 +12,7 @@
 //  are written on main.
 //
 //  STATUS: stretch / history only — NOT in any target (AGENTS.md Layout: "Leave alone"). It was
-//  `ios/CaneKit/CaneBLE.swift` until Step 0 (2026-09-10) moved it out when the project went
+// `ios/CaneKit/CaneBLE.swift` until Step 0 moved it out when the project went
 //  phone-only: no ESP32, no grip motors, no external sensors. Nothing in the shipping app imports
 //  or calls it; the phone's own Taptic Engine (`HapticPlayer`) and LiDAR replaced the grip's
 //  motors and ToF sensor. Kept so the grip in `firmware/canekit_grip/` can be revived — this is

@@ -8,11 +8,12 @@
 > the files on disk. Do not rename the code.
 
 This is a native SwiftUI app in Swift 6 with strict concurrency (main-actor default isolation). It
-builds against iOS 26 / watchOS 26 and uses Apple frameworks only, with no third-party packages.
-The hardware is an iPhone 17 Pro Max on iOS 27 (LiDAR, Action button, Camera Control) clamped to a
-non-metal stick (27.65 mm, measured by the bore rings on 2026-09-12; a broom handle stands in for the
-cane), plus AirPods Pro and an Apple Watch. For the demo everything runs
-**untethered on the phone**. The Mac only signs and installs.
+builds against iOS 26 / watchOS 26. Apple frameworks do the sensing and the speech. The one
+third-party package is RevenueCat (`purchases-ios`), isolated in
+`ios/CaneKit/Store/EntitlementManager.swift`. The hardware is an iPhone 17 Pro Max on iOS 27
+(LiDAR, Action button, Camera Control) clamped to a non-metal stick (27.65 mm, measured by the
+bore-ring coupons; a broom handle stands in for the cane), plus AirPods Pro and an Apple Watch.
+For the demo everything runs **untethered on the phone**. The Mac only signs and installs.
 
 | Target / package | What it is | Bundle ID (frozen) |
 |---|---|---|
@@ -28,18 +29,18 @@ has the **data-flow diagram** ([§ Data flow](../docs/CODE_REFERENCE.md#data-flo
 AirPods, the watch or the untethered demo, read [`docs/devices_setup.md`](../docs/devices_setup.md).
 Every other doc is listed in [`docs/README.md`](../docs/README.md).
 
-**Status (Step 51, Sun 2026-09-13).** Steps 0–51 have landed. After the
-cue-v2 talk floor (Step 37) came a separate stream: Step 39 / 43 family alerts over the Grok Bot
-webhook (`CaneKit/Alerts/`, §4.1), Step 40 / 42 the Dynamic Island idle fix and the on-device walk
-simulator, Step 44 the Medical ID Profile tab, Step 45 Supabase cloud sync, Step 46 review fixes,
-and Step 47 the Live Activity redesign from its first pictures (`make island`), torso haptics that
-differ by cue level (`TorsoHapticPolicy`), the Scene engine card on Details, and the Guide tile pair.
-The Logic package has **654 `@Test` annotations in 53 test files** (recount with the grep in §5 —
-the number moves every step). The cue-v2 items 38–40 and 42–45 in [`docs/todo.md`](../docs/todo.md)
-are still open; device testing of each step's "test on device" line is the open work. [`docs/todo.md`](../docs/todo.md) and [`CHANGELOG.md`](../CHANGELOG.md) are
-the source of truth.
+**Where the work stands.** Obstacle detection, haptics, spatial audio, speech, navigation and
+emergency calling stay free. OpenCane Premium (Hazard watch and Family Alerts) is the store:
+the gate is `ios/Logic/Sources/CaneKitLogic/Premium.swift`, the client is
+`ios/CaneKit/Store/EntitlementManager.swift`, the screen is `ios/CaneKit/UI/PaywallView.swift`.
+The paywall does not open during a walk. Setup for the product, the entitlement `premium` and
+the offering `default` is in the root README, "Test the paywall". The short submission note is
+[`CHANGELOG.md`](../CHANGELOG.md). The step log is `git log`. There is no `docs/todo.md`.
 
-The merged safety line also includes the route-time `SensorModeInterlock` (face/high-rate changes
+Recount tests from `ios/` with `grep -rhoE '^\s*@Test' Logic/Tests | wc -l`. Do not quote a count
+from this file; it goes stale.
+
+The safety line also includes the route-time `SensorModeInterlock` (face/high-rate changes
 cannot restart ARKit during navigation), the generation-fenced `VoiceInputGuard` lifecycle
 (route/interruption/permission/engine failures stop push-to-talk and restore playback), GPS freshness
 fencing, terminal AR cleanup, and explicit cloud/people-detection consent gates. Recount the
@@ -109,7 +110,7 @@ on the phone with `make run` (CHANGELOG Steps 35 and 37). A second Mac or phone 
 
 ## 2. Verified spec deviations (don't "fix" these back)
 
-| Spec said | Reality (Apple docs, checked Sep 10) | What CaneKit does |
+| Spec said | Reality (Apple docs, checked ) | What CaneKit does |
 |---|---|---|
 | `AVAudioEnvironmentNode.isListenerHeadTrackingEnabled` | Needs the **Head Pose** capability, which is paid-team only | `CMHeadphoneMotionManager` yaw (relative, drifts) drives `listenerAngularOrientation`. **Recenter** comes from the phone or watch button, or auto-recenter when walking straight (`StraightWalkDetector`: 3 steady fixes, never within 15 m of a crossing). The beacon ignores head yaw until the first recenter after a turn. |
 | Watch side button = "next" | There is no API for the side button or a crown *press* | Crown rotation (3 detents within 1 s of the first) + big on-screen Repeat / Next / Describe / Recenter |
@@ -259,7 +260,7 @@ Saving POSTs one event to the same webhook:
   "emails": ["mom@example.com", "dad@example.com"],
   "cane_id": "opencane-01",
   "user": "Tejas",
-  "timestamp": "2026-09-12T23:20:00Z",
+  "timestamp": "YYYY-MM-DDTHH:MM:SSZ",
   "send_test": true
 }
 ```
@@ -299,7 +300,7 @@ always be checked against them. The prompt also forbids the failure a small mode
 unprompted: never say the walker is safe or that help is coming, never invent a street or an injury.
 
 ⚠ **No SOS control exists yet.** `FamilyAlerts.sos(…)` is written and tested, but nothing calls it
-— see `docs/todo.md`.
+Nothing in the UI calls it yet.
 
 ⚠ **HTTP 200 means the bot accepted the call and started a run — not that an SMS was sent.** The bot
 decides who to text afterwards, from `severity` and `type`. No string in the app says "family
@@ -314,7 +315,7 @@ curl -X POST "$OPENCANE_GROKBOT_WEBHOOK_URL" \
   -d '{
     "type": "fall",
     "severity": "critical",
-    "timestamp": "2026-09-12T20:30:00Z",
+    "timestamp": "YYYY-MM-DDTHH:MM:SSZ",
     "lat": 40.1106,
     "lng": -88.2284,
     "note": "Possible fall detected",

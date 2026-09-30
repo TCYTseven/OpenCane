@@ -5,9 +5,9 @@
 //  When the voice shell may open the microphone without being asked (Step 58), and the one word
 //  the `scene_phase` record uses for why the app left the foreground (Step 60).
 //
-//  Why this exists: owner decision 2026-09-13 — at launch the app speaks by itself and then listens
+// Why this exists: owner decision — at launch the app speaks by itself and then listens
 //  by itself; after an answer it may listen again for a follow-up. Step 67 (owner, on
-//  `canekit-2026-09-13T15-48-34Z.jsonl`: "It should just be 'OpenCane ready' and then boom"): what
+// a trip log: "It should just be 'OpenCane ready' and then boom"): what
 //  launch speaks is `launchLine` alone — no menu — then the listening tone. Every one of
 //  those unasked-for microphone opens flips the audio session to `.playAndRecord` (hard rule 7),
 //  lights the orange dot, and can raise a permission prompt nobody can see. The rules for when
@@ -81,7 +81,7 @@ public enum VoiceShellPolicy {
     ///   - enabled: the "Listen on launch" setting.
     ///   - muted: `SpeechQueue.muted` (automation).
     ///   - speechAuthorized: whether speech recognition may be used. ⚠ `AppModel.listenAfterLaunchLine`
-    ///     passes "not denied / restricted" (owner decision 2026-09-13): on a first launch the
+    /// passes "not denied / restricted" (owner decision): on a first launch the
     ///     permission prompts appear right after "OpenCane ready.", because the voice shell is the app.
     ///   - micGranted: likewise "not denied" from the app.
     ///   - micOwnedElsewhere: `SoundWatcher` owns the microphone session.

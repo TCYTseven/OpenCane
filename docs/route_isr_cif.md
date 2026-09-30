@@ -1,12 +1,12 @@
 # Route: ISR Townsend Hall to CIF (UIUC, Urbana IL)
 
 Waypoint file: [`ios/CaneKit/Resources/route_isr_cif.json`](../ios/CaneKit/Resources/route_isr_cif.json)
-(route `name` "ISR Townsend Hall to CIF", `recorded` 2026-09-11). The JSON is authoritative; this page
-explains it and keeps the evidence. The tables below were regenerated from the JSON on 2026-09-11.
+(route `name` "ISR Townsend Hall to CIF", `recorded` ). The JSON is authoritative; this page
+explains it and keeps the evidence. The tables below were regenerated from the JSON on .
 
-Coordinates pulled 2026-09-10 from OpenStreetMap; start point re-checked 2026-09-11 against the
+Coordinates pulled from OpenStreetMap; start point re-checked against the
 University Housing ISR site plan and floor plans after the start was fixed as **Townsend Hall**. Step 10
-(2026-09-11) then changed the file: WP3 became a turn (`crossing: false`), WP3 / WP6 / WP8 got 12 m
+ then changed the file: WP3 became a turn (`crossing: false`), WP3 / WP6 / WP8 got 12 m
 fences, WP1 got `curved: true`, every waypoint got a short `name`, and WP6 says "Turn left to face west"
 before the crossing. **Not yet walked or GPS-verified**: see "To re-record on the Friday walk" below.
 
@@ -133,7 +133,7 @@ File: [`ios/CaneKit/Resources/indoor_isr.json`](../ios/CaneKit/Resources/indoor_
 `isr_townsend_to_front_doors`, `walked: false`, `recordedAt` / `strideM` null). It is a **floor-plan
 draft, not a recording**: the app says "Draft route. Use your cane." before step 1. Every
 line comes from the University Housing **ISR Floor Plans PDF, page 2 "Illinois Street Residence Hall - 1st
-Floor"** (Nov 2025; downloaded and rendered 2026-09-13; the PDF has no text layer, so labels were read off
+Floor"** (; downloaded and rendered ; the PDF has no text layer, so labels were read off
 the drawing). The plan has no scale bar. Its scale was calibrated against OSM at about 0.055 m per 300-dpi
 pixel. Two checks agree: Townsend's south wing depth (plan 11.2 m, OSM way 899305028 east end 11.4 m) and
 Townsend's south-west corner to the vestibule centre (plan 13.75 m, OSM corner node 8355939352 to entrance
@@ -148,7 +148,7 @@ node 5418851678 13.6 m). Step counts are plan distance ÷ 0.7 m, rounded; expect
 | 5 | Through the inner doors, outer doors ≈ 7 steps | Door leaves drawn on both the inner and outer line of V1000 | ≈ 4.6 m |
 | exit | "You are at the ISR front doors…", WP1 40.10949, -88.22135, `radiusM` 25 | OSM `entrance=yes` node 5418851678 on the vestibule's south face (= route WP1) | — |
 
-Not used, because no source supports it: front-desk hours (the Housing ISR page fetched 2026-09-13 gives
+Not used, because no source supports it: front-desk hours (the Housing ISR page fetched gives
 6 a.m.–3 a.m. in term and 10 a.m.–10 p.m. on breaks, **not** 24 hours), tactile or floor-surface cues,
 whether doors are automatic, push or card-access, the canopy (OSM only, not drawn on the plan), and any
 room or lab name along the corridor. OSM has no `indoor=*`, `door=*` or `level` data for ISR. Its only
@@ -177,10 +177,10 @@ phone held the way the demo walker holds it):
 
 ## Sources
 
-- Nominatim (`https://nominatim.openstreetmap.org/search`) — located "Illinois Street Residence Halls" (landuse way 899305031, bus stop node 5425410082), "Townsend Hall, 918 West Illinois Street" (building way 899305028, polygon bbox 40.1095012–40.1101866 N, -88.2212685 to -88.2205780 W; queried 2026-09-11) and "Campus Instructional Facility, 1405 Springfield Avenue" (building way 886109954, bbox 40.11230-40.11262 N, -88.22872 to -88.22783 W).
-- Overpass API (`https://overpass-api.de/api/interpreter`) — street-intersection nodes (shared nodes between the named highway ways), `entrance=*` nodes, sidewalk and footway geometry around both buildings; re-queried 2026-09-11 for the ISR block (buildings 899305028/029/030, all `entrance` nodes, all footways). The only `entrance` node on the Illinois St side of ISR is 5418851678.
-- University Housing Facilities, ISR building information (`https://mail.hsgintranet2024.web.illinois.edu/facilities-building-information-isr-hall`) with its linked **ISR Site Plan** and **ISR Floor Plans** PDFs (`.../sites/default/files/2025-11/Floor%20Plans%20ISR%20Site%20Plan.pdf`, `.../Floor%20Plans%20ISR.pdf`, Nov 2025) — used to identify Townsend as the east building and the lobby vestibule at its SW corner as the Illinois-St-side door. Housing also lists Townsend as 908/918 W Illinois St (the two pages disagree on the number; OSM uses 918).
-- University Housing ISR page (`https://www.housing.illinois.edu/living-communities/halls/isr`) — Townsend 5 floors, Wardall 12 floors, single front desk for both halls (re-fetched 2026-09-13: open 6 a.m.–3 a.m. in term, 10 a.m.–10 p.m. on breaks — not 24 hours). The ISR Floor Plans PDF page 2 (1st floor) labels "1002A MAIN DESK", "C1000 SOUTH LOBBY", "C1005 SOUTH CORRIDOR", "C1007 SOUTH CONNECTOR", "V1000 SOUTH ENTRY VESTIBULE" and Townsend "CORRIDOR C182" — the basis of `indoor_isr.json`.
+- Nominatim (`https://nominatim.openstreetmap.org/search`) — located "Illinois Street Residence Halls" (landuse way 899305031, bus stop node 5425410082), "Townsend Hall, 918 West Illinois Street" (building way 899305028, polygon bbox 40.1095012–40.1101866 N, -88.2212685 to -88.2205780 W; queried ) and "Campus Instructional Facility, 1405 Springfield Avenue" (building way 886109954, bbox 40.11230-40.11262 N, -88.22872 to -88.22783 W).
+- Overpass API (`https://overpass-api.de/api/interpreter`) — street-intersection nodes (shared nodes between the named highway ways), `entrance=*` nodes, sidewalk and footway geometry around both buildings; re-queried for the ISR block (buildings 899305028/029/030, all `entrance` nodes, all footways). The only `entrance` node on the Illinois St side of ISR is 5418851678.
+- University Housing Facilities, ISR building information (`https://mail.hsgintranet2024.web.illinois.edu/facilities-building-information-isr-hall`) with its linked **ISR Site Plan** and **ISR Floor Plans** PDFs (`.../sites/default/files/2025-11/Floor%20Plans%20ISR%20Site%20Plan.pdf`, `.../Floor%20Plans%20ISR.pdf`, ) — used to identify Townsend as the east building and the lobby vestibule at its SW corner as the Illinois-St-side door. Housing also lists Townsend as 908/918 W Illinois St (the two pages disagree on the number; OSM uses 918).
+- University Housing ISR page (`https://www.housing.illinois.edu/living-communities/halls/isr`) — Townsend 5 floors, Wardall 12 floors, single front desk for both halls (re-fetched : open 6 a.m.–3 a.m. in term, 10 a.m.–10 p.m. on breaks — not 24 hours). The ISR Floor Plans PDF page 2 (1st floor) labels "1002A MAIN DESK", "C1000 SOUTH LOBBY", "C1005 SOUTH CORRIDOR", "C1007 SOUTH CONNECTOR", "V1000 SOUTH ENTRY VESTIBULE" and Townsend "CORRIDOR C182" — the basis of `indoor_isr.json`.
 - Data (c) OpenStreetMap contributors, ODbL 1.0.
 
 Note: in OSM, Springfield Ave through campus is named "Springfield Avenue" (no "West"), which is why the strict "West Springfield Avenue" match failed on the first query.

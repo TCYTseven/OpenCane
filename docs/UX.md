@@ -1,6 +1,6 @@
 # UX.md — why OpenCane's interface is a conversation, not a screen
 
-Status: **design spec, written 2026-09-13.** It is the argument and the rules for the voice-first
+Status: **design spec, written .** It is the argument and the rules for the voice-first
 UX; `CHANGELOG.md` Step 61 and the `ux/voice-first` branch are the first implementation of §4.
 Numbers marked **[H]** are hypotheses, not measurements — the standing rule in this repo is that a
 cue number may only be tuned from a trip log taken on the mounted cane (`AGENTS.md` → "Measure
@@ -26,7 +26,7 @@ carries eleven controls and the Sense page ten switches, so reaching "Hazard wat
 of twenty swipes with a thumb on a phone strapped to a moving cane. During those twenty swipes the
 walker is either standing still in public or walking while not attending to the path.
 
-The first cane-mounted walk (`canekit-2026-09-13T04-36-32Z.jsonl`) is the evidence that started
+The first cane-mounted walk (a trip log) is the evidence that started
 this: the app was usable only with eyes. That log is what produced the Step 56–59 voice shell — the
 eight-word spoken menu (`VoiceMenu`) and the giant microphone (`VoiceTile`). This document is the
 rest of that idea, applied to the whole app rather than the launch screen.

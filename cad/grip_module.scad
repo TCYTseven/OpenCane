@@ -2,9 +2,9 @@
 // Holds: ESP32 (XIAO ESP32-S3 by default), 2x 10mm coin ERM motors, 500mAh LiPo.
 // DRAFT: unrendered. Open in OpenSCAD, press F5, check every pocket before F6/export.
 // Print: split face down, no supports, PETG, 4 walls. TPU overgrip optional.
-// LEGACY (ESP32 era, cut 2026-09-10 when the app went phone-only): do not print for the demo.
+// LEGACY (ESP32 era, cut when the app went phone-only): do not print for the demo.
 // Sized for a 12.7 mm aluminium/graphite shaft; the prototype stick is 27.65 mm (measured
-// 2026-09-12), so nothing here fits it. The live mount is hardware/mount_screwless/ (see
+//), so nothing here fits it. The live mount is hardware/mount_screwless/ (see
 // cad/README.md and hardware/README.md). Not rendered by any script (scripts/build_stl.ps1 covers
 // hardware/ only); no tests; no owner on the current team. Units: millimetres throughout.
 // Why it existed: housing for firmware/canekit_grip (XIAO ESP32-S3, two coin ERMs under thumb and

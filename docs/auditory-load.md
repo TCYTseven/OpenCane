@@ -1,14 +1,13 @@
 # Auditory load: what the research says, what OpenCane does
 
 Why this file exists: a blind walker navigates by ear — traffic, echolocation, voices —
-and every sound OpenCane makes competes with that. Collected 2026-09-12 after a device
+and every sound OpenCane makes competes with that. Collected after a device
 report ("it keeps giving me instructions as I'm talking"). Read it before adding any new
 automatic (unprompted) sound.
 
-> **Status (Sat 2026-09-12, after Step 37).** This is the short Step 30 note; the table below
+> **Status.** This is the short Step 30 note; the table below
 > describes the app as of Step 30. The fuller, source-checked research is
-> [`cue_design_v2.md`](cue_design_v2.md) (Step 35), and its step plan is `docs/todo.md` →
-> "Cue design v2 — Steps 35–45". Since this note was written:
+> [`cue_design_v2.md`](cue_design_v2.md) (Step 35). Since this note was written:
 > - **Step 36**: the walker picks the cue level (Quiet / Standard / Detailed) and place
 >   (Outdoors / Indoors) in Settings → Cues (`CueRules` in `CueProfile.swift`), and spoken obstacle
 >   names are **off by default**.

@@ -12,7 +12,7 @@
 //    · `RouteStatusLines` — at route start at most one status line, and only one that changes what
 //      the walker does (haptics unavailable); the short screen-lock line; the prefetch list.
 //    · `HeadphoneNotice` — a headphone disconnect during a route is said once, "AirPods disconnected.".
-//  Evidence: phone log canekit-2026-09-13T15-48-34Z.jsonl (145 s route, 36 lines / 1,333 characters,
+// Evidence: phone log a trip log (145 s route, 36 lines / 1,333 characters,
 //  25 of them GPS weak / back flapping while the phone stood still indoors).
 //
 //  Pure, Foundation-only value types. Owners: `NavigationEngine.gpsAnnouncer` (fed from `update(fix:)`
