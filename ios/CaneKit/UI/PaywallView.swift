@@ -242,6 +242,7 @@ struct PaywallView: View {
         case .cancelled:
             break
         case .pending:
+            model.premiumAwaitingApproval(from: request)
             alert = PaywallAlert(title: "Waiting for approval",
                                  message: "Your purchase needs approval. Premium turns on as soon as it goes through.")
         case .failed(let message):

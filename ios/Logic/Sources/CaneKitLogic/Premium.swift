@@ -163,6 +163,18 @@ public enum PremiumGate {
     /// (the StoreKit sheet can outlive the paywall), so nothing new starts talking during a walk.
     public static func enablesNow(walkActive: Bool) -> Bool { !walkActive }
 
+    /// Whether a remembered feature (an unlock that landed mid-walk, or a purchase waiting for
+    /// approval) is used up now. It waits until Premium actually unlocks; a lapse or a pending
+    /// approval keeps it, so the switch turns on when the purchase goes through.
+    public static func spendsPending(access: PremiumAccess) -> Bool { access.unlocks }
+
+    /// Whether a subscription answer requested before the last one applied should be ignored (a
+    /// slow `customerInfo()` that started before a purchase must not undo it).
+    public static func isStale(requestDate: Date, lastApplied: Date?) -> Bool {
+        guard let lastApplied else { return false }
+        return requestDate < lastApplied
+    }
+
     /// Whether features switched off by a lapse are switched back on now that Premium is back.
     public static func restoresNow(access: PremiumAccess, walkActive: Bool) -> Bool {
         access == .premium && !walkActive

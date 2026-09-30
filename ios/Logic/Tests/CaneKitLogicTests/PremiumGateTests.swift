@@ -115,6 +115,27 @@ struct PremiumGateTests {
         #expect(PremiumGate.revokedLine(for: .familyAlerts) == "Family alerts turned off. OpenCane Premium has ended.")
     }
 
+    /// Demo-hardening review: a purchase waiting for approval (Ask to Buy) keeps the switch it was
+    /// for until Premium arrives, so the paywall's "Premium turns on as soon as it goes through"
+    /// holds even after the sheet closes. It is only spent once Premium unlocks.
+    @Test func aPendingFeatureIsKeptUntilPremiumArrives() {
+        #expect(!PremiumGate.spendsPending(access: .free))
+        #expect(!PremiumGate.spendsPending(access: .checking))
+        #expect(PremiumGate.spendsPending(access: .premium))
+        #expect(PremiumGate.spendsPending(access: .notConfigured))
+    }
+
+    /// Demo-hardening review: a `customerInfo()` that started before a purchase and answers after
+    /// it must not put the walker back on the free plan. Answers older than the last applied one
+    /// are ignored; an equal or newer one, or the first one, is applied.
+    @Test func anOlderSubscriptionAnswerIsIgnored() {
+        let purchase = Date(timeIntervalSince1970: 1_000)
+        #expect(PremiumGate.isStale(requestDate: purchase.addingTimeInterval(-5), lastApplied: purchase))
+        #expect(!PremiumGate.isStale(requestDate: purchase, lastApplied: purchase))
+        #expect(!PremiumGate.isStale(requestDate: purchase.addingTimeInterval(5), lastApplied: purchase))
+        #expect(!PremiumGate.isStale(requestDate: purchase, lastApplied: nil))
+    }
+
     /// Turning a feature OFF is never gated.
     @Test func turningOffIsAlwaysAllowed() {
         for access in [PremiumAccess.free, .checking, .premium, .notConfigured] {

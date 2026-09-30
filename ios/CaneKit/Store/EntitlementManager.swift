@@ -102,6 +102,8 @@ final class EntitlementManager {
     private(set) var expirationDate: Date?
     /// Whether that date is a renewal (true) or the end (false: cancelled, still active until then).
     private(set) var willRenew = false
+    /// `requestDate` of the last `CustomerInfo` applied; an older answer is ignored (`apply`).
+    @ObservationIgnored private var lastAppliedRequestDate: Date?
 
     /// True when the gated features may run (`premium` or a build without a store).
     var unlocksPremium: Bool { access.unlocks }
@@ -218,8 +220,11 @@ final class EntitlementManager {
         }
     }
 
-    /// Reads the `premium` entitlement out of a `CustomerInfo`.
+    /// Reads the `premium` entitlement out of a `CustomerInfo`. An answer requested before the last
+    /// one applied is dropped, so a slow `refresh()` cannot undo a purchase that finished meanwhile.
     private func apply(_ info: CustomerInfo) {
+        guard !PremiumGate.isStale(requestDate: info.requestDate, lastApplied: lastAppliedRequestDate) else { return }
+        lastAppliedRequestDate = info.requestDate
         let entitlement = info.entitlements[PremiumGate.entitlementID]
         expirationDate = entitlement?.expirationDate
         willRenew = entitlement?.willRenew ?? false

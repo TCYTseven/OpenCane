@@ -121,6 +121,14 @@ extension AppModel {
         }
     }
 
+    /// The purchase is waiting for approval (Ask to Buy): remember the switch that opened the
+    /// paywall, so `reconcilePremium` turns it on when Premium arrives, even after the sheet closed.
+    func premiumAwaitingApproval(from request: PaywallRequest?) {
+        guard let feature = request?.feature else { return }
+        pendingPremiumFeature = feature
+        logger.event("paywall", ["action": "awaiting_approval", "feature": feature.rawValue])
+    }
+
     /// Called when a walk ends (`RootView`) and after every access change. Never acts during a
     /// walk. Clears the walk notice; applies an unlock that landed mid-walk; after a confirmed
     /// lapse switches gated features off, says so and remembers them; when Premium is back,
@@ -129,9 +137,9 @@ extension AppModel {
         guard !isWalkActive else { return }
         premiumNotice = nil
         premiumNoticeFeature = nil
-        if let pending = pendingPremiumFeature {
+        if let pending = pendingPremiumFeature, PremiumGate.spendsPending(access: store.access) {
             pendingPremiumFeature = nil
-            if store.unlocksPremium, canDeliver(pending) { setGatedValue(pending, true) }
+            if canDeliver(pending) { setGatedValue(pending, true) }
         }
         if PremiumGate.revokesNow(access: store.access, walkActive: false) {
             var revoked = revokedFeatures
