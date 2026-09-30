@@ -182,7 +182,7 @@ walks on this code; "it compiled" is not done.
    comment that says what, why, who calls it and what pins it (⚠ lines name the tests). Update
    `docs/CODE_REFERENCE.md` with the code. `CHANGELOG.md` stays the short submission note; the
    step log is `git log`. Do not recreate `docs/todo.md`, `docs/TEAM_BRIEF.md`,
-   `git history`, `docs/ideas.md` or `git history`. Refresh the knowledge graph
+   `docs/TEAM_HANDOFF.md`, `docs/ideas.md` or `docs/superpowers/`. Refresh the knowledge graph
    (`graphify update .`). The code wins over any doc; fix the doc.
 8. **Small, reviewable steps, strict to-do lists.** Write the plan as a checklist, tick it as you
    go, commit per step with a message that ends in `test on device: …`.
@@ -595,7 +595,7 @@ bench has *disproved* must never sit in the file as though it were settled — m
   step diary. Entries before Step 37 use the old cue-v2 step numbers (the talk floor was inserted
   as 37 and later steps renumbered +1).
 - **Removed on purpose.** Do not recreate `docs/todo.md`, `docs/TEAM_BRIEF.md`,
-  `git history`, `docs/ideas.md` or `git history`. Cue research that still matters
+  `docs/TEAM_HANDOFF.md`, `docs/ideas.md` or `docs/superpowers/`. Cue research that still matters
   is `docs/cue_design_v2.md`. Open questions live in the code comments next to the guess.
 - **Cue design research:** `docs/cue_design_v2.md` (Step 35: 4 researchers + 4 source fact-checkers,
   74 kept findings, [H] marks hypotheses, not measurements; §3 is the design, §4 the ranked change

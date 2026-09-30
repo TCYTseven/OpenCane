@@ -37,4 +37,4 @@ shipped code is the truth: when a doc and the code disagree, fix the doc in the 
 - Muse-review the plan (large or risky changes) and the diff before committing. Commit messages end
   with `test on device: …`. `CHANGELOG.md` stays the short submission note; the step log is `git log`.
   Do not recreate `docs/todo.md`, `docs/TEAM_BRIEF.md`, `docs/TEAM_HANDOFF.md`, `docs/ideas.md` or
-  `git history`.
+  `docs/superpowers/`.
