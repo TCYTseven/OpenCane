@@ -1137,8 +1137,8 @@ final class AppModel {
     /// `SceneDescriber` (which waits for a camera frame and speaks at `.scene` priority).
     /// - Parameter trigger: who asked (`DescribeTrigger`, default `.button`); the Scene engine
     ///   card shows it ("from the watch") and `describe_result` logs it.
-    /// - Returns: false when a description is already in flight (spoken "Still describing the
-    ///   previous scene."); the result itself arrives later through `describe_result`.
+    /// - Returns: false when a description is already in flight (`Earcon.busy`, not a spoken
+    ///   line); the result itself arrives later through `describe_result`.
     /// Callers: `GuideCard` "Where am I" (`.button`), `WhereAmIIntent` (`.actionButton`),
     /// `handleWatchCommand(.describe)` (`.watch`), `cameraControlPressed` (`.cameraControl`), and
     /// the `describeEveryWaypoint` automation hook (`.waypoint`).

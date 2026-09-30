@@ -75,12 +75,11 @@ D = device matrix (§2) · F = failure injection (§3) · G = go/no-go (§4).
     press that can't reach the phone plays `.retry`. Every route cue (and veer) is also felt on the
     cane as soft continuous buzzes: left one 0.45 s buzz, right two 0.35 s, crossing three 0.3 s,
     arrived long-short-long. A ground hazard is 4 heavy taps.
-12. **Voice cache.** At launch the app prefetches `AppModel.commonLines`: 35 lines (24 fixed lines,
-    the 5 Cues card lines, the 6 flashlight lines). At route start it prefetches the 9 waypoint `say`
+12. **Voice cache.** At launch the app prefetches `AppModel.commonLines`: the fixed strings plus `CueRules.allSpokenLines`, `TorchSwitch.allSpokenLines`, `SpokenPhrases.shellLines`, `LowLightAdvice.allSpokenLines` and `RouteStatusLines.allSpokenLines`. At route start it prefetches the 9 waypoint `say`
     lines, `commonLines` again and the intro, then `SpokenPhrases.warningLines` (74 generated warning
     lines) as a background tail; 2 requests are in flight at a time (`VoicePrefetch.maxConcurrent`).
     Any line built at runtime is a cache miss: Repeat (it includes a distance), "Passed X. Y in N
-    meters.", the arrival summary, "\<AirPods\> connected.", channel warnings, "Describing.". A route
+    meters.", the arrival summary, "\<AirPods\> connected.", channel warnings. A describe already in flight plays `Earcon.busy`, not a spoken "Describing.". A route
     or Repeat line that misses waits up to **2.5 s** for ElevenLabs, then falls back to the system
     voice (and for 60 s after such a failure every miss goes straight to the system voice). Obstacle
     and safety lines never wait.
@@ -116,7 +115,7 @@ no blindfolded walk.
 
 | ID | Command (from `ios/`) | What it covers | Pass | Time |
 |---|---|---|---|---|
-| A1 | `make test` | 567 Swift Testing tests: lane math, CueDecider hysteresis and rates, geofence skip-ahead, passed-by, arrival plausibility (30 m blob), TurnSettle incl. curb release, StraightWalk, CueSpeechPolicy, CourseSmoother, depth-readiness interlock, ground hazards / signs / hazard watch / GeoJSON, Crown, watch and VLM codecs, route file, sound-recognition lifetime guard, VoiceInputGuard lifecycle, and since Step 34: `TorchSwitchTests` (flashlight settle), `LiveViewTests` (both-cameras `.blockedByRoute`, `FaceTrackingChange`, `DualCameraRotation`), `CueProfileTests` (level × place rules, safety-sign filter), `SpeechResumeTests` (clause resume, 3-resume cap, 0.35 s pause) | 567/567 (`make test` verified after rebase conflict cleanup; 567 `@Test` annotations in `ios/Logic/Tests`) | < 1 min |
+| A1 | `make test` | 965 Swift Testing tests (recount; 1 known geofence issue): lane math, CueDecider hysteresis and rates, geofence skip-ahead, passed-by, arrival plausibility (30 m blob), TurnSettle incl. curb release, StraightWalk, CueSpeechPolicy, CourseSmoother, depth-readiness interlock, ground hazards / signs / hazard watch / GeoJSON, Crown, watch and VLM codecs, route file, sound-recognition lifetime guard, VoiceInputGuard lifecycle, and since Step 34: `TorchSwitchTests` (flashlight settle), `LiveViewTests` (both-cameras `.blockedByRoute`, `FaceTrackingChange`, `DualCameraRotation`), `CueProfileTests` (level × place rules, safety-sign filter), `SpeechResumeTests` (clause resume, 3-resume cap, 0.35 s pause) | exit 0 (`make test`; recount `@Test` before quoting a total) | < 1 min |
 | A2 | `make sim` | Swift 6 strict build for the simulator | 0 errors | ~3 min |
 | A3 | `make uitest` | 11 XCUITests: start/Next/Repeat/Recenter/Stop, Where am I without a key, haptic buttons + Silence, mount toggle, Cues pickers (Standard / Indoors selected, then Detailed / Outdoors restored), a11y labels and tabs, Navigate to CIF button, empty destination, campus suggestions, plus the tour; the Street View "Where am I" test is skipped unless run with `make uitest-streetview` | 10 passed + 1 skipped, 0 failures | ~4 min |
 | A4 | `make tour` | PNG per screen state → `build/shots` | Every PNG reviewed: no truncated pill ("SPEAKI…"), no hyphenated "Recen-ter", instruction not clipped | ~3 min |

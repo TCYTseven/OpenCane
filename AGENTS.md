@@ -319,7 +319,7 @@ bench has *disproved* must never sit in the file as though it were settled — m
 - The beacon only plays into headphones (`AudioRouteMonitor`); connect/disconnect is spoken.
 - Silencing haptics routes obstacle cues to the watch and to speech. "Head height." is spoken at a head
   episode's onset (onset lines ≥ 4 s apart) and once more under 0.6 m, never every second. Warnings never wait for the ElevenLabs network.
-- **One voice, and answers wait up to 2.5 s for it** (Steps 53–54, owner decision. Nothing
+- **One voice, and answers wait up to 2.5 s for it** (Steps 53–54, owner decision). Nothing
   passes `immediate: true` any more (the parameter is gone): a conversational answer, "No answer." and
   "I did not catch that." (Step 65: the waiting words are now earcons) take the same path as a route line — cached → ElevenLabs at once, uncached →
   a 2.5 s race (`VoiceEngineChoice.raceDeadline`), system voice only if the fetch fails or times out.
@@ -532,7 +532,7 @@ bench has *disproved* must never sit in the file as though it were settled — m
   research #2 in `docs/cue_design_v2.md`). A walker who never touched the switch hears no names until
   turning it on; `docs/stress_test_plan.md` D6 says so.
 - **Cue level Detailed + place Outdoors is the default and equals today's behaviour**
-  (`CueRules.default`, owner decision until a trip log from the *mounted* cane tunes the
+  (`CueRules.default`, owner decision) until a trip log from the *mounted* cane tunes the
   calmer levels. Its one delta from before: **Detailed never names walls**
   (`CueRules.allowsName`: `cls != .wall`) — the cane trails walls. Quiet and Indoors name nothing and
   read only `CueRules.safetySignPhrases`; Standard names doors only while a route guides; Indoors
@@ -575,7 +575,7 @@ bench has *disproved* must never sit in the file as though it were settled — m
   playing direction (buzz and chirp now, words later); Muse rejected it because a walker reaches a
   1.5 m overhang in about 1.5 s, before the words. The owner chose "Cut in, then resume": the warning
   pre-empts at once and the direction resumes. Walls no longer get "Head height.": the overhang
-  signature (`HeadGate`, ON by default — owner decision , "keep it on for now") superseded
+  signature (`HeadGate`, ON by default — owner decision, "keep it on for now") superseded
   the earlier "Leave as is"; `Settings.bool("overhangSignature")` is the valve, and a torso dropout or
   an uncovered torso cell still warns (fail-safe). Do not reintroduce a hold, a talk-floor wait or a
   gap in front of `.safety`.

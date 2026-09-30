@@ -17,8 +17,8 @@
 //  `startRouteNow`. `stop()` only when the app goes to the background with no route running
 //  (nobody to guide; a receiver on in a pocket is battery). Arrival and Stop leave it running so
 //  the GPS pill keeps telling the truth and the next route starts with a warm fix.
-//  `requestAuthorization()` at launch right after `start()` (skipped under CANEKIT_UITEST=1:
-//  the three-choice alert races the first XCUITest tap).
+//  `requestAuthorization()` from `AppModel.start()` after onboarding (onboarding may already
+//  have asked). Skipped under CANEKIT_UITEST=1: the alert races the first XCUITest tap.
 //  Readers: `onFix` / `onHeading` (AppModel.wireNavigation), `fix` (GuideCard GPS pill,
 //  DestinationField, route build, hazard geotag, status / conversation facts), `heading`
 //  (auto-recenter), `denied` / `authorizationDenied` / `lastError` (UI and route refusal).

@@ -25,7 +25,7 @@ shipped code is the truth: when a doc and the code disagree, fix the doc in the 
   bumps the generation; "Head height." is never delayed behind a direction; the lane grid is metric
   (centimetres, `LaneGeometry`) and a band the camera cannot see is `.infinity` + a coverage flag;
   the overhang signature is ON; a head episode re-fires only on crossing 1.0 / 0.6 m and a sweep never
-  restarts its clock; one ElevenLabs voice (no `immediate:`); launch speaks the menu then listens once;
+  restarts its clock; one ElevenLabs voice (no `immediate:`); launch says "OpenCane ready." and plays the listening tone (no launch menu);
   emergency dials only on "yes" inside the window that starts when the microphone opens.
 - **Engineering bar (AGENTS.md → "How we engineer"):** evidence before claims; test first in
   `ios/Logic` for every numeric rule (a bug fix starts with a failing test); after every chunk run an

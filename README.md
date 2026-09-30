@@ -137,7 +137,7 @@ Subscription**. For UI tests without a store, launch with `CANEKIT_PREMIUM=free`
 - **RevenueCat** `purchases-ios` for OpenCane Premium: the only third-party package, isolated in
   one file ([`EntitlementManager.swift`](ios/CaneKit/Store/EntitlementManager.swift)).
 - **CaneKitLogic**, a pure-Swift package with every rule that has a number in it (lane math, cue
-  timing, geofences, the Premium gate) and 960 Swift Testing tests that also run on Linux.
+  timing, geofences, the Premium gate) and its Swift Testing suite (965 tests on the last local run; recount with `grep -rhoE '^\s*@Test' ios/Logic/Tests | wc -l`) that also runs on Linux.
 - Optional services: ElevenLabs (voice), an OpenAI-compatible, Anthropic, Gemini or OpenAI vision
   model, a Grok Bot routine for family alerts, and Supabase for an opt-in cloud mirror.
 
@@ -188,7 +188,7 @@ code wins when a document disagrees with the code: fix the document in the same 
 | [`hardware/`](hardware/) | Physical kit: `mount_screwless/` (the live mount, OpenSCAD source), `3d_print_files/` (print runbook; G-code/STLs generated locally), `mount/` (screwed draft + tilt model), `cane_tip/` (printed rolling ball tip) |
 | [`scripts/`](scripts/) | Windows mount toolchain (PowerShell + Node): render STLs, slice G-code, verify the screwless mount |
 | `firmware/`, `cad/`, `ios/stretch/` | ESP32 grip firmware and OpenSCAD drafts. Stretch / legacy only. |
-| [`graphify-out/`](graphify-out/) | Knowledge graph of the repo (code + docs; the committed build has 3,527 nodes, built from `076fcaa`). `GRAPH_REPORT.md` lists the communities, `graph.html` opens in a browser. Query it with `graphify query "<question>"`; refresh with `graphify update .` after code changes. |
+| [`graphify-out/`](graphify-out/) | Knowledge graph of the repo (code + docs; the committed report lists 6,072 nodes, built from `dc59f370`; it lags later commits until `graphify update .`). `GRAPH_REPORT.md` lists the communities, `graph.html` opens in a browser. Query it with `graphify query "<question>"`; refresh with `graphify update .` after code changes. |
 | `opencane-hardware-brief.html` | One-page hardware brief for a browser |
 
 ## Links

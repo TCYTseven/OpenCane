@@ -13,8 +13,8 @@
 # Callers: `make test` (ios/Makefile) — the per-commit gate (AGENTS.md hard rule 10, CLAUDE.md). CI's
 # `logic-tests` job (.github/workflows/ci.yml, manual) runs plain `swift test` in a Linux swift:6.2
 # container instead of this script, so the suite must also build against Linux Foundation.
-# Tests: this script is the runner; the suite is ios/Logic/Tests/CaneKitLogicTests (654 `@Test`
-# annotations in 53 files at Step 51 — recount with `grep -rho "@Test" ios/Logic/Tests | wc -l`).
+# Tests: this script is the runner; the suite is ios/Logic/Tests/CaneKitLogicTests.
+# Recount with `grep -rhoE '^\s*@Test' ios/Logic/Tests | wc -l` (965 on the last local run, 1 known issue).
 # ⚠ Judge a run by this script's own exit status (the exec'd `swift test`'s), never through a pipe
 # such as `| tail`: that reported exit 0 over a failing build (AGENTS.md "Commands", Step 27).
 set -euo pipefail

@@ -30,7 +30,7 @@ AirPods, the watch or the untethered demo, read [`docs/devices_setup.md`](../doc
 Every other doc is listed in [`docs/README.md`](../docs/README.md).
 
 **Where the work stands.** Obstacle detection, haptics, spatial audio, speech, navigation and
-emergency calling stay free. OpenCane Premium (Hazard watch and Family Alerts) is the store:
+emergency calling stay free. OpenCane Premium (Hazard watch, Name people ahead, and Family Alerts) is the store:
 the gate is `ios/Logic/Sources/CaneKitLogic/Premium.swift`, the client is
 `ios/CaneKit/Store/EntitlementManager.swift`, the screen is `ios/CaneKit/UI/PaywallView.swift`.
 The paywall does not open during a walk. Setup for the product, the entitlement `premium` and
@@ -217,7 +217,7 @@ export OPENCANE_GROKBOT_WEBHOOK_URL="https://…"
 export OPENCANE_GROKBOT_WEBHOOK_KEY="…"
 ```
 
-The switch is **Settings → Family alerts → "Send cane events to family"**, off by default (it sends
+The switch is **Settings → Family alerts → "Alert my family"**, off by default (it sends
 the walker's position off the phone). **"Send test event"** posts one sample `fall` event and speaks
 what came back; it works even while the switch is off, which is how you check the chain before a
 walk.
@@ -273,7 +273,7 @@ Addresses are trimmed, lowercased, de-duplicated and capped at 10 (`FamilyContac
 entry is refused in the UI with the reason, never silently dropped. An empty list is a valid Save —
 it tells the bot to stop emailing anyone.
 
-⚠ Registering ignores the "Send cane events to family" switch (you fill the list in before turning
+⚠ Registering ignores the "Alert my family" switch (you fill the list in before turning
 alerts on) and never goes near the summarizer — a family's addresses are not context for a sentence.
 
 Every event also carries what the phone knew at that moment, in `extra`:
@@ -291,7 +291,7 @@ Every event also carries what the phone knew at that moment, in `extra`:
 at Cross Springfield Avenue, 42 metres to the next waypoint … battery 18%" instead of bare
 coordinates. It is **best effort**: no key, a timeout or an HTTP error costs the event its sentence
 and nothing else, and the facts above are sent either way. Switch it off in Settings → Family alerts
-→ **Add AI context**.
+→ **Add a short summary**.
 
 ⚠ **The model never writes `note`.** A language model is not allowed to be the only factual line in
 a safety alert, so its sentence sits in `extra.ai_context` beside the facts it was given and can
@@ -327,14 +327,11 @@ A success looks like `{"success":true,"runUuid":"…"}`.
 
 Permissions are declared in `project.yml` and prompted on first use:
 
-- **Location** is requested at launch, so have a sighted helper present. `CANEKIT_UITEST=1` skips
-  the request.
+- **Camera, location, and microphone** are requested on the last onboarding page. After that, `AppModel.start()` asks for location again, which is a no-op if onboarding already answered. `CANEKIT_UITEST=1` skips the launch request.
 - **Motion** and **HealthKit** are requested at route start.
 - **Health** is requested again on the watch.
 - **Camera + LiDAR** are used for obstacles.
-- **Speech recognition + microphone** are requested the first time voice input is used
-  (`VoiceInputEngine`: Action button / "Talk to OpenCane"); the **microphone** alone is also
-  requested when "Listen for sirens and horns" is turned on (`SoundWatcher`).
+- **Speech recognition** is requested with the microphone on that onboarding page, and again the first time voice input is used if it was not granted; the **microphone** alone is also requested when "Listen for sirens and horns" is turned on (`SoundWatcher`).
 
 Every purpose string names the app **OpenCane**, because that is the name the system shows next to
 it in the prompt and in Settings ("Turn on Camera for OpenCane"). They live in `project.yml`; edit
@@ -453,7 +450,7 @@ xcodebuild's environment (the Makefile does this). None of them is set on a norm
 
 - **Depth map orientation.** `sceneDepth.depthMap` is 256×192 landscape in sensor orientation.
   With the phone upright, the buffer is the scene rotated 90° CCW: `bufferX = sceneY`,
-  `bufferY = (H-1) - sceneX`. The Mount toggles "Phone held upright (portrait)" and "Mirror left /
+  `bufferY = (H-1) - sceneX`. The Phone on cane toggles "Phone is upright" and "Mirror left /
   right" exist for this. Verify with a hand at the left edge.
 - **CVPixelBuffer.** Lock before reading, unlock in `defer`, and use `CVPixelBufferGetBytesPerRow`
   (rows are padded). Retain exactly one camera buffer for the snapshot. Retaining `ARFrame`s makes

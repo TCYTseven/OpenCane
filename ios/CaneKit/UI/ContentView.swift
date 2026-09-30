@@ -5,7 +5,8 @@
 //  Root screen. Four icon-only pages under a sliding tab bar (docs/design.md §6):
 //    Guide    — instruction, buttons, route picker, trip / arrival
 //    Sense    — depth status, Scene engine (Step 47: who answered "Where am I" and why), 3×2 obstacle grid, Hazards
-//    Settings — Cues (Step 36), Haptics, Watch, Mount (tilt + fps + toggles), This phone
+//    Settings — Premium, Everyday (Alerts, Voice, Phone on cane, Family alerts),
+//               Check your kit (Haptics, Watch, indoor record, This phone), About
 //  Styled only with Theme.swift tokens. No debug footer (removed in Step 11).
 //
 //  Pages fade in; they never slide sideways (a horizontal slide read as "going forward" even
