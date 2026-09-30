@@ -48,7 +48,7 @@ insurance, an HSA/FSA or a vision rehabilitation program.
   <img src="docs/images/settings-premium.png" width="180" alt="Settings showing the free plan">
 </p>
 
-The Devpost frame (1179×2556, no device chrome) is [`docs/images/devpost-1179x2556.png`](docs/images/devpost-1179x2556.png).
+The Devpost frame (1179×2556, no device chrome) is [`docs/images/devpost-1179x2556.png`](docs/images/devpost-1179x2556.png). Paste-ready submission text is [`docs/DEVPOST.md`](docs/DEVPOST.md).
 The 1024 icon is [`docs/images/opencane-icon-1024.png`](docs/images/opencane-icon-1024.png).
 The two-minute demo flow is in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md).
 

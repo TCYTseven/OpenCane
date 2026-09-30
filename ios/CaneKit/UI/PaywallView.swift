@@ -7,7 +7,8 @@
 //  Type behaviour are ours to guarantee.
 //
 //  Top to bottom: Close (top right, 44 pt), the navy header with the title "OpenCane Premium",
-//  the two benefits as feature rows, the price block ("$49.99/year", then the per-month figure)
+//  the two benefits as feature rows, the price block ("The first month is free." when this
+//  account can still redeem the intro, then "$49.99/year", then the per-month figure)
 //  — or its loading / error / unavailable state — the Subscribe button, the renewal terms, the
 //  "always free" reminder, the affordability note, then Restore Purchases, Terms of Use and
 //  Privacy Policy.
@@ -20,7 +21,8 @@
 //    · The price block is ONE VoiceOver element whose label is whole sentences
 //      (`PaywallPricing.spokenOffer`: "OpenCane Premium costs $49.99 per year, about $4.16 a
 //      month. It renews automatically every year until you cancel."), so "slash year" is never
-//      read. The renewal terms are ordinary text right under Subscribe.
+//      read. When this account can still redeem the intro, that label and the terms both say
+//      the first month is free. The renewal terms are ordinary text right under Subscribe.
 //    · Success (purchase or restore) unlocks at once — the purchase's own `CustomerInfo` sets
 //      `access` — turns on the switch that opened the paywall, announces it, and closes.
 //      Cancel is silent; a failure is an alert with the store's message.
@@ -154,6 +156,11 @@ struct PaywallView: View {
     private func loadedOffer(_ product: PaywallProduct) -> some View {
         VStack(alignment: .leading, spacing: CKSpacing.md) {
             VStack(alignment: .leading, spacing: 2) {
+                if let trial = product.freeTrialPeriod {
+                    Text("The first \(trial) is free.")
+                        .font(CKFont.secondary)
+                        .foregroundStyle(CKColor.textPrimary)
+                }
                 Text(PaywallPricing.priceLine(localizedPrice: product.localizedPrice))
                     .font(CKFont.title)
                     .foregroundStyle(CKColor.textPrimary)
@@ -168,7 +175,9 @@ struct PaywallView: View {
                                                            localizedPerMonth: product.localizedPerMonth,
                                                            freeTrialPeriod: product.freeTrialPeriod))
             CKBigButton(title: "Subscribe", systemImage: "star.fill",
-                        hint: "Opens the App Store to subscribe for \(product.localizedPrice) a year",
+                        hint: product.freeTrialPeriod.map {
+                            "Starts with a free \($0), then \(product.localizedPrice) a year"
+                        } ?? "Opens the App Store to subscribe for \(product.localizedPrice) a year",
                         value: model.store.isPurchasing ? "Purchasing" : nil) {
                 Task { await subscribe() }
             }
