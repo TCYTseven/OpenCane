@@ -373,8 +373,8 @@ final class AppModel {
     var obstacleNamesEnabled: Bool = Settings.bool("obstacleNamesEnabled", default: false) {
         didSet { Settings.set(obstacleNamesEnabled, "obstacleNamesEnabled") }
     }
-    /// Settings → Voice: Natural (ElevenLabs, the one voice for every line — owner decision
-    ///) or System (Apple's voice, the founder's valve for a venue with bad Wi-Fi). Default
+    /// Settings → Voice: Natural (ElevenLabs, the one voice for every line — owner decision)
+    /// or System (Apple's voice, the founder's valve for a venue with bad Wi-Fi). Default
     /// Natural; persisted like every other switch (Step 53 moved it out of `SpeechQueue`'s own
     /// UserDefaults key). Pushed into `speech.useNaturalVoice` in `start()` and on every change, and
     /// each change logs `voice_backend {natural, by: "settings"}`. Without a key the picker is disabled
@@ -897,7 +897,7 @@ final class AppModel {
     /// (~1–2 s of depth), which is why it is a *setting* and not something the app flips itself.
     ///
     /// ⚠ **Not persisted**, for the same reason the microphone switch below is not — and this one
-    /// was learned the hard way. It *was* persisted, and on that made the app
+    /// was learned the hard way. It *was* persisted, and that made the app
     /// unstartable. The evidence, from the phone:
     /// · a trip log, t=17.583:
     ///     `{"kind":"face_tracking","supported":true,"enabled":true}` — the switch went on. "Both
@@ -4621,7 +4621,7 @@ enum Settings {
     /// last launch. `bool(_:default:)` therefore forces it, and Swift's `static let` gives that
     /// exactly-once, thread-safe semantics for free.
     ///
-    /// Why a recovery at all: on a persisted optional feature (front-camera head
+    /// Why a recovery at all: a persisted optional feature (front-camera head
     /// tracking) made the app die ~2–4 s into launch, on every launch, with the switch that would
     /// have turned it off on a screen the app never reached. `LaunchRecovery` (CaneKitLogic, with
     /// the trip-log evidence and the tests) is the rule that no optional feature may ever hold the

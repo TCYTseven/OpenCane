@@ -177,9 +177,10 @@ final class EntitlementManager {
                 return
             }
             package = found
+            let trial = await Self.freeTrialPeriod(found.storeProduct)
             offering = .loaded(PaywallProduct(localizedPrice: found.storeProduct.localizedPriceString,
                                               localizedPerMonth: found.storeProduct.localizedPricePerMonth,
-                                              freeTrialPeriod: Self.freeTrialPeriod(found.storeProduct)))
+                                              freeTrialPeriod: trial))
         } catch {
             offering = .failed(error.localizedDescription)
         }
@@ -225,9 +226,14 @@ final class EntitlementManager {
         setAccess(entitlement?.isActive == true ? .premium : .free)
     }
 
-    /// Spoken length of a free introductory offer, or nil when the product charges at subscribe.
-    private static func freeTrialPeriod(_ product: StoreProduct) -> String? {
+    /// Spoken length of a free introductory offer this Apple Account can still redeem.
+    /// The product's intro offer describes the product, not this account. `.unknown` and
+    /// `.ineligible` keep the charge-at-subscribe wording so a returning customer is not told
+    /// the first month is free.
+    private static func freeTrialPeriod(_ product: StoreProduct) async -> String? {
         guard let offer = product.introductoryDiscount, offer.paymentMode == .freeTrial else { return nil }
+        let status = await Purchases.shared.checkTrialOrIntroDiscountEligibility(product: product)
+        guard status == .eligible else { return nil }
         let count = max(1, offer.subscriptionPeriod.value * offer.numberOfPeriods)
         let unit: String
         switch offer.subscriptionPeriod.unit {

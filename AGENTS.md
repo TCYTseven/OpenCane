@@ -498,8 +498,8 @@ bench has *disproved* must never sit in the file as though it were settled — m
 
 - **The flashlight switch trusts KVO, never a read right after setting.** `AppModel.setTorch` sets
   the torch and deliberately does **not** read `AVCaptureDevice.isTorchActive` on the next line: iOS
-  updates it asynchronously, that read was the old state, and every change took two presses (trip log
-  a trip log, t = 106–120 s). The switch shows the request at once
+  updates it asynchronously, that read was the old state, and every change took two presses (a trip log,
+  t = 106–120 s). The switch shows the request at once
   (`TorchSwitch`, CaneKitLogic), KVO on `isTorchActive` confirms it (each main-actor hop *re-reads*
   the device, since hops are not FIFO), and a 2 s settle deadline decides failure; the deadline task
   ticks with `now: .infinity` (comparing `systemUptime` with a `ContinuousClock` sleep could leave the

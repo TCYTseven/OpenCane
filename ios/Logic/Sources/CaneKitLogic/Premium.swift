@@ -200,7 +200,7 @@ public enum PaywallPricing {
     }
 
     /// The price block's VoiceOver label: whole sentences, no slash.
-    /// `freeTrialPeriod` is a spoken length ("month") when the store product's intro offer is free.
+    /// `freeTrialPeriod` is a spoken length ("month") only when this Apple Account is eligible for the free intro.
     public static func spokenOffer(localizedPrice: String, localizedPerMonth: String?, freeTrialPeriod: String? = nil) -> String {
         let month = localizedPerMonth.map { ", about \($0) a month" } ?? ""
         let trial = freeTrialPeriod.map { " The first \($0) is free." } ?? ""
