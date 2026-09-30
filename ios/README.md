@@ -141,7 +141,7 @@ Everything runs from `ios/` on the command line. You don't need the Xcode GUI af
 | `make run` | `gen` + `build` + `install` + `launch`. Use this for the phone. |
 | `make sim` | Build for the iOS simulator (no LiDAR, haptics or watch there) |
 | `make sim17` | Create the **iPhone 17 Pro Max / iOS 27** simulator (`xcrun simctl create`). Run it once: Xcode 27 does not create that device by default. |
-| `make sim-grant` | Boot the simulator and pre-grant location + motion so no system alert races a test's first tap. `uitest`, `tour` and `e2e` run it for you. |
+| `make sim-grant` | Boot the simulator, install `build/Build/Products/Debug-iphonesimulator/CaneKit.app`, then pre-grant location and motion. A grant before that install is ignored, and the route tests stop on "Location is off for OpenCane". `uitest`, `tour` and `e2e` run it for you. |
 | `make uitest` | The whole `CaneKitUITests` target (three XCTest classes, 13 tests) on the iPhone 17 Pro Max simulator. Set a simulator location first (below). |
 | `make uitest-streetview` | Only `testWhereAmIDescribesAStreetViewFrame`, with `TEST_RUNNER_CANEKIT_FRAME_DIR` pointing at `STREETVIEW` (default `scripts/streetview`), so Street View frames stand in for the camera. Needs the git-ignored JPEGs. |
 | `make tour` | Screenshot every screen state (`CaneKitVisualTour`) → PNGs in `SHOTS` (default `build/shots/`) |

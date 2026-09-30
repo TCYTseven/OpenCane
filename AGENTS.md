@@ -235,8 +235,9 @@ Traps that have already cost a run (the first two produced a false green in Step
 - ⚠ `scripts/test.sh` passes `--disable-xctest`: on a fresh `Logic/.build` under Xcode 27, `swift test`
   passes all Swift Testing suites and then fails "No test bundle found" in the (empty) XCTest pass.
   Add an XCTest test and you must remove the flag on purpose.
-- ⚠ `make uitest` / `make tour` / `make island` need a location on the simulator first
-  (`xcrun simctl location <udid> set 40.1140,-88.2249`), or the route tests fail for want of a GPS fix.
+- ⚠ `make uitest` / `make tour` / `make island` install the simulator app and then grant
+  location (`make sim-grant`, which also sets `40.1140,-88.2249`). A grant before that install
+  is ignored, and the route tests stop on "Location is off for OpenCane".
 
 ## Hardware / OpenSCAD — traps that have already cost us a night
 

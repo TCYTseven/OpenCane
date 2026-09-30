@@ -11,7 +11,7 @@
 #   make e2e                 GPS-replay end-to-end scenarios through the real app (SCENARIO=clean …)
 #   make devices             list connected devices (find DEVICE)
 #   make sim17               create the iPhone 17 Pro Max (iOS 27) simulator once
-#   make sim-grant           boot SIM and pre-grant location + motion (a prerequisite of the sim tests)
+#   make sim-grant           boot SIM, install the simulator app, then pre-grant location + motion
 #   make uitest-streetview   "Where am I" XCUITest over Street View frames (needs the local JPEGs)
 #   make island              Dynamic Island screenshots (CaneKitIslandTour) → build/shots
 #   make audit               cue load of one walk from its trip log (LOG=path, or pulled off the phone)
@@ -52,6 +52,7 @@ CONFIG ?= Debug
 DERIVED = build
 # The DEVICE build product installed by `make install` (the simulator product is ...-iphonesimulator).
 APP     = $(DERIVED)/Build/Products/$(CONFIG)-iphoneos/CaneKit.app
+SIM_APP = $(DERIVED)/Build/Products/$(CONFIG)-iphonesimulator/CaneKit.app
 # Frozen bundle id (AGENTS.md hard rule 6); also hard-coded in e2e.py and cue_audit.py.
 BUNDLE  = com.aritro.canekit
 XCB     = xcodebuild -project CaneKit.xcodeproj -scheme $(SCHEME) -configuration $(CONFIG) -derivedDataPath $(DERIVED)
@@ -100,46 +101,59 @@ sim:
 # The demo phone is an iPhone 17 Pro Max on iOS 27; Xcode 27 does not create that device by
 # default — `make sim17` creates it once.
 SIM ?= iPhone 17 Pro Max
-# Pre-answer the permission prompts so no system alert races the first tap (fresh simulator / CI).
+# Pre-answer the permission prompts so no system alert races the first tap.
+# Location Services only keeps the grant for an app that is already installed. Granting
+# first on a simulator that has never had CaneKit is ignored, and the route tests then
+# stop on "Location is off for OpenCane". Install, then grant.
 sim-grant:
 	@xcrun simctl boot "$(SIM)" 2>/dev/null || true
 	@xcrun simctl bootstatus "$(SIM)" -b
+	@test -d "$(SIM_APP)" || { echo "No simulator app at $(SIM_APP) — build it first (make sim)"; exit 1; }
+	@xcrun simctl install "$(SIM)" "$(SIM_APP)"
 	@xcrun simctl privacy "$(SIM)" grant location $(BUNDLE)
 	@xcrun simctl privacy "$(SIM)" grant motion $(BUNDLE)
 	@xcrun simctl location "$(SIM)" set 40.1140,-88.2249
 
 # Every XCUITest in CaneKitUITests (the Street View test skips itself without CANEKIT_FRAME_DIR).
-# ⚠ Set a simulator location first (`xcrun simctl location <udid> set 40.1140,-88.2249`) or the route
-# tests fail for want of a GPS fix (AGENTS.md "Commands").
-uitest: sim-grant
-	$(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO -only-testing:CaneKitUITests test
+# Build the test bundle, install the app, grant location, then run. A grant before that
+# install does not stick on a fresh simulator.
+uitest:
+	$(XCB) -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO build-for-testing
+	$(MAKE) sim-grant
+	$(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO -only-testing:CaneKitUITests test-without-building
 
 # "Where am I" on a real street scene: Street View frames stand in for the camera (FrameReplay).
 STREETVIEW ?= scripts/streetview
 # TEST_RUNNER_* must be in xcodebuild's *environment* (it strips the prefix and hands the rest to
 # the test runner); written after the command it is only a build setting and never arrives.
-uitest-streetview: sim-grant
+uitest-streetview:
+	$(XCB) -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO build-for-testing
+	$(MAKE) sim-grant
 	TEST_RUNNER_CANEKIT_FRAME_DIR=$(abspath $(STREETVIEW)) \
 	  $(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO \
-	  -only-testing:CaneKitUITests/CaneKitUITests/testWhereAmIDescribesAStreetViewFrame test
+	  -only-testing:CaneKitUITests/CaneKitUITests/testWhereAmIDescribesAStreetViewFrame test-without-building
 
 # Screenshot tour of every screen state (CaneKitVisualTour); PNGs land in SHOTS.
 SHOTS ?= $(DERIVED)/shots
-tour: sim-grant
+tour:
+	$(XCB) -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO build-for-testing
+	$(MAKE) sim-grant
 	mkdir -p $(SHOTS)
 	TEST_RUNNER_CANEKIT_SHOTS=$(abspath $(SHOTS)) \
 	  $(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO \
 	  -only-testing:CaneKitUITests/CaneKitVisualTour \
-	  -only-testing:CaneKitUITests/CaneKitShipatonTour test
+	  -only-testing:CaneKitUITests/CaneKitShipatonTour test-without-building
 
 # Dynamic Island pictures (CaneKitIslandTour, Step 47): route start → background → compact island,
 # long-press → expanded, a few seconds of simulated walk, then Stop and the island after it. PNGs
 # land in SHOTS as NN-island-*.png. Same prerequisites as `make tour` (location set, sim-grant).
-island: sim-grant
+island:
+	$(XCB) -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO build-for-testing
+	$(MAKE) sim-grant
 	mkdir -p $(SHOTS)
 	TEST_RUNNER_CANEKIT_SHOTS=$(abspath $(SHOTS)) \
 	  $(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO \
-	  -only-testing:CaneKitUITests/CaneKitIslandTour test
+	  -only-testing:CaneKitUITests/CaneKitIslandTour test-without-building
 
 # End-to-end GPS replay through the real app (scripts/e2e.py): clean, missed_fence, gps_jitter,
 # wrong_turn (SCENARIO=all). SCENARIO=streetview reruns clean with Street View frames as the
