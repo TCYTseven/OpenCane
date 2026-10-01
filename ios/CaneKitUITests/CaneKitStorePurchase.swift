@@ -54,6 +54,9 @@ final class CaneKitStorePurchase: XCTestCase {
         XCTAssertTrue(price.waitForExistence(timeout: 10), "Paywall should show $49.99")
         pause(1)
         snap(app, "paywall-test-store")
+        app.swipeUp(); pause(0.6); snap(app, "paywall-scrolled")
+        app.swipeUp(); pause(0.6); snap(app, "paywall-bottom")
+        app.swipeDown(); app.swipeDown(); pause(0.6)
         subscribe.tap()
 
         // The Test Store's purchase sheet is an alert in the app's own process.
