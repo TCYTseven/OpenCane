@@ -370,10 +370,18 @@ final class SceneDescriber {
                 // Offline with a cloud key: a question cannot be answered, but the on-device
                 // description still works — say which, then describe (demo-hardening review: the
                 // walker used to get only "I could not answer that.").
+                // The description is made on-device from the frame already captured: a second
+                // run would try the same dead link again first (another full cloud timeout) and
+                // then describe a frame taken that much later.
                 if question != nil, Self.isOffline(error) {
                     self.speech.say("I can't reach the cloud to answer that. Describing instead.", .scene, ttl: 8)
-                    self.onResult?(nil, error.localizedDescription, nil, frameName, "error", "")
-                    Task { @MainActor [weak self] in _ = self?.run(question: nil, trigger: trigger) }
+                    var text = await self.onDeviceDescription(jpeg: jpeg, lidar: capturedLidar)
+                    guard self.stillCurrent(generation) else { return }
+                    self.recordOutcome(source: self.onDeviceName, cloudMs: nil, reason: nil, gate: "offline")
+                    if self.isDark() { text = Self.darkCaveat + text }
+                    self.lastDescription = text
+                    self.speech.say(text, .scene, ttl: 10)
+                    self.onResult?(text, error.localizedDescription, nil, frameName, "offline", "")
                     return
                 }
                 // A failed question says so as a question. "Scene description failed" after
@@ -384,6 +392,16 @@ final class SceneDescriber {
             }
         }
         return true
+    }
+
+    /// The on-device client's description of `jpeg`, else the deterministic template — never
+    /// the cloud. Used when the cloud was just found unreachable.
+    private func onDeviceDescription(jpeg: Data, lidar: String) async -> String {
+        if let onDevice = client.onDeviceFallback, let text = try? await onDevice.describe(jpeg: jpeg),
+           !text.isEmpty {
+            return text
+        }
+        return OnDeviceVLMClient.template(await OnDeviceVision.detect(jpeg: jpeg), lidar: lidar)
     }
 
     /// No network (or a link too poor to finish): the on-device describer can still answer.

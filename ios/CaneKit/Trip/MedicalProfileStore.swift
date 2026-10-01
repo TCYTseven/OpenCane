@@ -106,14 +106,22 @@ public final class MedicalProfileStore {
 
     @ObservationIgnored private let pedometer = CMPedometer()
 
+    /// The Step 44 demo seed: these three free-text values together are never typed by hand.
+    nonisolated static func isOldDemoSeed(_ p: CKMedicalProfile) -> Bool {
+        p.caneType == "130 cm · Rolling Ball Tip"
+            && p.height == "5' 11\" (180 cm)"
+            && p.weight == "165 lbs (75 kg)"
+    }
+
     public init() {
         if let data = UserDefaults.standard.data(forKey: Self.profileKey),
            var decoded = try? JSONDecoder().decode(CKMedicalProfile.self, from: data) {
-            // One-time rewrite of the old demo seed, recognised by its "Rolling Ball" cane, and
-            // saved so it sticks. "O+" alone is a real blood type: it is never rewritten, and before
-            // the demo-hardening review it was rewritten to "A-" on every launch.
+            // One-time rewrite of the old demo seed, recognised by its exact cane, height and
+            // weight together, and saved so it sticks. A walker who really uses a rolling ball tip,
+            // or whose blood type is "O+", keeps what they typed; before the demo-hardening review
+            // both were rewritten on every launch.
             if !UserDefaults.standard.bool(forKey: Self.seedMigratedKey) {
-                if decoded.caneType.contains("Rolling Ball") {
+                if Self.isOldDemoSeed(decoded) {
                     if decoded.bloodType == "O+" { decoded.bloodType = "A-" }
                     decoded.caneType = "130 cm · Standard Tip"
                     if let data = try? JSONEncoder().encode(decoded) {
