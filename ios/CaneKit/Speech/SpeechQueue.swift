@@ -1845,7 +1845,9 @@ final class SpeechQueue {
     private func startNext(after endedPriority: SpeechPriority?) {
         let now = Date().timeIntervalSinceReferenceDate
         queue.removeAll { $0.expires < now }
-        guard let head = queue.first, !interrupted, !voiceHeld else {
+        // A voice hold lets `.safety` through in `say()`; the drain must too, or a "Head height."
+        // queued behind another safety line waits until dictation ends (demo-hardening review).
+        guard let head = queue.first, !interrupted, !voiceHeld || head.priority >= .safety else {
             inGap = false
             isSpeaking = false
             return

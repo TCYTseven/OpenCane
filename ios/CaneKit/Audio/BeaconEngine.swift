@@ -59,6 +59,10 @@ final class BeaconEngine {
     /// True between a successful `start()` and `stop()`. Not cleared when the system stops the
     /// engine during an interruption — that is what lets `restartEngine` bring it back.
     private(set) var isRunning = false
+    /// A route wants the beacon (`start()` until `stop()`). Unlike `isRunning` it survives a failed
+    /// start or restart, so the end of a call or Siri, a config change or the return to the
+    /// foreground can still bring the click back (demo-hardening review).
+    private var wanted = false
     /// Last start/restart failure (debug); nil after a successful (re)start.
     private(set) var lastError: String?
     /// The bearing error currently rendered (debug).
@@ -134,7 +138,11 @@ final class BeaconEngine {
     /// be configured already (`SpeechQueue.configureAudioSession`, at launch).
     func start() {
         guard !isRunning else { return }
+        wanted = true
         lifecycleGeneration &+= 1
+        // Installed before the engine starts, so a start refused by an active call or Siri is
+        // retried when that interruption ends.
+        observeRouteChanges()
         do {
             let format = AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1)!
             if clickBuffer == nil {
@@ -171,7 +179,6 @@ final class BeaconEngine {
                 return
             }
             lastError = nil
-            observeRouteChanges()
             render()
         } catch {
             lastError = "Beacon: \(error.localizedDescription)"
@@ -185,6 +192,7 @@ final class BeaconEngine {
     /// `isRunning` is false. Callers: `AppModel.stopRoute`, `endRouteQuietly` (a route replaced
     /// mid-walk) and the `nav.onArrived` handler.
     func stop() {
+        wanted = false
         lifecycleGeneration &+= 1
         player.stop()
         engine.stop()
@@ -237,7 +245,7 @@ final class BeaconEngine {
     /// engine can stop across a screen lock without an interruption notification; restart it if a
     /// route is running (Muse M4).
     func resumeIfNeeded() {
-        guard isRunning, !engine.isRunning else { return }
+        guard wanted, !isRunning || !engine.isRunning else { return }
         restartEngine()
     }
 
@@ -250,7 +258,7 @@ final class BeaconEngine {
     /// Main actor; retries run in a main-actor `Task`.
     private func restartEngine(attempt: Int = 0, generation: UInt64? = nil) {
         let generation = generation ?? lifecycleGeneration
-        guard isRunning, generation == lifecycleGeneration else { return }
+        guard wanted, generation == lifecycleGeneration else { return }
         do {
             try AVAudioSession.sharedInstance().setActive(true)
             if !engine.isRunning { try engine.start() }
@@ -259,14 +267,15 @@ final class BeaconEngine {
                 isRunning = false
                 return
             }
+            isRunning = true
             render()
             lastError = nil
         } catch {
             lastError = "Beacon restart: \(error.localizedDescription)"
             guard attempt < 3 else {
                 // Do not leave the published beacon state looking alive after all recovery attempts
-                // failed. The route's speech/watch channels remain available, and the card exposes
-                // this error so a later route can retry cleanly.
+                // failed. `wanted` stays set, so the interruption's `.ended`, the next config change
+                // or the return to the foreground tries again; the card shows this error meanwhile.
                 engine.stop()
                 isRunning = false
                 silence()

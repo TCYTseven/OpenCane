@@ -1912,7 +1912,10 @@ final class AppModel {
             // is the normal way this app is used.
             // Step 62: an indoor step script also keeps GPS, or the indoor → outdoor handover (the
             // first good fix past the exit) would wait for an unlock.
-            if !nav.isNavigating && !indoor.isActive { location.stop() }
+            // A route being built or waiting for depth keeps GPS too: stopping it cleared the fix,
+            // so the build said "No GPS fix yet" outdoors and the queued start began with no fixes
+            // (iOS limits starting location from the background) — demo-hardening review.
+            if !nav.isNavigating && !indoor.isActive && !isBuildingRoute && !routeStartWaiting { location.stop() }
             indoor.sceneChanged(active: false)   // logs `indoor {action: paused_background}` only
             // The two-camera spotter view must never survive a backgrounding: it would hold both
             // cameras with nothing on screen, and the walker would come back to an app whose
@@ -2874,6 +2877,13 @@ final class AppModel {
     /// start or MapKit build (callers cancel those first), ends the Live Activity immediately
     /// (the next one starts at once) and cancels the trip tracker synchronously.
     private func endRouteQuietly() {
+        // A simulated walk captured the old route's waypoints; left running it would feed them to
+        // the new route (demo-hardening review).
+        stopSimulatedWalk()
+        // The family heard "trip started" for this route; close it before the next one starts.
+        family.tripEnded(destination: activeRouteName, arrived: false,
+                         lat: location.fix?.coordinate.latitude,
+                         lng: location.fix?.coordinate.longitude)
         routeSessionGeneration &+= 1
         speech.routeLines = []               // no route: nothing standing to re-request
         nav.stop()
@@ -3334,8 +3344,18 @@ final class AppModel {
     /// the distance to the next waypoint, through `onRepeat` (bypasses queue coalescing).
     func repeatInstruction() {
         if indoorHandlesRepeat() { return }  // Step 62: the indoor step's line while indoors
+        if sayRouteStartingIfNeeded() { return }
         nav.repeatInstruction()
         logger.event("repeat")
+    }
+
+    /// Repeat / Next while a requested route is still being built or waiting for depth: say that
+    /// it is on its way, not "No route running." (or the previous route's arrival line), which
+    /// told a blind walker the request had failed (demo-hardening review). True when it spoke.
+    private func sayRouteStartingIfNeeded() -> Bool {
+        guard !nav.isNavigating, isBuildingRoute || routeStartWaiting else { return false }
+        speech.say(isBuildingRoute ? "Finding a route." : "Route starting.", .nav, ttl: 3)
+        return true
     }
 
     // MARK: Auto-recenter (README §3: "auto when walking straight for 3 s")
@@ -3511,7 +3531,18 @@ final class AppModel {
         routeBuildTask = Task { [weak self] in
             guard let self else { return }
             let isCurrent = { !Task.isCancelled && self.routeBuildGeneration == generation }
-            defer { if isCurrent() { self.isBuildingRoute = false; self.routeBuildTask = nil } }
+            defer {
+                if isCurrent() {
+                    self.isBuildingRoute = false
+                    self.routeBuildTask = nil
+                    // The lock kept GPS on for this build; a build that ended without a route while
+                    // locked turns it off again, as the background branch would have.
+                    if UIApplication.shared.applicationState == .background, !self.nav.isNavigating,
+                       !self.routeStartWaiting, !self.indoor.isActive {
+                        self.location.stop()
+                    }
+                }
+            }
             // Wait briefly for a first fix if we have none yet. (`try?` swallows cancellation, so
             // the loop checks it: a cancelled sleep returns at once.)
             var tries = 0
@@ -3560,6 +3591,7 @@ final class AppModel {
     /// Says "No route running." (`.nav`, 2 s TTL) when idle, like the watch always did.
     func nextWaypoint() {
         if indoorHandlesNext() { return }    // Step 62: the next indoor step while indoors
+        if sayRouteStartingIfNeeded() { return }
         if nav.isNavigating { nav.next() } else { speech.say("No route running.", .nav, ttl: 2) }
     }
 
@@ -3816,6 +3848,11 @@ final class AppModel {
         if nav.isNavigating { endRouteQuietly() }
         // Location refused: say so instead of "Route started" followed by silence (Muse H2).
         if announceLocationDenied() { return }
+        // An outdoor route replaces an indoor leg that is still running; otherwise both would speak
+        // and Next / Repeat would keep driving the indoor script (demo-hardening review). After the
+        // location check, so a refused route leaves the indoor guidance running. The indoor
+        // handover has already torn itself down, so this is a no-op there.
+        indoor.stop(reason: "outdoor_route")
         // A route needs the obstacle channel, so the two-camera spotter view cannot survive into
         // it. `setBothCameras(false)` resumes ARKit and already speaks "Both cameras off. Obstacle
         // detection is restarting." (then "…is back." once depth is confirmed) — a second line
@@ -4525,10 +4562,18 @@ final class AppModel {
     /// The cane went over and stayed down: tell the family, and say so out loud in case the walker
     /// is fine and wants to cancel by picking it up (the detector re-arms when it is upright).
     private func fallDetected(_ fall: Fall) {
+        // A failed send is said out loud: a walker who fell must not believe family was told when
+        // nothing left the phone (demo-hardening review).
+        // Said first, so a send that fails at once (no alert service) is heard after it.
+        let sending = family.enabled && family.isConfigured
+        speech.say(sending ? "Possible fall detected. Telling your family." : "Possible fall detected.", .nav, ttl: 10)
         family.fall(lat: location.fix?.coordinate.latitude,
                     lng: location.fix?.coordinate.longitude,
-                    note: "Possible fall: the cane went over and stayed down.")
-        speech.say("Possible fall detected. Telling your family.", .nav, ttl: 10)
+                    note: "Possible fall: the cane went over and stayed down.") { [weak self] result in
+            guard let self, sending, result != .accepted else { return }
+            self.speech.say("Could not reach your family. Say emergency to call your emergency contact.", .nav, ttl: 20)
+            self.logger.event("fall", ["alert": "not_delivered", "result": result.summary])
+        }
         logger.event("fall", ["impact_g": fall.impactG, "rest_tilt": fall.restTiltDegrees,
                               "ar_t": fall.at])
     }

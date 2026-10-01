@@ -146,9 +146,14 @@ final class FamilyAlerts {
     ///
     /// Called by `AppModel` from `FallWatcher` (CoreMotion → `FallDetector`). ⚠ Those thresholds
     /// are unvalidated guesses; see FallDetector.swift.
-    func fall(lat: Double?, lng: Double?, note: String? = nil) {
-        guard enabled else { return }
-        send(FamilyAlertPolicy.fall(lat: lat, lng: lng, note: note))
+    /// `onResult` gets the delivery result (on the main actor) so a failed alert can be spoken.
+    /// Returns false when alerts are off and nothing was sent.
+    @discardableResult
+    func fall(lat: Double?, lng: Double?, note: String? = nil,
+              onResult: ((GrokBotResult) -> Void)? = nil) -> Bool {
+        guard enabled else { return false }
+        send(FamilyAlertPolicy.fall(lat: lat, lng: lng, note: note), onResult: onResult)
+        return true
     }
 
     /// Walker asked for help (`critical`, never rate-limited).
@@ -224,9 +229,10 @@ final class FamilyAlerts {
 
     /// Fire-and-forget: a cue must never wait on a POST, nor on the summary. The result only
     /// updates `lastStatus`.
-    private func send(_ event: OpenCaneEvent) {
+    private func send(_ event: OpenCaneEvent, onResult: ((GrokBotResult) -> Void)? = nil) {
         guard let client else {
             lastStatus = GrokBotResult.notConfigured.summary
+            onResult?(.notConfigured)
             return
         }
         // Context is read here, synchronously on the main actor, so it describes the moment the
@@ -235,6 +241,7 @@ final class FamilyAlerts {
         Task { [weak self] in
             let result = await self?.deliver(enriched, prompt: prompt, client: client)
             self?.lastStatus = result?.summary
+            if let result { onResult?(result) }
         }
     }
 

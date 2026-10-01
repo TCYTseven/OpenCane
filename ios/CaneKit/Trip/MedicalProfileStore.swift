@@ -75,6 +75,9 @@ public struct CKMobilityStats: Sendable, Equatable {
 public final class MedicalProfileStore {
     private static let profileKey = "opencane_medical_profile"
     private static let tripsKey = "opencane_completed_trips_count"
+    /// Set once the old demo seed (blood type "O+", "Rolling Ball" cane) has been rewritten, so a
+    /// blood type the walker enters later is never changed again.
+    private static let seedMigratedKey = "opencane_medical_seed_migrated"
     /// The fake number an earlier build shipped with; `init` clears it rather than copying a
     /// contact into a new binary. A number the walker typed is left untouched.
     private static let placeholderPhone = "+1 (555) 234-5678"
@@ -106,11 +109,18 @@ public final class MedicalProfileStore {
     public init() {
         if let data = UserDefaults.standard.data(forKey: Self.profileKey),
            var decoded = try? JSONDecoder().decode(CKMedicalProfile.self, from: data) {
-            if decoded.bloodType == "O+" {
-                decoded.bloodType = "A-"
-            }
-            if decoded.caneType.contains("Rolling Ball") {
-                decoded.caneType = "130 cm · Standard Tip"
+            // One-time rewrite of the old demo seed, recognised by its "Rolling Ball" cane, and
+            // saved so it sticks. "O+" alone is a real blood type: it is never rewritten, and before
+            // the demo-hardening review it was rewritten to "A-" on every launch.
+            if !UserDefaults.standard.bool(forKey: Self.seedMigratedKey) {
+                if decoded.caneType.contains("Rolling Ball") {
+                    if decoded.bloodType == "O+" { decoded.bloodType = "A-" }
+                    decoded.caneType = "130 cm · Standard Tip"
+                    if let data = try? JSONEncoder().encode(decoded) {
+                        UserDefaults.standard.set(data, forKey: Self.profileKey)
+                    }
+                }
+                UserDefaults.standard.set(true, forKey: Self.seedMigratedKey)
             }
             // Remove only the old seeded placeholder. A number the walker typed is kept.
             if decoded.emergencyContactPhone == Self.placeholderPhone {
@@ -119,6 +129,7 @@ public final class MedicalProfileStore {
             self.profile = decoded
         } else {
             self.profile = .standardDefault
+            UserDefaults.standard.set(true, forKey: Self.seedMigratedKey)
         }
         let trips = UserDefaults.standard.integer(forKey: Self.tripsKey)
         self.mobilityStats.completedTrips = max(trips, 0)

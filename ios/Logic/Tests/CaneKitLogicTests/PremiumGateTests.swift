@@ -126,14 +126,17 @@ struct PremiumGateTests {
     }
 
     /// Demo-hardening review: a `customerInfo()` that started before a purchase and answers after
-    /// it must not put the walker back on the free plan. Answers older than the last applied one
-    /// are ignored; an equal or newer one, or the first one, is applied.
+    /// it must not put the walker back on the free plan. An older answer that takes Premium away
+    /// is ignored; an equal or newer one, or the first one, is applied. An answer that grants
+    /// Premium is always applied (codex review: offline answers carry the device clock).
     @Test func anOlderSubscriptionAnswerIsIgnored() {
         let purchase = Date(timeIntervalSince1970: 1_000)
-        #expect(PremiumGate.isStale(requestDate: purchase.addingTimeInterval(-5), lastApplied: purchase))
-        #expect(!PremiumGate.isStale(requestDate: purchase, lastApplied: purchase))
-        #expect(!PremiumGate.isStale(requestDate: purchase.addingTimeInterval(5), lastApplied: purchase))
-        #expect(!PremiumGate.isStale(requestDate: purchase, lastApplied: nil))
+        let older = purchase.addingTimeInterval(-5)
+        #expect(PremiumGate.ignoresAnswer(grantsPremium: false, requestDate: older, lastApplied: purchase))
+        #expect(!PremiumGate.ignoresAnswer(grantsPremium: false, requestDate: purchase, lastApplied: purchase))
+        #expect(!PremiumGate.ignoresAnswer(grantsPremium: false, requestDate: purchase.addingTimeInterval(5), lastApplied: purchase))
+        #expect(!PremiumGate.ignoresAnswer(grantsPremium: false, requestDate: purchase, lastApplied: nil))
+        #expect(!PremiumGate.ignoresAnswer(grantsPremium: true, requestDate: older, lastApplied: purchase))
     }
 
     /// Turning a feature OFF is never gated.

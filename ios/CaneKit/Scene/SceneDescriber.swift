@@ -367,6 +367,15 @@ final class SceneDescriber {
                 guard self.stillCurrent(generation) else { return }
                 self.lastError = error.localizedDescription
                 self.recordOutcome(source: nil, cloudMs: nil, reason: nil, gate: "error")
+                // Offline with a cloud key: a question cannot be answered, but the on-device
+                // description still works — say which, then describe (demo-hardening review: the
+                // walker used to get only "I could not answer that.").
+                if question != nil, Self.isOffline(error) {
+                    self.speech.say("I can't reach the cloud to answer that. Describing instead.", .scene, ttl: 8)
+                    self.onResult?(nil, error.localizedDescription, nil, frameName, "error", "")
+                    Task { @MainActor [weak self] in _ = self?.run(question: nil, trigger: trigger) }
+                    return
+                }
                 // A failed question says so as a question. "Scene description failed" after
                 // "is there a bench?" reads as an answer about the bench.
                 self.speech.say(question == nil ? "Scene description failed."
@@ -375,6 +384,14 @@ final class SceneDescriber {
             }
         }
         return true
+    }
+
+    /// No network (or a link too poor to finish): the on-device describer can still answer.
+    private static func isOffline(_ error: Error) -> Bool {
+        guard let url = error as? URLError else { return false }
+        return [.notConnectedToInternet, .networkConnectionLost, .timedOut, .cannotFindHost,
+                .cannotConnectToHost, .dnsLookupFailed, .dataNotAllowed,
+                .internationalRoamingOff].contains(url.code)
     }
 
     /// False when a lock bumped the generation after this run started (`SceneDescribePolicy`).

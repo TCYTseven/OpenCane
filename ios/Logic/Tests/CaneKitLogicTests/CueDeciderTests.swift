@@ -34,11 +34,64 @@ import Testing
 private func report(head: [Float] = [.infinity, .infinity, .infinity],
                     torso: [Float] = [.infinity, .infinity, .infinity],
                     trusted: Bool = true,
+                    depth: Bool = true,
                     headCoverage: [Bool] = [true, true, true],
                     torsoCoverage: [Bool] = [true, true, true]) -> LaneReport {
     LaneReport(grid: LaneGrid(head: head, torso: torso, centerDepth: .infinity,
                               headCoverage: headCoverage, torsoCoverage: torsoCoverage),
-               isTrusted: trusted, depthAvailable: true)
+               isTrusted: trusted, depthAvailable: depth)
+}
+
+/// Demo-hardening review: a depth dropout (frames with no sceneDepth) used to freeze the decider
+/// with the centre loop still buzzing at the last distance. A short gap still freezes; after
+/// `depthDropoutStopSeconds` the cue stops, and depth coming back starts fresh.
+@Test func aLongDepthDropoutStopsTheCueAndStartsFresh() {
+    let d = CueDecider()
+    #expect(d.update(report(torso: [4, 1.5, 4]), now: 0) == .fire(.centerApproach(distance: 1.5)))
+    #expect(d.update(report(depth: false), now: 0.5) == nil)          // short gap: frozen
+    #expect(d.update(report(depth: false), now: 1.1) == .stop)        // long gap: stopped once
+    #expect(d.update(report(depth: false), now: 1.5) == nil)
+    #expect(d.update(report(torso: [4, 1.5, 4]), now: 1.6) == .fire(.centerApproach(distance: 1.5)))
+}
+
+/// Demo-hardening review: a second overhang soon after a first one whose bands were all used
+/// was silent all the way to contact. A re-entry clearly farther than the closest point already
+/// warned about is a new obstacle and gets its own onset; a flicker of the same one does not.
+@Test func aSecondOverhangInsideTheEpisodeGetsItsOwnOnset() {
+    let d = CueDecider()
+    #expect(d.update(report(head: [4, 1.4, 4]), now: 0) == .fire(.head(distance: 1.4, onset: true)))
+    #expect(d.update(report(head: [4, 0.95, 4]), now: 1.6) == .fire(.head(distance: 0.95, onset: false)))
+    #expect(d.update(report(head: [4, 0.55, 4]), now: 3.2) == .fire(.head(distance: 0.55, onset: false)))
+    // Branch A passes overhead: the point-blank hold keeps the zone for 1.5 s, then it clears.
+    #expect(d.update(report(), now: 3.4) == nil)
+    #expect(d.update(report(), now: 4.8) == .stop)
+    #expect(d.headEpisodeActive)                                       // under 2 s of clear
+    // Branch B, 0.8 s later and well beyond A's closest point: a new "Head height." onset.
+    #expect(d.update(report(head: [4, 1.4, 4]), now: 5.6) == .fire(.head(distance: 1.4, onset: true)))
+}
+
+/// Codex review of the fix above: one noisy frame that briefly clears the zone must not re-announce
+/// the same overhang, even when the next reading is well beyond its closest point.
+@Test func oneNoisyClearFrameDoesNotReannounceTheSameOverhang() {
+    let d = CueDecider()
+    #expect(d.update(report(head: [4, 1.0, 4]), now: 0) == .fire(.head(distance: 1.0, onset: true)))
+    _ = d.update(report(head: [4, 0.9, 4]), now: 0.5)
+    _ = d.update(report(head: [4, 3, 4], torso: [4, 4, 4]), now: 0.6)  // a trusted far reading clears the zone
+    let back = d.update(report(head: [4, 1.45, 4]), now: 0.7)          // 0.1 s later, back and farther
+    #expect(back != .fire(.head(distance: 1.45, onset: true)))
+}
+
+/// Codex review: a long dropout also ends a head episode that is only waiting out its clear
+/// clock, so the overhang's return is a fresh onset rather than a silent re-entry.
+@Test func aLongDropoutEndsALingeringHeadEpisode() {
+    let d = CueDecider()
+    #expect(d.update(report(head: [4, 1.2, 4]), now: 0) == .fire(.head(distance: 1.2, onset: true)))
+    _ = d.update(report(head: [4, 3, 4]), now: 0.5)                    // zone clears, episode lingers
+    #expect(d.headEpisodeActive)
+    _ = d.update(report(depth: false), now: 1.0)
+    _ = d.update(report(depth: false), now: 1.6)                       // ≥ 1 s without depth
+    #expect(!d.headEpisodeActive)
+    #expect(d.update(report(head: [4, 1.2, 4]), now: 1.8) == .fire(.head(distance: 1.2, onset: true)))
 }
 
 /// Walking toward a post: the centre loop starts once, then only its distance updates.

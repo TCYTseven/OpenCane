@@ -526,7 +526,9 @@ final class ConversationCoordinator {
             let contact = model.medicalProfile.effectiveEmergencyContact
             switch emergency.emergency(now: Self.clock(), name: contact.name, number: contact.phone) {
             case .prompt(let line):
-                model.speech.say(line, .nav, ttl: EmergencyConfirm.confirmWindow)
+                // `.nav`, so it never delays an obstacle line; the window allows for the mic opening
+                // late behind route speech (`EmergencyConfirm.micWaitGrace`, demo-hardening review).
+                model.speech.say(line, .nav, ttl: EmergencyConfirm.confirmWindow + EmergencyConfirm.micWaitGrace)
                 model.logger.event("emergency", ["action": "prompted", "contact": contact.name])
                 scheduleEmergencyExpiry()
                 return (line, true)
@@ -542,7 +544,8 @@ final class ConversationCoordinator {
                 emergencyExpiryTask?.cancel()
                 guard let url = URL(string: "tel:\(tel)") else { return (EmergencyConfirm.nothingPendingLine, false) }
                 model.logger.event("emergency", ["action": "confirmed", "contact": contact])
-                model.speech.say(EmergencyConfirm.callingLine, .nav, ttl: 6)
+                // `.safety`: the "Tap Call" direction must be heard as the confirmation opens.
+                model.speech.say(EmergencyConfirm.callingLine, .safety, ttl: 10)
                 // The call leaves the app; a log that ends mid-buffer would hide that it happened.
                 model.logger.flush()
                 UIApplication.shared.open(url)
@@ -585,7 +588,8 @@ final class ConversationCoordinator {
     private func scheduleEmergencyExpiry() {
         emergencyExpiryTask?.cancel()
         emergencyExpiryTask = Task { @MainActor [weak self] in
-            try? await Task.sleep(for: .seconds(EmergencyConfirm.confirmWindow + 0.1))
+            guard let window = self?.emergency.window else { return }
+            try? await Task.sleep(for: .seconds(window + 0.1))
             guard let self, !Task.isCancelled, let model = self.appModel else { return }
             if self.emergency.expire(now: Self.clock()) {
                 model.speech.say(EmergencyConfirm.canceledLine, .nav, ttl: 6)

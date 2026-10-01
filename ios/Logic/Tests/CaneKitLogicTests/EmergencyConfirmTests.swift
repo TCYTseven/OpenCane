@@ -43,13 +43,36 @@ struct EmergencyConfirmTests {
         #expect(!e.isPending(now: 108))
     }
 
-    /// "yes" 8.1 s after the prompt is ignored: nothing to confirm, nothing dialled.
+    /// "yes" 8.1 s after the answer's microphone opened is ignored: nothing to confirm, nothing
+    /// dialled. (Demo-hardening review: the 8 s now counts from the mic, see `aLateMicrophone…`.)
     @Test func yesAfterEightSecondsIsIgnored() {
         var e = EmergencyConfirm()
         _ = e.emergency(now: 0, name: "Priya", number: "5551234")
-        let late = e.confirm(true, now: 8.1)
+        let r1 = e.restartWindow(now: 2)
+        #expect(r1)
+        let late = e.confirm(true, now: 10.1)
         #expect(late == .none)
-        #expect(!e.isPending(now: 8.1))
+        #expect(!e.isPending(now: 10.1))
+    }
+
+    /// Demo-hardening review: during a walk the prompt can wait behind route speech and the mic
+    /// opens only when speech drains (up to 15 s). The window must still be open then, and the
+    /// answer gets the full 8 s from the mic. With no mic at all it lapses after 8 + 15 s.
+    @Test func aLateMicrophoneStillGetsTheFullWindow() {
+        var e = EmergencyConfirm()
+        _ = e.emergency(now: 0, name: "Priya", number: "5551234")
+        let r2 = e.expire(now: 12)
+        #expect(r2 == false)
+        let r3 = e.restartWindow(now: 12)
+        #expect(r3)
+        let r4 = e.confirm(true, now: 19)
+        #expect(r4 == .call(tel: "5551234"))
+        var noMic = EmergencyConfirm()
+        _ = noMic.emergency(now: 0, name: "Priya", number: "5551234")
+        let r5 = noMic.expire(now: 22.9)
+        #expect(r5 == false)
+        let r6 = noMic.expire(now: 23.0)
+        #expect(r6 == true)
     }
 
     /// "no" inside the window cancels; a bare "yes" with no prompt pending is `.none`.
@@ -98,12 +121,19 @@ struct EmergencyConfirmTests {
     @Test func expiryIsReportedOnce() {
         var e = EmergencyConfirm()
         _ = e.emergency(now: 0, name: "Priya", number: "5551234")
+        let micOpened = e.restartWindow(now: 0)             // the mic opened at once
+        #expect(micOpened)
         var lapsed = e.expire(now: 7.9)
         #expect(lapsed == false)
         lapsed = e.expire(now: 8.0)
         #expect(lapsed == true)
         lapsed = e.expire(now: 9.0)
         #expect(lapsed == false)
+    }
+
+    /// iOS asks before dialling a number an app opens, so the line must say a tap is needed.
+    @Test func callingLineSaysTheCallNeedsATap() {
+        #expect(EmergencyConfirm.callingLine.contains("Tap Call"))
     }
 
     /// The fixed lines are the four the shell can speak besides the prompt; each ends in a full stop.
@@ -126,7 +156,7 @@ struct EmergencyConfirmTests {
         #expect(answer == .call(tel: "+19257918082"))
         var late = EmergencyConfirm()
         _ = late.emergency(now: 0, name: "Mom", number: "925")
-        let lateRestart = late.restartWindow(now: 9)        // lapsed: nothing to restart
+        let lateRestart = late.restartWindow(now: 23)       // lapsed (8 s + 15 s mic grace)
         #expect(!lateRestart)
     }
 }

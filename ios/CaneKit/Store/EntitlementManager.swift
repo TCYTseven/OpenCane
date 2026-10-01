@@ -203,7 +203,11 @@ final class EntitlementManager {
             apply(result.customerInfo)
             return access == .premium ? .purchased : .pending
         } catch {
-            return Self.isCancellation(error) ? .cancelled : .failed(error.localizedDescription)
+            if Self.isCancellation(error) { return .cancelled }
+            // Ask to Buy and other deferred payments throw `paymentPendingError` instead of
+            // returning a `CustomerInfo`; they are waiting for approval, not failed.
+            if Self.matches(error, .paymentPendingError) { return .pending }
+            return .failed(error.localizedDescription)
         }
     }
 
@@ -222,15 +226,18 @@ final class EntitlementManager {
         }
     }
 
-    /// Reads the `premium` entitlement out of a `CustomerInfo`. An answer requested before the last
-    /// one applied is dropped, so a slow `refresh()` cannot undo a purchase that finished meanwhile.
+    /// Reads the `premium` entitlement out of a `CustomerInfo`. An answer that would remove Premium
+    /// and was requested before the last one applied is dropped, so a slow `refresh()` cannot undo
+    /// a purchase that finished meanwhile (`PremiumGate.ignoresAnswer`).
     private func apply(_ info: CustomerInfo) {
-        guard !PremiumGate.isStale(requestDate: info.requestDate, lastApplied: lastAppliedRequestDate) else { return }
-        lastAppliedRequestDate = info.requestDate
         let entitlement = info.entitlements[PremiumGate.entitlementID]
+        let grants = entitlement?.isActive == true
+        guard !PremiumGate.ignoresAnswer(grantsPremium: grants, requestDate: info.requestDate,
+                                         lastApplied: lastAppliedRequestDate) else { return }
+        lastAppliedRequestDate = max(lastAppliedRequestDate ?? info.requestDate, info.requestDate)
         expirationDate = entitlement?.expirationDate
         willRenew = entitlement?.willRenew ?? false
-        setAccess(entitlement?.isActive == true ? .premium : .free)
+        setAccess(grants ? .premium : .free)
     }
 
     /// Spoken length of a free introductory offer this Apple Account can still redeem.
@@ -268,9 +275,13 @@ final class EntitlementManager {
     /// A purchase the walker cancelled comes back as `ErrorCode.purchaseCancelledError` on some
     /// StoreKit paths instead of `userCancelled`.
     private static func isCancellation(_ error: Error) -> Bool {
-        if let code = error as? RevenueCat.ErrorCode { return code == .purchaseCancelledError }
+        matches(error, .purchaseCancelledError)
+    }
+
+    /// Whether `error` is the RevenueCat `code`, either as `ErrorCode` or as its `NSError` form.
+    private static func matches(_ error: Error, _ code: RevenueCat.ErrorCode) -> Bool {
+        if let own = error as? RevenueCat.ErrorCode { return own == code }
         let ns = error as NSError
-        return ns.domain == RevenueCat.ErrorCode.errorDomain
-            && ns.code == RevenueCat.ErrorCode.purchaseCancelledError.rawValue
+        return ns.domain == RevenueCat.ErrorCode.errorDomain && ns.code == code.rawValue
     }
 }

@@ -142,6 +142,17 @@ public struct CueThresholds: Sendable, Equatable {
     /// Seconds of continuous *trusted* clear (head zone inactive) that end a head episode. A
     /// sweep frame restarts the clock.
     public var headClearSeconds: TimeInterval = 2.0
+    /// Seconds without depth (`depthAvailable == false`) after which a playing cue is stopped and
+    /// the zones are forgotten, so a stale centre loop does not keep buzzing at the last distance.
+    /// Shorter gaps still freeze (demo-hardening review).
+    public var depthDropoutStopSeconds: TimeInterval = 1.0
+    /// A head zone that re-enters inside a live episode at least this much farther than the
+    /// closest distance already warned about is a new overhang and gets its own onset
+    /// (demo-hardening review). A flicker of the same overhang stays quiet.
+    public var headNewObstacleGapM: Float = 0.5
+    /// …and only after the head zone has been clear on trusted frames for at least this long, so
+    /// one noisy reading that briefly clears the zone cannot re-announce the same overhang.
+    public var headNewObstacleMinClearSeconds: TimeInterval = 0.3
 
     /// Creates the spec thresholds (1.5 / 2.0 / 0.5 / 1.2 / 0.15 m, 0.4 / 1.0 / 1.5 s; head
     /// episode: signature on, 0.5 m gap, bands 1.0 / 0.6 m, 1.5 s, 2 s clear).
@@ -195,7 +206,11 @@ public final class CueDecider {
         var bandsFired: Int
         /// When the current run of trusted clear frames began; nil while the zone is active.
         var clearSince: TimeInterval?
+        /// The closest head distance seen in this episode (`headNewObstacleGapM`).
+        var closest: Float = .infinity
     }
+    /// Time of the last report that had depth (trusted or not), for `depthDropoutStopSeconds`.
+    private var lastDepthAt: TimeInterval = -.infinity
     /// The live head episode, or nil.
     private var headEpisode: HeadEpisode?
     /// True between a head onset and the end of its episode (2 s of trusted clear). The app
@@ -217,6 +232,7 @@ public final class CueDecider {
         lastNearDistance.removeAll()
         lastNearTime.removeAll()
         headEpisode = nil
+        lastDepthAt = -.infinity
         for k in zoneActive.keys { zoneActive[k] = false }
     }
 
@@ -228,7 +244,18 @@ public final class CueDecider {
     /// - Returns: `.fire`, `.updateCenter`, `.stop`, or nil (nothing new, or held by a gate).
     /// Pinned by every test in CueDeciderTests.swift.
     public func update(_ r: LaneReport, now: TimeInterval) -> CueOutput? {
-        guard r.depthAvailable else { return nil }
+        guard r.depthAvailable else {
+            // A long dropout: stop what is playing and forget the zones, so the cue does not keep
+            // describing an obstacle the sensor can no longer see. Short gaps freeze as before.
+            guard now - lastDepthAt >= thresholds.depthDropoutStopSeconds,
+                  active != .clear || zoneActive.values.contains(true) || headEpisode != nil else { return nil }
+            let wasPlaying = active != .clear
+            reset()
+            guard wasPlaying else { return nil }
+            lastChange = now                      // the stop is a change: the 400 ms gate applies
+            return .stop
+        }
+        lastDepthAt = now
         // Freeze while sweeping. A sweep neither ends nor restarts the head episode's clear clock
         // (review, Antigravity + OpenCode): a cane sweeps every second, so restarting the
         // clock on every smeared frame kept an episode open for the rest of the walk and turned the
@@ -246,7 +273,15 @@ public final class CueDecider {
         let leftD = r.torso[0]
         let rightD = r.torso[2]
 
+        let headWasActive = zoneActive[.head]!
         updateZone(.head, distance: headD, enter: thresholds.head, now: now)
+        // A re-entry clearly farther than the closest point of the live episode is a new overhang
+        // (a row of branches): end the episode so it gets its own onset.
+        if !headWasActive, zoneActive[.head]!, let ep = headEpisode, headD.isFinite,
+           let clearSince = ep.clearSince, now - clearSince >= thresholds.headNewObstacleMinClearSeconds,
+           headD > ep.closest + thresholds.headNewObstacleGapM {
+            headEpisode = nil
+        }
         updateZone(.center, distance: centerD, enter: thresholds.center, now: now)
         updateZone(.left, distance: leftD, enter: thresholds.side, now: now)
         updateZone(.right, distance: rightD, enter: thresholds.side, now: now)
@@ -271,6 +306,10 @@ public final class CueDecider {
                     headEpisode = ep
                 }
             }
+        }
+
+        if headEpisode != nil, zoneActive[.head]!, headD.isFinite {
+            headEpisode!.closest = min(headEpisode!.closest, headD)
         }
 
         let effCenterD = centerD.isFinite ? centerD : (lastNearDistance[.center] ?? thresholds.centerNear)
@@ -327,7 +366,7 @@ public final class CueDecider {
                     active = .head
                     lastChange = now
                     headEpisode = HeadEpisode(startedAt: now, lastFireAt: now,
-                                              bandsFired: bandsInside(d), clearSince: nil)
+                                              bandsFired: bandsInside(d), clearSince: nil, closest: d)
                     return .fire(desired)
                 }
                 if let fire = bandRefire(distance: d, now: now) {

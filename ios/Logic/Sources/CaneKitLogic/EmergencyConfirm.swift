@@ -37,11 +37,17 @@ public struct EmergencyConfirm: Sendable, Equatable {
     /// Seconds a "yes" is accepted after the prompt. [H] 8 s: the prompt itself takes ~4 s to
     /// speak; the walker has the rest to answer. Longer and a "yes" to something else could dial.
     public static let confirmWindow: Double = 8
+    /// Extra time before the answer's microphone opens (`VoiceShellPolicy.speechDrainCap`): during
+    /// a walk the prompt can wait behind route speech, and the 8 s must not run out before the
+    /// walker can answer (demo-hardening review). Once the mic opens the window is `confirmWindow`.
+    public static let micWaitGrace: Double = 15
 
     /// Spoken when "no", "cancel" or the window's end ends the prompt.
     public static let canceledLine = "Emergency canceled."
-    /// Spoken as the `tel:` URL opens (the app is about to leave the foreground).
-    public static let callingLine = "Calling your emergency contact."
+    /// Spoken as the `tel:` URL opens. iOS asks "Call …?" before dialling a number an app opens,
+    /// so the line says the call needs that tap (demo-hardening review: "Calling" alone left a
+    /// blind walker waiting on a silent alert).
+    public static let callingLine = "Calling your emergency contact. Tap Call on the screen to connect."
     /// Spoken when the profile has no number.
     public static let noContactLine = "No emergency contact is set up. Add one on the Profile tab."
     /// Spoken to a "yes" or "no" with no prompt pending.
@@ -67,6 +73,10 @@ public struct EmergencyConfirm: Sendable, Equatable {
 
     /// When the current prompt was spoken; nil when nothing is pending.
     private var promptedAt: Double?
+    /// True once `restartWindow` has run for the pending prompt (the mic opened).
+    private var micOpened = false
+    /// The pending prompt's window: `confirmWindow` after the mic opened, plus `micWaitGrace` before.
+    public var window: Double { micOpened ? Self.confirmWindow : Self.confirmWindow + Self.micWaitGrace }
     /// The dialable number of the pending prompt.
     private var pendingTel = ""
 
@@ -109,6 +119,7 @@ public struct EmergencyConfirm: Sendable, Equatable {
             return .noContact
         }
         promptedAt = now
+        micOpened = false
         pendingTel = tel
         return .prompt(Self.promptLine(name: name ?? "", number: number ?? ""))
     }
@@ -129,7 +140,7 @@ public struct EmergencyConfirm: Sendable, Equatable {
     /// - Parameter now: the caller's clock.
     public func isPending(now: Double) -> Bool {
         guard let promptedAt else { return false }
-        return now - promptedAt < Self.confirmWindow
+        return now - promptedAt < window
     }
 
     /// Poll from a ticker: true exactly once when a pending prompt's window has lapsed with no
@@ -145,11 +156,12 @@ public struct EmergencyConfirm: Sendable, Equatable {
     public mutating func restartWindow(now: Double) -> Bool {
         guard isPending(now: now) else { return false }
         promptedAt = now
+        micOpened = true
         return true
     }
 
     public mutating func expire(now: Double) -> Bool {
-        guard let promptedAt, now - promptedAt >= Self.confirmWindow else { return false }
+        guard let promptedAt, now - promptedAt >= window else { return false }
         self.promptedAt = nil
         pendingTel = ""
         return true

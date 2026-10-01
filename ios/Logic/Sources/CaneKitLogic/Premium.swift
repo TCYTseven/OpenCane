@@ -168,10 +168,12 @@ public enum PremiumGate {
     /// approval keeps it, so the switch turns on when the purchase goes through.
     public static func spendsPending(access: PremiumAccess) -> Bool { access.unlocks }
 
-    /// Whether a subscription answer requested before the last one applied should be ignored (a
-    /// slow `customerInfo()` that started before a purchase must not undo it).
-    public static func isStale(requestDate: Date, lastApplied: Date?) -> Bool {
-        guard let lastApplied else { return false }
+    /// Whether a subscription answer should be ignored: only one that would take Premium away and
+    /// was requested before the last answer applied (a slow `customerInfo()` that started before a
+    /// purchase must not undo it). An answer that grants Premium is always applied, so a
+    /// device-clock date on an offline answer can never lock a subscriber out.
+    public static func ignoresAnswer(grantsPremium: Bool, requestDate: Date, lastApplied: Date?) -> Bool {
+        guard !grantsPremium, let lastApplied else { return false }
         return requestDate < lastApplied
     }
 

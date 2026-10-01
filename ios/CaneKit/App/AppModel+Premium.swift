@@ -77,7 +77,13 @@ extension AppModel {
     /// `PremiumGate.decideEnable(... fromScreen: true)`: turn it on, open the paywall for it, or —
     /// mid-walk — refuse in words.
     func setPremiumFeature(_ feature: PremiumFeature, on: Bool) {
-        guard on else { setGatedValue(feature, false); return }
+        guard on else {
+            // Turning it off also cancels a wait for approval: a later unlock must not turn on a
+            // switch the walker has since turned off.
+            pendingPremiumFeatures.remove(feature)
+            setGatedValue(feature, false)
+            return
+        }
         // The Family alerts switch is disabled without the alert service; this is its backstop.
         guard canDeliver(feature) else { return }
         switch PremiumGate.decideEnable(access: store.access, walkActive: isWalkActive, fromScreen: true) {
