@@ -120,6 +120,18 @@ public enum PremiumGate {
     /// RevenueCat offering identifier; `Offerings.current` is the fallback.
     public static let offeringID = "default"
 
+    /// A RevenueCat Test Store key (`test_…`): purchases are simulated, no money moves, and
+    /// purchases-ios calls `fatalError` at launch when one is used in a Release build. So a
+    /// Release build with such a key must not configure the store (`EntitlementManager`).
+    public static func isTestStoreKey(_ key: String) -> Bool { key.hasPrefix("test_") }
+
+    /// Whether to configure RevenueCat with `key`: every real key, and a Test Store key only in a
+    /// Debug build (simulator, Xcode Run). A Release build with a Test Store key runs storeless,
+    /// which unlocks every feature, instead of crashing a TestFlight judge build.
+    public static func configuresStore(key: String, debugBuild: Bool) -> Bool {
+        !key.isEmpty && (debugBuild || !isTestStoreKey(key))
+    }
+
     /// What happens when the walker asks to turn a gated switch on.
     public enum Decision: Sendable, Equatable {
         /// Turn it on.

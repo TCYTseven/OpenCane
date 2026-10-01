@@ -37,6 +37,20 @@ struct PremiumGateTests {
     }
 
     /// The RevenueCat identifiers the dashboard and the StoreKit file must match.
+    @Test func testStoreKeysAreRecognised() {
+        #expect(PremiumGate.isTestStoreKey("test_muAS123"))
+        #expect(!PremiumGate.isTestStoreKey("appl_abc123"))
+        #expect(!PremiumGate.isTestStoreKey(""))
+    }
+
+    @Test func aTestStoreKeyNeverConfiguresAReleaseBuild() {
+        #expect(PremiumGate.configuresStore(key: "test_abc", debugBuild: true))
+        #expect(!PremiumGate.configuresStore(key: "test_abc", debugBuild: false))
+        #expect(PremiumGate.configuresStore(key: "appl_abc", debugBuild: false))
+        #expect(PremiumGate.configuresStore(key: "appl_abc", debugBuild: true))
+        #expect(!PremiumGate.configuresStore(key: "", debugBuild: true))
+    }
+
     @Test func identifiersArePinned() {
         #expect(PremiumGate.entitlementID == "premium")
         #expect(PremiumGate.productID == "opencane_premium_annual")

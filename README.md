@@ -100,7 +100,26 @@ Capabilities), then Run. Or from the command line, put `TEAM` and `DEVICE` in `i
 
 ## Test the paywall
 
-Purchases can be tested without App Store Connect, through the StoreKit configuration file
+**Fastest: RevenueCat Test Store (simulator or phone, no App Store Connect, no Apple account).**
+Put a RevenueCat Test Store key (`test_…`, RevenueCat → Project → API keys) in `Secrets.plist` as
+`REVENUECAT_API_KEY`, set up the product, entitlement and offering as in step 1 below under the
+project's Test Store app, then from `ios/` run `make uitest-store SIM="<simulator name>"`. It buys
+Premium end to end: Details → Hazard watch → paywall ("The first month is free. $49.99/year") →
+Subscribe → RevenueCat's "Test valid purchase" → Hazard watch on → Settings "OpenCane Premium is
+on". Screenshots land in `ios/build/store-shots`. Or Run from Xcode and tap through it by hand.
+The Test Store runs subscription periods fast, so the trial converts in minutes. That is
+RevenueCat's test clock, not a bug.
+
+**Judges:** every new install gets the one-month free trial on the annual product. A judge can
+also be given Premium: Settings → OpenCane Premium → **Copy support ID**, send it to the team, and
+the team pastes it into RevenueCat → Customers → Entitlements → **Grant** `premium`.
+
+A Test Store key only runs the store in a **Debug** build (Xcode Run, the simulator). purchases-ios
+stops a Release build that has one ("Wrong API Key", then a crash), so OpenCane skips the store in
+that case: a TestFlight build made with a Test Store key opens with every feature unlocked. Use an
+App Store key (`appl_…`) for a TestFlight build that should sell Premium.
+
+**Or locally through StoreKit.** Purchases can be tested without App Store Connect, through the StoreKit configuration file
 [`ios/StoreKit/OpenCane.storekit`](ios/StoreKit/OpenCane.storekit). It defines one annual
 auto-renewing subscription, `opencane_premium_annual`, at $49.99, with a one-month free
 introductory offer, and the CaneKit scheme's Run action already selects it.
@@ -137,7 +156,7 @@ Subscription**. For UI tests without a store, launch with `CANEKIT_PREMIUM=free`
 - **RevenueCat** `purchases-ios` for OpenCane Premium: the only third-party package, isolated in
   one file ([`EntitlementManager.swift`](ios/CaneKit/Store/EntitlementManager.swift)).
 - **CaneKitLogic**, a pure-Swift package with every rule that has a number in it (lane math, cue
-  timing, geofences, the Premium gate) and its Swift Testing suite (965 tests on the last local run; recount with `grep -rhoE '^\s*@Test' ios/Logic/Tests | wc -l`) that also runs on Linux.
+  timing, geofences, the Premium gate) and its Swift Testing suite (975 tests on the last local run; recount with `grep -rhoE '^\s*@Test' ios/Logic/Tests | wc -l`) that also runs on Linux.
 - Optional services: ElevenLabs (voice), an OpenAI-compatible, Anthropic, Gemini or OpenAI vision
   model, a Grok Bot routine for family alerts, and Supabase for an opt-in cloud mirror.
 

@@ -134,7 +134,7 @@ Everything runs from `ios/` on the command line. You don't need the Xcode GUI af
 | Command | What it does |
 |---|---|
 | `make gen` | `scripts/gen.sh`: `xcodegen generate` + the watch-embed patch, and it copies `Secrets.example.plist` → `CaneKit/Resources/Secrets.plist` if missing. Run it only after `project.yml` or the file list changes. `WATCH=0 scripts/gen.sh` gives a phone-only project. |
-| `make test` | `scripts/test.sh`: the `CaneKitLogic` Swift Testing suite (965 tests, 1 known issue, on the last local run). Recount with `grep -rhoE '^\s*@Test' Logic/Tests | wc -l`. Works with the Swift 6 toolchain / Command Line Tools; never touches the simulator or xcodebuild. Extra arguments pass through to `swift test` only when you call `scripts/test.sh` directly (e.g. `scripts/test.sh --filter SpeechResume`). |
+| `make test` | `scripts/test.sh`: the `CaneKitLogic` Swift Testing suite (975 tests, 1 known issue, on the last local run). Recount with `grep -rhoE '^\s*@Test' Logic/Tests | wc -l`. Works with the Swift 6 toolchain / Command Line Tools; never touches the simulator or xcodebuild. Extra arguments pass through to `swift test` only when you call `scripts/test.sh` directly (e.g. `scripts/test.sh --filter SpeechResume`). |
 | `make build` | Device build, automatic signing, personal team (needs `TEAM` + `DEVICE`) |
 | `make install` | `xcrun devicectl device install app` onto the phone |
 | `make launch` | `xcrun devicectl device process launch com.aritro.canekit` |
@@ -349,8 +349,8 @@ changes, also run `make uitest` and `make tour` on the iPhone 17 Pro Max / iOS 2
 "How we engineer" 4 adds `make e2e` (and `SCENARIO=streetview` when the camera path changed). Then
 run the Muse review of the diff.
 
-- **Unit tests (`Logic/`, no device):** 965 Swift Testing `@Test` annotations in 74 files under
-  `Logic/Tests/CaneKitLogicTests/` (last local `make test`: 965 tests in 29 suites, 1 known issue in `StressTests.geofenceSurvivesHostileGps`). By layer, file names without the `Tests.swift` suffix (count per
+- **Unit tests (`Logic/`, no device):** 975 Swift Testing `@Test` annotations in 74 files under
+  `Logic/Tests/CaneKitLogicTests/` (last local `make test`: 975 tests in 29 suites, 1 known issue in `StressTests.geofenceSurvivesHostileGps`). By layer, file names without the `Tests.swift` suffix (count per
   file in parentheses):
   - Depth and obstacles: `LaneMath` (17), `DepthSnapshot` (14), `DepthReadiness` (9, the bounded
     route-start LiDAR gate), `MultiCamDepth` (8), `CueDecider` (27, hysteresis / rate limit / Geiger),

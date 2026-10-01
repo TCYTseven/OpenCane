@@ -35,7 +35,13 @@ final class CaneKitStorePurchase: XCTestCase {
         app.buttons["Details"].tap()
         pause(1)
         let hazard = app.switches["Hazard watch, Premium"]
-        XCTAssertTrue(hazard.waitForExistence(timeout: 10), "Hazard watch should be locked before the purchase")
+        // A simulator that already bought Premium keeps it (same anonymous RevenueCat customer):
+        // skip rather than fail, and say how to start fresh.
+        if !hazard.waitForExistence(timeout: 10),
+           app.switches.matching(NSPredicate(format: "label BEGINSWITH 'Hazard watch'")).firstMatch.exists {
+            throw XCTSkip("Premium is already active on this simulator. Erase it (xcrun simctl erase) to buy again.")
+        }
+        XCTAssertTrue(hazard.exists, "Hazard watch should be locked before the purchase")
         scrollTo(app, hazard)
         snap(app, "details-locked")
         // The row's own tap lands on the label; the knob is what flips it (same as the tour).

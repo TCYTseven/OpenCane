@@ -111,6 +111,12 @@ final class EntitlementManager {
     var unlocksPremium: Bool { access.unlocks }
     /// True when RevenueCat is configured in this process (a key was found).
     var isStoreConfigured: Bool { Purchases.isConfigured }
+    /// True when the configured key is a RevenueCat Test Store key: purchases are simulated and
+    /// there is no App Store subscription to manage (`PremiumSettingsCard` hides that button).
+    private(set) var isTestStore = false
+    /// RevenueCat's app user ID (anonymous `$RCAnonymousID:…`), shown as the support ID so the
+    /// team can find this customer in the dashboard and grant Premium. nil without a store.
+    var appUserID: String? { Purchases.isConfigured ? Purchases.shared.appUserID : nil }
 
     /// Called on the main actor after every change of `access`. Installed by
     /// `AppModel.configurePremium()`.
@@ -146,6 +152,19 @@ final class EntitlementManager {
             setAccess(.notConfigured)
             return
         }
+        // A Test Store key in a Release build (TestFlight, Archive) makes purchases-ios show
+        // "Wrong API Key" and call fatalError. Such a build runs storeless instead: every
+        // feature unlocked (`PremiumGate.configuresStore`).
+        #if DEBUG
+        let debugBuild = true
+        #else
+        let debugBuild = false
+        #endif
+        guard PremiumGate.configuresStore(key: key, debugBuild: debugBuild) else {
+            setAccess(.notConfigured)
+            return
+        }
+        isTestStore = PremiumGate.isTestStoreKey(key)
         if !Purchases.isConfigured {
             Purchases.logLevel = .warn
             Purchases.configure(withAPIKey: key)

@@ -14,7 +14,10 @@
 //    · notConfigured — "Every feature is unlocked in this build" (no RevenueCat key; a developer
 //      build), with no store buttons.
 //  Restore Purchases and Manage Subscription (the system's own StoreKit sheet,
-//  `manageSubscriptionsSheet`) show whenever the store exists.
+//  `manageSubscriptionsSheet`) show whenever the store exists. With a RevenueCat Test Store key
+//  there is no App Store subscription, so Manage Subscription is replaced by a line saying test
+//  purchases charge nothing. "Copy support ID" copies RevenueCat's app user ID, which the team
+//  pastes into the dashboard to find a customer (a judge) and grant Premium.
 //
 //  Owner / caller: `SettingsPage` (ContentView.swift), first card. Reads `AppModel.store`.
 //  Tests: the words are `PremiumGateTests`; no XCUITest queries this card.
@@ -23,6 +26,7 @@
 import CaneKitLogic
 import StoreKit
 import SwiftUI
+import UIKit
 
 /// Settings → OpenCane Premium.
 struct PremiumSettingsCard: View {
@@ -50,6 +54,12 @@ struct PremiumSettingsCard: View {
             }
             if model.store.isStoreConfigured {
                 CKRowDivider()
+                if model.store.isTestStore {
+                    Text("Test purchases: this build uses RevenueCat's Test Store, so no money is charged.")
+                        .font(CKFont.secondary)
+                        .foregroundStyle(CKColor.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 storeButtons
                 if let restoreMessage {
                     Text(restoreMessage)
@@ -117,9 +127,19 @@ struct PremiumSettingsCard: View {
             Task { await restore() }
         }
         .disabled(model.store.isRestoring)
-        CKTextButton(title: "Manage Subscription", systemImage: "creditcard",
-                     hint: "Opens your App Store subscriptions, where you can change or cancel") {
-            managing = true
+        if !model.store.isTestStore {
+            CKTextButton(title: "Manage Subscription", systemImage: "creditcard",
+                         hint: "Opens your App Store subscriptions, where you can change or cancel") {
+                managing = true
+            }
+        }
+        if let id = model.store.appUserID {
+            CKTextButton(title: "Copy support ID", systemImage: "doc.on.doc",
+                         hint: "Copies the ID OpenCane support uses to find your subscription") {
+                UIPasteboard.general.string = id
+                restoreMessage = "Support ID copied."
+                AccessibilityNotification.Announcement("Support ID copied.").post()
+            }
         }
     }
 
