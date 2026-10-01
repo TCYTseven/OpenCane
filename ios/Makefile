@@ -57,7 +57,7 @@ SIM_APP = $(DERIVED)/Build/Products/$(CONFIG)-iphonesimulator/CaneKit.app
 BUNDLE  = com.aritro.canekit
 XCB     = xcodebuild -project CaneKit.xcodeproj -scheme $(SCHEME) -configuration $(CONFIG) -derivedDataPath $(DERIVED)
 
-.PHONY: gen test build install launch run sim devices clean check-env uitest tour island sim17 sim-grant e2e uitest-streetview audit
+.PHONY: gen test build install launch run sim devices clean check-env uitest uitest-store tour island sim17 sim-grant e2e uitest-streetview audit
 
 # Regenerate the Xcode project from project.yml (see scripts/gen.sh for WATCH=0 / PATCH_WATCH_EMBED).
 gen:
@@ -132,6 +132,18 @@ uitest-streetview:
 	TEST_RUNNER_CANEKIT_FRAME_DIR=$(abspath $(STREETVIEW)) \
 	  $(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO \
 	  -only-testing:CaneKitUITests/CaneKitUITests/testWhereAmIDescribesAStreetViewFrame test-without-building
+
+# A real RevenueCat Test Store purchase of Premium (CaneKitStorePurchase). Needs a RevenueCat key in
+# Secrets.plist (a `test_…` Test Store key works in the simulator) and the network; PNGs land in
+# STORE_SHOTS. The simulator keeps the purchase: erase it (or use a new app user) to buy again.
+STORE_SHOTS ?= $(DERIVED)/store-shots
+uitest-store:
+	$(XCB) -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO build-for-testing
+	$(MAKE) sim-grant
+	@mkdir -p $(STORE_SHOTS)
+	TEST_RUNNER_CANEKIT_STORE_TEST=1 TEST_RUNNER_CANEKIT_SHOTS=$(abspath $(STORE_SHOTS)) \
+	  $(XCB) -destination "platform=iOS Simulator,name=$(SIM)" CODE_SIGNING_ALLOWED=NO \
+	  -only-testing:CaneKitUITests/CaneKitStorePurchase test-without-building
 
 # Screenshot tour of every screen state (CaneKitVisualTour); PNGs land in SHOTS.
 SHOTS ?= $(DERIVED)/shots
