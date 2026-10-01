@@ -36,8 +36,8 @@ public enum PeopleDetection {
         /// the switch is on, so a color-blind or VoiceOver user does not infer validation.
         public var userFacingDescription: String {
             switch self {
-            case .off: "Experimental — off until validated on the cane."
-            case .experimentalUnverified: "Experimental — enabled, not validated on the cane."
+            case .off: "Experimental. Off until validated on the cane."
+            case .experimentalUnverified: "Experimental. On, but not validated on the cane."
             }
         }
     }

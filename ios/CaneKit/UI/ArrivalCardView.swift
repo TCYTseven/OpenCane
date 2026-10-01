@@ -39,9 +39,9 @@ struct ArrivalCardView: View {
             HStack(spacing: CKSpacing.lg) {
                 stat(value: distanceText(trip.distanceM), label: "walked")
                 stat(value: minutesText(trip.elapsed), label: "minutes")
-                stat(value: trip.steps.map { "\($0)" } ?? "—", label: "steps")
+                stat(value: trip.steps.map { "\($0)" } ?? "--", label: "steps")
             }
-            Text(trip.stepSource == "HealthKit" ? "Steps from Apple Health (watch + phone)" :
+            Text(trip.stepSource == "HealthKit" ? "Steps from Apple Health (watch and phone)" :
                  trip.stepSource == "Pedometer" ? "Steps from the phone pedometer" : "Steps unavailable")
                 .font(CKFont.secondary)
                 .foregroundStyle(CKColor.textSecondary)
@@ -57,7 +57,7 @@ struct ArrivalCardView: View {
     /// One stat column: a large tabular value (`CKFont.tile`, shrinks to 60 % before it would
     /// truncate) over a secondary caption.
     /// - Parameters:
-    ///   - value: the formatted number ("1.0 km", "14", "1300", or "—").
+    ///   - value: the formatted number ("1.0 km", "14", "1300", or "--").
     ///   - label: the unit caption ("walked", "minutes", "steps").
     private func stat(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {

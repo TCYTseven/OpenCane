@@ -63,10 +63,10 @@ private func idle(cloud: String? = "Muse") -> SceneEngineFacts {
 @Test func fallbackSaysWhy() {
     var f = idle()
     f.lastSource = "On-device"; f.lastFallbackReason = "The request timed out."; f.lastGate = "on-device"
-    #expect(SceneEngineSummary.lastAnswer(f).text == "On-device answered — Muse: The request timed out.")
+    #expect(SceneEngineSummary.lastAnswer(f).text == "On-device answered. Muse failed: The request timed out.")
     f.lastCloudMs = 18_040
     #expect(SceneEngineSummary.lastAnswer(f).text
-            == "On-device answered — Muse: The request timed out. (after 18 s)")
+            == "On-device answered. Muse failed: The request timed out. (after 18 s)")
     #expect(SceneEngineSummary.lastAnswer(f).spoken.contains("because Muse failed"))
     // The gate line belongs to a cloud sentence; an on-device answer has none.
     #expect(SceneEngineSummary.gate(f) == nil)
@@ -96,7 +96,7 @@ private func idle(cloud: String? = "Muse") -> SceneEngineFacts {
     f.lastGate = "no frame"; f.lastError = "No camera frame"
     #expect(SceneEngineSummary.lastAnswer(f).text == "No camera frame.")
     f.lastGate = "error"; f.lastError = "HTTP 401: bad key"
-    #expect(SceneEngineSummary.lastAnswer(f).text == "Failed — HTTP 401: bad key")
+    #expect(SceneEngineSummary.lastAnswer(f).text == "Failed: HTTP 401: bad key")
 }
 
 @Test func ageIsRelative() {
@@ -139,14 +139,14 @@ private func idle(cloud: String? = "Muse") -> SceneEngineFacts {
 
 @Test func hazardWatchOffSaysWhenItWouldRun() {
     #expect(SceneEngineSummary.hazardWatch(idle()).text
-            == "Hazard watch off — when on, asks Muse every 8 s while a route guides, on-device after 2.5 s")
+            == "Hazard watch off. When on, it asks Muse every 8 s while a route guides, on-device after 2.5 s")
     #expect(SceneEngineSummary.hazardWatch(idle(cloud: nil)).text
-            == "Hazard watch off — when on, asks the on-device model every 8 s while a route guides")
+            == "Hazard watch off. When on, it asks the on-device model every 8 s while a route guides")
     // The numbers are the app's constants, not literals: change them and the words follow.
     var f = idle()
     f.hazardWatchIntervalS = 12; f.hazardCloudDeadlineS = 3
     #expect(SceneEngineSummary.hazardWatch(f).text
-            == "Hazard watch off — when on, asks Muse every 12 s while a route guides, on-device after 3 s")
+            == "Hazard watch off. When on, it asks Muse every 12 s while a route guides, on-device after 3 s")
     #expect(SceneEngineSummary.hazardWatch(idle()).spoken
             == "Hazard watch is off. When on, it asks Muse every 8 seconds while a route guides, and the on-device model answers if Muse takes more than 2.5 seconds.")
 }
@@ -155,19 +155,19 @@ private func idle(cloud: String? = "Muse") -> SceneEngineFacts {
     var f = idle()
     f.hazardWatchOn = true
     #expect(SceneEngineSummary.hazardWatch(f).text
-            == "Hazard watch on — asks Muse every 8 s while a route guides, on-device after 2.5 s. Nothing asked yet.")
+            == "Hazard watch on. It asks Muse every 8 s while a route guides, on-device after 2.5 s. Nothing asked yet.")
     f.lastWatchSource = "Muse"; f.lastWatchMs = 1_200; f.secondsSinceWatch = 30
     #expect(SceneEngineSummary.hazardWatch(f).text == "Hazard watch: Muse answered in 1.2 s · 30 s ago")
     f.lastWatchSource = "On-device"; f.lastWatchReason = "The request timed out."; f.lastWatchMs = 2_500
     #expect(SceneEngineSummary.hazardWatch(f).text
-            == "Hazard watch: On-device answered — Muse: The request timed out. · 30 s ago")
+            == "Hazard watch: On-device answered. Muse failed: The request timed out. · 30 s ago")
 }
 
 @Test func hazardWatchFailureIsSaidAsAFailure() {
     var f = idle()
     f.hazardWatchOn = true
     f.lastWatchSource = nil; f.lastWatchError = "Hazard watch: The request timed out."; f.secondsSinceWatch = 30
-    #expect(SceneEngineSummary.hazardWatch(f).text == "Hazard watch: last check failed — The request timed out. · 30 s ago")
+    #expect(SceneEngineSummary.hazardWatch(f).text == "Hazard watch check failed: The request timed out. · 30 s ago")
     #expect(SceneEngineSummary.hazardWatch(f).spoken == "The last hazard watch check failed 30 seconds ago: The request timed out.")
     // Off, or with no failure recorded, the old lines stand.
     f.lastWatchError = nil
@@ -188,7 +188,7 @@ private func idle(cloud: String? = "Muse") -> SceneEngineFacts {
     #expect(SceneEngineSummary.light(f).text == "Light: lit (640 lux)")
     #expect(SceneEngineSummary.light(f).spoken == "Light: lit, 640 lux.")
     f.lightState = .dark; f.ambientLux = 12.2; f.torchOn = false
-    #expect(SceneEngineSummary.light(f).text == "Light: dark (12 lux) · flashlight off — cameras may miss things")
+    #expect(SceneEngineSummary.light(f).text == "Light: dark (12 lux) · flashlight off, cameras may miss things")
     #expect(SceneEngineSummary.light(f).spoken.contains("Obstacle detection still works."))
 }
 

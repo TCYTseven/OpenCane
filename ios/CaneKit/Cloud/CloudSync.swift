@@ -609,7 +609,7 @@ final class CloudSync {
     private func updateStatus() {
         guard isConfigured else { status = "Not configured"; return }
         if walkerID == nil {
-            status = lastError == nil ? "Registering…" : "Offline — will register when back"
+            status = lastError == nil ? "Registering…" : "Offline. Will register when back online."
         } else {
             status = "\(rowsUploaded) rows synced"
         }

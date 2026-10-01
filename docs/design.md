@@ -128,7 +128,7 @@ Thresholds are `CaneKitLogic.TileLevel`, not the view.
 | `laneFar` | 1.2 – 2.0 m | `#FDE047` | `#FFD500` | FAR | 13.9:1 / 14.8:1 |
 | `laneNear` | 0.7 – 1.2 m | `#FB923C` | `#FF7A00` | NEAR | 8.1:1 / 8.0:1 |
 | `laneUrgent` | < 0.7 m | `#F87171` | `#FF6B6B` | STOP | 6.6:1 / 7.6:1 |
-| `laneNoData` | no depth yet, or the band is not visible (Step 51) | = `surfaceRaised` | — | NO DATA / NO COVER ("—" instead of metres) | text in `textSecondary` |
+| `laneNoData` | no depth yet, or the band is not visible (Step 51) | = `surfaceRaised` | — | NO DATA / NO COVER ("--" instead of metres) | text in `textSecondary` |
 
 Deuteranopia check: far and near are close in hue, which is why the level word and the number are
 mandatory on every tile. OKLab lightness is far (0.91) > clear (0.80) > near (0.76) > urgent (0.71), so
@@ -365,7 +365,7 @@ like a centre cue. The rows below are the Detailed patterns.
 | Ground hazard (not `CueDecider`: `GroundHazardDetector`, "Detect drop-offs" toggle, off by default) | drop-off / hole / step up / low obstacle in a 0.9 m wide corridor 1.5–3.5 m ahead: an edge against the near-field ground, confirmed on 3 of the last 5 trusted frames | 4 heavy taps 70 ms apart (intensity 1.0, sharpness 0.3), `playGroundHazard` | Always spoken, `.safety`: "Two meters ahead, drop-off." (`GroundHazardPolicy`: the same hazard in the same place, e.g. a curb you stand at, is said once, then at most every 30 s, and again once it is 1 m closer) | Hazards card LIDAR row; hazard map entry | `.click` when the phone cannot buzz or the mirror toggle is on |
 | Sign / hazard watch (`HazardScanner`, camera) | "Read signs" (on by default): on-device text every 3 s, small text down to 1/128 of the frame height (7.5 cm letters from ≈ 7 m, measured); never "STOP" (a drivers' sign); Cue detail Quiet or Place Indoors reads only `CueRules.safetySignPhrases` (SIDEWALK CLOSED, ROAD CLOSED, USE OTHER SIDEWALK, NO PEDESTRIANS, DO NOT ENTER, WET FLOOR, KEEP OUT, WORK ZONE, CONSTRUCTION, DETOUR, DANGER, CAUTION, PUSH BUTTON, CLOSED — i.e. every phrase except EXIT / ENTRANCE / PUSH / PULL; fed to `HazardScanner.signAllowedPhrases`); "Hazard watch" (off by default): one frame to the vision model every 8 s while walking a route | Nothing | "Sign: sidewalk closed." (8 s TTL; each sign at most once a minute — a phrase filtered out by the level is not stamped, so it never silences an allowed one); "Caution: 3 meters ahead, cones." ("NONE" is silent) | Hazards card SIGN / WATCH rows; hazard map entry | — |
 | Sweeping | \|ω\| ≥ 0.6 rad/s | No new cue and no stop: the decider freezes, so a running centre loop keeps its last rate until the next trusted frame | Nothing | Obstacles pill SWEEPING (warning, spoken "Sweeping, warnings paused"); tiles keep drawing the latest values | — |
-| No depth | before the first depth frame / no LiDAR | Nothing | Nothing (at launch: "OpenCane. This phone has no LiDAR." on a non-LiDAR phone) | Tiles "—" / NO DATA; status card "Waiting for depth…" / "No LiDAR / sceneDepth on this device" | — |
+| No depth | before the first depth frame / no LiDAR | Nothing | Nothing (at launch: "OpenCane. This phone has no LiDAR." on a non-LiDAR phone) | Tiles "--" / NO DATA; status card "Waiting for depth…" / "No LiDAR / sceneDepth on this device" | — |
 
 "The phone cannot buzz" = the haptic engine is down **or** "Silence haptics" is on. In that case every
 fired cue is also mirrored to the watch; "Mirror obstacle cues to the watch" (off by default) mirrors
@@ -476,7 +476,7 @@ tab bar is last on every page.
 ```
 OpenCane · Details · Settings · Profile                                       ← inline, centred navigation title, one per tab
 Guide page                                Details page                       Settings page              Profile page
-┌ Guide ──────────────────────────────┐   ┌ ✓ Depth OK ─────────────────┐   ┌ Cues ───────────────┐   ┌ EMERGENCY MEDICAL ID ─┐
+┌ Guide ──────────────────────────────┐   ┌ ✓ Depth OK ─────────────────┐   ┌ Cues ───────────────┐   ┌ Emergency Medical ID ─┐
 ┌ This trip  |  Arrived ──────────────┐   ┌ Scene engine (MUSE → ON-DEV)┐   ┌ Haptics ────────────┐   ┌ MOBILITY & FITNESS ───┐
   (§6.1 / §6.3 / §6.4; trip only while    ┌ Obstacles ──────── (TRUSTED)┐   ┌ Watch ──────────────┐     (§6.8)
    navigating or after arrival)           ┌ Hazards ────────────────────┐   ┌ Mount ──────────────┐
@@ -549,9 +549,9 @@ While a route runs                                  Idle (before a route / after
 | 9 | Next (navigating compact row) | "Next" | hint "Skips to the next instruction" | button |
 | 10 | Recenter | "Recenter" | hint "Sets straight ahead as the beacon's forward direction" | button |
 | 11 | Beacon pill | "Beacon: Beacon N%" / "Beacon: Beacon paused" / "Beacon: Beacon off" / "Beacon: Beacon idle" | — | `.updatesFrequently` |
-| 12 | Headphone pill | "<output name>, head tracking on" / "<output name>, no head tracking" / "No headphones connected; beacon paused" | — | — |
+| 12 | Headphone pill | "<output name>, head tracking on" / "<output name>, no head tracking" / "No headphones connected. Beacon paused." | — | — |
 | 12b | Simulate walk / Stop simulation (navigating, between the pills and Stop route) | "Simulate walk" / "Stop simulation" (`AppModel.isSimulatingWalk`) | hint "Simulates walking along the active route indoors" / "Pauses the walk simulation" | button; **no test uses either label** |
-| 13 | Stop route (navigating compact row) | "Stop route" | first tap: "Arms route stop; tap again within 3 seconds to end guidance"; armed state: "Confirms ending guidance when tapped again within 3 seconds" | two-tap confirmation button |
+| 13 | Stop route (navigating compact row) | "Stop route" | first tap: "Arms route stop. Tap again within 3 seconds to end guidance."; armed state: "Confirms ending guidance when tapped again within 3 seconds" | two-tap confirmation button |
 | — | Cancel route start (idle, only while a route start waits for the depth interlock) | "Cancel route start" | hint "Stops waiting for obstacle detection and does not start guidance"; the status line under the route buttons says why the route has not started | button (destructive); **no test uses it** (§9) |
 | — | Start route to CIF (idle compact row) | "Start route to CIF" | hint "Starts the recorded ISR Townsend Hall to CIF route" | button |
 | — | Destination field (idle) | "Destination" (placeholder "Or type a destination") | hint "Type a place name. Matching places appear below as you type."; return key "Go" submits | text field |
@@ -583,9 +583,9 @@ Focus order is the visual order. Nothing uses `accessibilitySortPriority`.
 
 Tiles: 3 × 2, gap 8, radius 14, equal widths, `md` vertical padding. Each tile = fill (`laneX`) + position
 label + metres + level word; no glyph. ≥ 4.5 m or no return shows "clear"; before the first depth frame
-"—" on `laneNoData` with NO DATA. Sweeping changes only the pill (tiles keep drawing).
+"--" on `laneNoData` with NO DATA. Sweeping changes only the pill (tiles keep drawing).
 **NO COVER** (Step 51): a band the camera cannot see at the head-cue distance (the head row on a
-cane held ~45° down) shows "—" on `laneNoData` with the word NO COVER, text in `textSecondary` —
+cane held ~45° down) shows "--" on `laneNoData` with the word NO COVER, text in `textSecondary` —
 never CLEAR, because nobody knows it is empty; the row's VoiceOver value says "no cover" for that
 lane. The Mount card then reads "Camera tilt N° down: too steep for head-height cover".
 
@@ -606,13 +606,13 @@ asked the Details tab to say *when Muse is used* rather than only name the chain
 ```
 ┌ Scene engine ────────────────────────────┐
 │ (🧠 MUSE → ON-DEVICE)                     │   pill: "ON-DEVICE ONLY" without a cloud key
-│ WHERE AM I  Muse answered in 1.9 s        │   or "On-device answered — Muse: The request timed out. (after 18 s)"
+│ WHERE AM I  Muse answered in 1.9 s        │   or "On-device answered. Muse failed: The request timed out. (after 18 s)"
 │             2 min ago · from the watch    │   secondary; "Not asked yet." before the first run
 │ GATE        Muse's sentence passed the gate.  │  only when the cloud answered ("… was edited: dropped count." /
 │                                           │   "… was refused: invented distance. On-device spoke instead.")
-│ WATCH       Hazard watch off — when on, asks Muse every 8 s while a route guides, on-device after 2.5 s │
+│ WATCH       Hazard watch off. When on, it asks Muse every 8 s while a route guides, on-device after 2.5 s │
 │ LIGHT       Light: dark (12 lux) · flashlight on (by OpenCane) │  Step 49; or "Light: lit (640 lux)" /
-│                                           │   "Light: dark (12 lux) · flashlight off — cameras may miss things" / "Light: unknown"
+│                                           │   "Light: dark (12 lux) · flashlight off, cameras may miss things" / "Light: unknown"
 │ CUES        Detailed · Outdoors · names off │
 └──────────────────────────────────────────┘
 ```
@@ -628,8 +628,8 @@ asked the Details tab to say *when Muse is used* rather than only name the chain
 | Light row (Step 49) | "Light: lit, 640 lux." / "Light: dark, 12 lux. Flashlight on, switched on by OpenCane." / "Light: dark, 12 lux. Flashlight off, so the cameras may miss things. Obstacle detection still works." / "Light level unknown. No camera light estimate yet." | inside the 10 s `TimelineView` (the lux number refreshes; a state change redraws at once) |
 | Cues row | "Cues: Detailed, Outdoors, obstacle names off." | — |
 
-The Guide card also shows a **DARK** pill (`.warning`, `moon.fill`, VoiceOver "Low light; obstacle
-detection still works") beside the GPS pill while `LowLightPolicy` says dark — for the sighted
+The Guide card also shows a **DARK** pill (`.warning`, `moon.fill`, VoiceOver "Low light. Obstacle
+detection still works.") beside the GPS pill while `LowLightPolicy` says dark — for the sighted
 spotter; the walker was told once by voice (§5.1). Warning, not danger: LiDAR, GPS and haptics are
 unaffected.
 
@@ -696,12 +696,12 @@ route".
 ┌ This trip  (while walking)  |  Arrived  (after the last waypoint) ┐
 │ 988 m          14             1300                                │  28 pt rounded bold
 │ walked         minutes        steps                               │  .subheadline, textSecondary
-│ Steps from Apple Health (watch + phone)                           │  or "…phone pedometer" / "Steps unavailable"
+│ Steps from Apple Health (watch and phone)                         │  or "…phone pedometer" / "Steps unavailable"
 └───────────────────────────────────────────────────────────────────┘
 ```
 
 Inline card (not a sheet), inserted under the Guide while navigating and kept after arrival. Distance
-switches to "N.N km" at 950 m; steps show "—" until a count exists. VoiceOver: one combined element whose
+switches to "N.N km" at 950 m; steps show "--" until a count exists. VoiceOver: one combined element whose
 label is the spoken summary, e.g. "Arrived. 1.0 kilometers, 14 minutes, 1300 steps." ("So far. …" while
 walking). After arrival the Guide keeps a Repeat button (the arrival line + summary is the longest line of
 the walk). **Not built**: the checkmark hero, "Describe where I am" and "Done" buttons.
@@ -722,19 +722,19 @@ there — `AppModel` doc comments). Separately, after a launch that never report
 |---|---|---|---|
 | Alerts (Settings) | "Cue detail" segmented **Quiet / Standard / Detailed** (`CueLevel.title`) | **Detailed**, persisted `cueLevel` (= today's behaviour until a trip log from the mounted cane tunes the calmer levels; owner decision) | "How much OpenCane says and taps on its own. Quiet names nothing, reads only safety signs and taps only for head height. Standard taps once at 1.5 meters and a strong triple at 0.6, with no side taps. Detailed taps continuously ahead and for the sides. Head height warnings are the same at every level." |
 | Alerts (Settings) | "Place" segmented **Outdoors / Indoors** (`CuePlace.title`) | **Outdoors**, persisted `cuePlace` | "Indoors warns about head height from 1.2 meters instead of 1.5, names nothing, reads only safety signs and taps only for head height." |
-| Haptics (Settings) | "Silence haptics" | off, persisted | "The phone stops vibrating; obstacle cues go to the watch and are spoken instead" |
+| Haptics (Settings) | "Silence haptics" | off, persisted | "The phone stops vibrating. Obstacle warnings go to the watch and are spoken instead." |
 | Haptics (Settings) | "Speak obstacle names" | **off** since Step 36, persisted (a walker who had turned it on keeps `true`) | "Says door, seat, window or table when one is straight ahead. Off by default. Which names are said depends on Cue detail and Place." |
-| Watch (Settings) | "Mirror obstacle cues to the watch" | off, persisted | "Also taps the wrist for every obstacle; automatic when the phone's haptic engine fails" |
+| Watch (Settings) | "Mirror obstacle cues to the watch" | off, persisted | "Taps your wrist for every obstacle too. If the phone can't vibrate, the watch taps anyway." |
 | Phone on cane (Settings) | "Phone is upright" | on, persisted | "Turn off if the phone is clamped sideways" |
 | Phone on cane (Settings) | "Mirror left / right" | off, persisted | "Turn on if left and right warnings feel swapped" |
-| Phone on cane (Settings) | "Smoother camera" | off, persisted | "Smoother live view; uses more battery and heat. Obstacle cues are the same either way." |
+| Phone on cane (Settings) | "Smoother camera" | off, persisted | "Smoother live view, but uses more battery and runs warmer. Obstacle warnings are the same either way." |
 | Phone on cane (Settings) | "Direction sound" | on, persisted | "A soft click from the direction to walk, through the AirPods" |
 | Phone on cane (Settings) | "Flashlight in the dark" (Step 49) | **on**, persisted `autoTorchInDark` — the deliberate exception to "new features ship off" (AGENTS.md → deliberate list; a blind walker cannot see the dark, so an opt-in would never be flipped) | "When the camera sees low light while a route guides, OpenCane turns the flashlight on so the cameras can see and drivers can see you, and off again when the light returns or the route ends. Obstacle detection works in the dark either way." Only ever lights the torch while a route guides, through `AppModel.setTorch(_:byApp:)`; never a torch the walker lit; §5.1 for the spoken line |
 | Phone on cane (Settings) | "Write trip log" | on, persisted | "Saves a JSONL log of lanes, cues and location to the Files app" |
 | Hazards (Details) | "Detect drop-offs" | off (until validated on the phone), persisted | "LiDAR warns about curbs, holes and drop-offs 1.5 to 3.5 meters ahead" |
 | Hazards (Details) | "Read signs" | on, persisted | "Reads signs like sidewalk closed or detour, on the phone, offline" |
 | Hazards (Details) | "Hazard watch" | off (until validated on the phone), persisted | "While walking a route, checks the path for cones, barriers and scooters every 8 seconds" |
-| Hazards (Details) | "Name people ahead" | **off**, persisted; enabling it is explicitly experimental until cane validation | "Experimental — enabled, not validated on the cane. When you ask where am I, says how many people are ahead, which way and how far" |
+| Hazards (Details) | "Name people ahead" | **off**, persisted; enabling it is explicitly experimental until cane validation | "Experimental. On, but not validated on the cane. When you ask where am I, says how many people are ahead, which way and how far" |
 | Hazards (Details) | "Listen for sirens and horns" | off, **not persisted**; disabled without the sound classifier | "Uses the microphone to warn about sirens, horns and vehicle sounds. Needs the microphone, so it is off by default." |
 | Hazards (Details) | "Nod to talk" | off, **not persisted**; disabled without headphone motion | "Nod twice with AirPods on while walking a route to start talking to OpenCane. Off by default." |
 | Hazards (Details) | "Head tracking without AirPods" | off, **not persisted**; disabled when the front camera cannot run beside LiDAR | "Uses the front camera to follow your head direction, so the beacon works without AirPods. Cannot change while a route is guiding you." Refused while a route guides or starts (§5.4) |
@@ -748,8 +748,8 @@ there — `AppModel` doc comments). Separately, after a launch that never report
 | Family alerts (Settings) | **Family emails** (`FamilyContactsEditor`): header, one row per address with a trash button, an add field + "+", an error line, "Save family emails" (`CKBigButton`) | list persisted `familyContactEmails` (`FamilyContacts.normalize`: trim / lowercase / dedupe / cap 10); Save is **primary** while an edit is unregistered (caption "Not registered yet — press Save."), otherwise secondary; disabled without the webhook key; one Save per 10 s | Header reads "Family emails, none yet" / "Family emails, N on the list"; field "Family email", hint "Type an address, then Add. Press Save to register the list."; "Add", hint "Adds the typed address to the list" (disabled until something is typed; no fake address as placeholder); each row's button is "Remove <address>" so four rows never read as four identical "Remove"s; Save's hint "Registers the list with the OpenCane Grok Bot, which emails your family when the cane reports a fall or SOS" |
 | Record indoor route (Settings, Step 62) | "Route id" (`TextField`) | `isr_townsend_to_front_doors`, **not persisted** (the id that replaces the ISR draft) | "The file name; the ISR id replaces the floor-plan draft" |
 | Record indoor route (Settings) | "Start recording" (`CKBigButton`, secondary) | disabled while an indoor route is walked; spoken "Recording started. Walk to the exit door. Tap Add landmark to name what you pass." | "Counts steps and turns until you finish at the exit" |
-| Record indoor route (Settings) | "Add landmark" (secondary, while recording) | disabled after Finish or while a landmark is awaited; the next transcript within 20 s becomes the landmark, spoken "Landmark added: <text>" | "Listens once; what you say is attached to the current step" |
-| Record indoor route (Settings) | "Finish at the exit" (secondary, while recording) | value "reading GPS" during the up-to-8 s window; spoken "Hold still at the exit door for a few seconds." then "Exit recorded. N steps. Tap Save." | "Stand just outside the exit door; takes up to 8 seconds of GPS" |
+| Record indoor route (Settings) | "Add landmark" (secondary, while recording) | disabled after Finish or while a landmark is awaited; the next transcript within 20 s becomes the landmark, spoken "Landmark added: <text>" | "Listens once and adds what you say to the current step" |
+| Record indoor route (Settings) | "Finish at the exit" (secondary, while recording) | value "reading GPS" during the up-to-8 s window; spoken "Hold still at the exit door for a few seconds." then "Exit recorded. N steps. Tap Save." | "Stand just outside the exit door. Getting GPS takes up to 8 seconds." |
 | Record indoor route (Settings) | "Save" (primary, while recording) | enabled after Finish; writes Documents/indoor/<id>.json (walked), spoken "Indoor route saved. N steps." | "Saves the walk as route <id>" |
 | Record indoor route (Settings) | "Cancel recording" (destructive, while recording) | spoken "Recording canceled." | "Discards this recording" |
 | Record indoor route (Settings) | "Start indoor route" (secondary, idle) | disabled while indoors, navigating or a route start waits; walks the ISR script to the CIF route. Under it the catalog line "Indoor routes: <name> (not walked yet)". The card's last line is the last recording status. None of these labels is in the UI-test contract | "Walks the saved ISR indoor route, then the route to CIF" |
@@ -785,7 +785,7 @@ ground-hazard warnings are identical at every level. Switching to Indoors while 
 
 Debug controls (sighted teammate / developer):
 - **Haptics card**: pills ENGINE OK / ENGINE DOWN (spoken "Haptic engine running" / "… not running") and the active cue (CLEAR / CENTER / LEFT / RIGHT / HEAD, spoken "Active cue: …"); the engine's error line in red; "Silence haptics"; the caption "Test patterns" and four test buttons "Test left haptic", "Test center haptic", "Test right haptic", "Test head haptic" (60 pt, icon + caption, bypass the decider; centre plays the loop for 2 s, hint "Plays the approach loop for two seconds", the others "Plays the pattern once"); "Speak obstacle names"; speech pills SPEAKING / QUIET and SYSTEM / ELEVENLABS (the voice pill follows what actually spoke, so a wrong key reads SYSTEM; spoken "Voice: …" or "System voice; add an ElevenLabs key for the natural voice"); a quiet grey voice-problem line when a natural-voice fetch or playback failed ("Voice problem: …"); a "Speech test" big button (hint "Speaks a scene line, then an obstacle line that interrupts it"; the scene line is cut and, per §5.1, resumes after the obstacle line — from the top here, because it is cut in its first clause); the audio-session error line in red.
-- **Hazards card**: two neutral pills, the hazard watch backend (the provider name, e.g. "ON-DEVICE"; spoken "Hazard watch uses …") and "N MAPPED" (spoken "N hazards on the map"); one detection row per source that has spoken, LIDAR / SIGN / WATCH / SOUND in the `pill` font and `textSecondary` followed by the last line in `body` (one VoiceOver element per row); an error line in red; "Share hazard map" (60 pt, secondary style, a `ShareLink` of this session's GeoJSON, shown once the file exists, hint "Shares a GeoJSON map of every hazard found on this walk"); the sound watch's status rows; under "Live camera view" ARKit's own frames on the GPU (`LiveCameraView`, 3:4, at the camera's frame rate — 30, or 60 with the Mount switch; hidden from VoiceOver; captions "Live view paused: phone is hot" / "Camera off"); the front-camera readout while head tracking without AirPods is on ("Front camera is detecting …. Head direction only; no front camera picture."); the two-camera picture and its red caption (§5.4); the grey captions that explain a refused mode, read by VoiceOver. "Both cameras self test" / "Front camera self test" appear only under the `--sensor-selftest` launch flag.
+- **Hazards card**: two neutral pills, the hazard watch backend (the provider name, e.g. "ON-DEVICE"; spoken "Hazard watch uses …") and "N MAPPED" (spoken "N hazards on the map"); one detection row per source that has spoken, LIDAR / SIGN / WATCH / SOUND in the `pill` font and `textSecondary` followed by the last line in `body` (one VoiceOver element per row); an error line in red; "Share hazard map" (60 pt, secondary style, a `ShareLink` of this session's GeoJSON, shown once the file exists, hint "Shares a GeoJSON map of every hazard found on this walk"); the sound watch's status rows; under "Live camera view" ARKit's own frames on the GPU (`LiveCameraView`, 3:4, at the camera's frame rate — 30, or 60 with the Mount switch; hidden from VoiceOver; captions "Live view paused: phone is hot" / "Camera off"); the front-camera readout while head tracking without AirPods is on ("Front camera is detecting …. Head direction only. No front camera picture."); the two-camera picture and its red caption (§5.4); the grey captions that explain a refused mode, read by VoiceOver. "Both cameras self test" / "Front camera self test" appear only under the `--sensor-selftest` launch flag.
 - **Watch card**: link pill REACHABLE / ASLEEP / APP NOT INSTALLED / NOT PAIRED / UNSUPPORTED and the last watch command; the link error in red; "Mirror obstacle cues to the watch"; four buttons "Send left / right / cross / arrive cue to the watch" (disabled when unreachable).
 - **Mount card**: first row the live aim, e.g. "Camera tilt 5° down, good · 30 fps" (`MountTilt.status`; "Camera tilt: hold the cane still for a reading" before a trusted frame), then the switches above (phone is upright, mirror, smoother camera, direction sound, flashlight in the dark, and trip log).
 - **Family alerts card**: the four controls and the emails editor in the table above; no pills. Its captions are the only red text on Settings ("No webhook key…" and an Add refusal), and both are words, never a red border alone (§7).
@@ -869,7 +869,7 @@ on top as `alertLevel` and win the keyline tint and the relevance score.
 WARMING         ◎ ⏳ 0:04                ◔ (ring)               ◎ ivory        "Obstacle detection warming up"
 WALKING live    ◎ ↱ 42 m                 ◕ ✓ (green only live)  ◎ ivory        instruction ≤ 3 lines
                                                                                [● Path clear] ▬▬○── 3 of 6
-WALKING locked  ◎ ↑ 120 m                ◕ ⏸ (amber)            ◎ amber        [⏸ Obstacles paused — unlock]
+WALKING locked  ◎ ↑ 120 m                ◕ ⏸ (amber)            ◎ amber        [⏸ Obstacles paused until unlock]
 ALERT stop/head ◎ ↑ 42 m                 ⚠ HEAD / ✋ STOP (red)   ◎ red          [⚠ Head height 0.8 m] (red keyline)
 INDOOR          ◎ ↰ 3/5                  ◔ (ring)               ◎ ivory        "Step 3 of 5" + the step's line
 LISTENING       ◎ ≋                      Listening (blue)       ◎ blue
@@ -899,7 +899,7 @@ Watch Smart Stack / CarPlay (.supplementalActivityFamilies([.small])): mark + gl
   `none`, decoded leniently). The widget draws "Path clear" / the green check only when
   `sensing == .live` and the activity is not stale (`NavIslandSensing.showsClear`, mirroring
   `IslandPhasePolicy.showsClear`, pinned by `showsClearOnlyWhenLive`). The app backgrounded with a
-  route or warm-up → `paused` ("Obstacles paused — unlock", amber); no LiDAR, warm-up, untrusted
+  route or warm-up → `paused` ("Obstacles paused until unlock", amber); no LiDAR, warm-up, untrusted
   frames or an old payload → `none` ("Sensing unknown"); stale → "No update · sensing unknown". The
   controller also sends the obstacle fields as clear / 0 whenever sensing is not live, so a stale
   hazard can never be drawn either.
@@ -965,7 +965,7 @@ trip-event upload queue in the Step 60 MVP. A fresh install contains no identity
 or emergency phone number until the walker/helper enters it.
 
 ```
-┌ EMERGENCY MEDICAL ID ──────────────────────┐
+┌ Emergency Medical ID ──────────────────────┐
 │ (◯ 56 pt AB)     <name or Not set> [ Edit ] │  initials on an accent circle (Step 69.4); person.crop.circle.fill while "Not set"
 │                  ✚ EMERGENCY ID             │  `pill` font, danger red
 │ ┌ ⛨ WHITE CANE USER / BLIND ─────────────┐  │  banner: raised surface, danger glyph + `pill` word,
@@ -1012,7 +1012,7 @@ or emergency phone number until the walker/helper enters it.
 
 | # | Element | VoiceOver label | Value / hint | Traits |
 |---|---|---|---|---|
-| 1 | Card title | "EMERGENCY MEDICAL ID" | — | `.isHeader` |
+| 1 | Card title | "Medical ID" | — | `.isHeader` |
 | 2 | Avatar | hidden (initials or a person symbol; the name beside it is read) | — | — |
 | 3 | Name, "EMERGENCY ID", banner and notes | the texts themselves | — | static text |
 | 4 | Edit | "Edit Medical ID" | — | button; presents the sheet |
@@ -1023,7 +1023,7 @@ or emergency phone number until the walker/helper enters it.
 | 9 | Card title | "MOBILITY & FITNESS" | — | `.isHeader` |
 | 10 | Refresh | "Refresh mobility stats" | — | button |
 | 11 | Metric tile (×4) | "Steps Today: 4,812" / "Distance: 3.2 km" / "Trips Finished: 3" / "Average Pace: 1.2 m/s" (`.combine`, one element each) | — | — |
-| 12 | Active route block (navigating) | "ACTIVE ROUTE", the route name, "N min elapsed" | — | static text |
+| 12 | Active route block (navigating) | "ACTIVE ROUTE", the route name, "N min so far" | — | static text |
 | — | Edit sheet | "Edit Medical ID" title; fields by placeholder ("Full Name", "Blood Type", "Phone Number", …); "Cancel" / "Save" | — | text fields, buttons |
 
 The XCUITest opens this tab and asserts the "Profile" label plus a combined "Steps Today:" metric

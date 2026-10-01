@@ -364,7 +364,7 @@ private struct FamilyContactsEditor: View {
         .disabled(saving || !model.family.isConfigured)
 
         if model.familyContactsNeedSave {
-            Text("Not saved yet — tap Save.")
+            Text("Not saved yet. Tap Save.")
                 .font(CKFont.secondary)
                 .foregroundStyle(CKColor.laneNear)
         }
@@ -407,7 +407,7 @@ private struct IndoorRecordCard: View {
     var body: some View {
         @Bindable var indoor = model.indoor
         CKCard(title: "Record an indoor route", systemImage: "record.circle") {
-            Text("Walk once from a room to the exit door with a sighted helper. OpenCane counts steps and turns — tap Add landmark to name what you pass.")
+            Text("Walk once from a room to the exit door with a sighted helper. OpenCane counts steps and turns. Tap Add landmark to name what you pass.")
                 .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
             if indoor.isRecording {
@@ -415,10 +415,10 @@ private struct IndoorRecordCard: View {
                     .font(CKFont.body).foregroundStyle(CKColor.textPrimary)
                     .accessibilityAddTraits(.updatesFrequently)
                 CKBigButton(title: "Add landmark", systemImage: "mic.fill", role: .secondary,
-                            hint: "Listens once; what you say is attached to the current step") { indoor.addLandmark() }
+                            hint: "Listens once and adds what you say to the current step") { indoor.addLandmark() }
                     .disabled(indoor.recordingFinished || indoor.awaitingLandmark)
                 CKBigButton(title: "Finish at the exit", systemImage: "door.left.hand.open", role: .secondary,
-                            hint: "Stand just outside the exit door; takes up to 8 seconds of GPS",
+                            hint: "Stand just outside the exit door. Getting GPS takes up to 8 seconds.",
                             value: indoor.isFinishingExit ? "reading GPS" : nil) { indoor.finishAtExit() }
                     .disabled(indoor.recordingFinished || indoor.isFinishingExit)
                 CKBigButton(title: "Save", systemImage: "square.and.arrow.down",
@@ -434,7 +434,7 @@ private struct IndoorRecordCard: View {
                     .padding(.horizontal, CKSpacing.md)
                     .frame(minHeight: CKMetrics.touchTarget)
                     .background(CKColor.surfaceRaised, in: RoundedRectangle(cornerRadius: CKRadius.button, style: .continuous))
-                    .accessibilityHint("Saved under this name; using the ISR name replaces the floor-plan draft")
+                    .accessibilityHint("Saved under this name. Using the ISR name replaces the floor-plan draft.")
                 CKBigButton(title: "Start recording", systemImage: "record.circle", role: .secondary,
                             hint: "Counts steps and turns until you finish at the exit") { indoor.startRecording() }
                     .disabled(indoor.isActive)
@@ -630,7 +630,7 @@ private struct SettingsPage: View {
             .accessibilityLabel("Voice")
             .accessibilityHint("Natural sounds more human and uses the internet. iPhone works offline.")
             Text(hasKey
-                 ? "Natural sounds more human and uses the internet — if it's slow, the iPhone voice fills in. iPhone works offline."
+                 ? "Natural sounds more human and uses the internet. If it's slow, the iPhone voice fills in. iPhone works offline."
                  : "The natural voice isn't set up on this phone, so the iPhone voice is used.")
                 .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -659,7 +659,7 @@ private struct SettingsPage: View {
         // UI audit: same facts, everyday words ("torso obstacles" → "things at body
         // height", "continuous centre taps" → "steady taps"). Keep every sentence true to
         // `TorsoHapticPolicy` and the names / signs rules above.
-        case .quiet: parts = ["Quiet: reads safety signs only and names nothing. No taps for things at body height — head-height and ground warnings stay on."]
+        case .quiet: parts = ["Quiet: reads safety signs only and names nothing. No taps for things at body height. Head-height and ground warnings stay on."]
         case .standard: parts = ["Standard: names doors on a route and reads every sign. One tap when something is 1.5 m away, three strong taps at 0.6 m."]
         case .detailed: parts = ["Detailed: names obstacles (not walls) and reads every sign. Steady taps for what's ahead and on each side."]
         }
@@ -667,7 +667,7 @@ private struct SettingsPage: View {
             parts.append("Indoors: head-height warnings start at 1.2 m. No names, safety signs only, no body-height taps.")
         }
         if !model.obstacleNamesEnabled, model.cueLevel != .quiet, model.cuePlace == .outdoors {
-            parts.append("Names are off — turn on Speak obstacle names below to hear them.")
+            parts.append("Names are off. Turn on Speak obstacle names below to hear them.")
         }
         return parts.joined(separator: " ")
     }
@@ -693,7 +693,7 @@ private struct SettingsPage: View {
                         hint: "Turn on if left and right warnings feel swapped")
             CKToggleRow(title: "Smoother camera", subtitle: "Uses more battery and gets warmer",
                         isOn: model.highFrameRateCamera,
-                        hint: "Smoother live view; uses more battery and heat. Obstacle warnings are the same either way.")
+                        hint: "Smoother live view, but uses more battery and runs warmer. Obstacle warnings are the same either way.")
             CKToggleRow(title: "Direction sound", subtitle: "A soft click in your headphones points the way",
                         isOn: model.beaconEnabled)
             // Step 49. Default ON on purpose (see `AppModel.autoTorchInDark`): a blind walker cannot

@@ -267,11 +267,11 @@ public enum SceneEngineSummary {
         }
         guard let source = f.lastSource else {
             let why = f.lastError ?? "unknown error"
-            return SceneEngineLine(text: "Failed — \(why)",
+            return SceneEngineLine(text: "Failed: \(why)",
                                    spoken: "The last Where am I failed: \(why)")
         }
         if let reason = f.lastFallbackReason, let cloud = f.cloudName {
-            var text = "\(source) answered — \(cloud): \(reason)"
+            var text = "\(source) answered. \(cloud) failed: \(reason)"
             var spoken = "\(source) answered the last Where am I, because \(cloud) failed: \(reason)"
             if let ms = f.lastCloudMs {
                 text += " (after \(latency(ms)))"
@@ -347,23 +347,23 @@ public enum SceneEngineSummary {
             planSpoken = plan.replacingOccurrences(of: every, with: everySpoken)
         }
         guard f.hazardWatchOn else {
-            return SceneEngineLine(text: "Hazard watch off — when on, \(plan)",
+            return SceneEngineLine(text: "Hazard watch off. When on, it \(plan)",
                                    spoken: "Hazard watch is off. When on, it \(planSpoken).")
         }
         guard let source = f.lastWatchSource else {
             // A check that threw (no reply from anyone) is said as a failure, never as "idle".
             if let error = f.lastWatchError, let since = f.secondsSinceWatch {
                 let why = error.hasPrefix("Hazard watch: ") ? String(error.dropFirst("Hazard watch: ".count)) : error
-                return SceneEngineLine(text: "Hazard watch: last check failed — \(why) · \(age(since))",
+                return SceneEngineLine(text: "Hazard watch check failed: \(why) · \(age(since))",
                                        spoken: "The last hazard watch check failed \(age(since, spoken: true)): \(why)")
             }
-            return SceneEngineLine(text: "Hazard watch on — \(plan). Nothing asked yet.",
+            return SceneEngineLine(text: "Hazard watch on. It \(plan). Nothing asked yet.",
                                    spoken: "Hazard watch is on. It \(planSpoken). Nothing has been asked yet.")
         }
         var text: String
         var spoken: String
         if let reason = f.lastWatchReason, let cloud = f.cloudName {
-            text = "Hazard watch: \(source) answered — \(cloud): \(reason)"
+            text = "Hazard watch: \(source) answered. \(cloud) failed: \(reason)"
             spoken = "Hazard watch: \(source) answered the last check, because \(cloud) failed: \(reason)"
         } else if let ms = f.lastWatchMs {
             text = "Hazard watch: \(source) answered in \(latency(ms))"
@@ -412,7 +412,7 @@ public enum SceneEngineSummary {
                 return SceneEngineLine(text: "Light: dark\(lux) · flashlight on\(who)",
                                        spoken: "Light: dark\(luxSpoken). Flashlight on\(whoSpoken).")
             }
-            return SceneEngineLine(text: "Light: dark\(lux) · flashlight off — cameras may miss things",
+            return SceneEngineLine(text: "Light: dark\(lux) · flashlight off, cameras may miss things",
                                    spoken: "Light: dark\(luxSpoken). Flashlight off, so the cameras may miss things. Obstacle detection still works.")
         }
     }

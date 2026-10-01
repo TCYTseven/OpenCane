@@ -90,8 +90,8 @@ struct HazardsCard: View {
     private var hazardsCard: some View {
         @Bindable var model = model
         return CKCard(title: "Hazards", systemImage: "exclamationmark.triangle",
-                      caption: "What OpenCane warns you about beyond obstacles.") {
-            CKToggleRow(title: "Detect drop-offs", subtitle: "Curbs, holes and steps 1.5–3.5 m ahead",
+                      caption: "Warnings beyond obstacles.") {
+            CKToggleRow(title: "Detect drop-offs", subtitle: "Curbs, holes and steps 1.5 to 3.5 m ahead",
                         isOn: $model.groundHazardsEnabled,
                         hint: "Warns about curbs, holes and drop-offs 1.5 to 3.5 meters ahead")
             CKToggleRow(title: "Read signs", subtitle: "Like “Sidewalk closed” or “Detour”",
@@ -104,7 +104,7 @@ struct HazardsCard: View {
                         isOn: premiumBinding(.hazardWatch),
                         hint: premiumHint("While walking a route, checks the path for cones, barriers and scooters every 8 seconds"),
                         premium: showsPremiumBadge)
-            CKToggleRow(title: "Name people ahead", subtitle: "Experimental — counts people when you ask Where am I",
+            CKToggleRow(title: "Name people ahead", subtitle: "Experimental. Counts people when you ask Where am I",
                         isOn: premiumBinding(.namePeople),
                         hint: premiumHint("Experimental and not yet tested on the cane. When you ask where am I, says how many people are ahead, which way and how far"),
                         premium: showsPremiumBadge)
@@ -130,7 +130,7 @@ struct HazardsCard: View {
             // reads as broken. Words, so VoiceOver hears it too.
             if model.lastGroundHazard == nil, model.hazards.lastSign == nil,
                model.hazards.lastCaution == nil, model.hazardLog.records.isEmpty {
-                liveCaption("Nothing found yet. What OpenCane warns about will show here.")
+                liveCaption("Nothing found yet. Warnings show up here.")
             }
             if let err = model.hazards.lastError ?? model.hazardLog.lastError {
                 Text(err).font(CKFont.secondary).foregroundStyle(CKColor.laneUrgent)
@@ -274,7 +274,7 @@ struct HazardsCard: View {
                     .accessibilityHidden(true)                     // a picture, for a sighted helper
                 Text(model.bothCameras.frontConnected
                      ? "Back camera with the front camera inset. Obstacle detection is paused."
-                     : "Back camera only — the front camera could not be opened. Obstacle detection is paused.")
+                     : "Back camera only. The front camera couldn't open. Obstacle detection is paused.")
                     .font(CKFont.secondary).foregroundStyle(CKColor.laneUrgent)
                 if let err = model.bothCameras.lastError {
                     Text(err).font(CKFont.secondary).foregroundStyle(CKColor.laneUrgent)
@@ -313,11 +313,11 @@ struct HazardsCard: View {
             VStack(alignment: .leading, spacing: 2) {
                 detection("Front camera", "detecting: \(model.faceHead.readout)")
                 // Plain words, same meaning: it follows the head and shows no front picture.
-                Text("Only follows where your head points — there is no front camera picture.")
+                Text("Only tracks where your head points. No front camera picture.")
                     .font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
             }
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("Front camera is detecting \(model.faceHead.readout). Head direction only; no front camera picture.")
+            .accessibilityLabel("Front camera is detecting \(model.faceHead.readout). Head direction only. No front camera picture.")
         }
     }
 

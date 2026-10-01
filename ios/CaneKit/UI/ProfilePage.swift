@@ -50,11 +50,11 @@ struct ProfilePage: View {
         CKCard(title: "Privacy", systemImage: "lock.fill") {
             CKToggleRow(title: "Share data with OpenCane cloud", subtitle: "Medical ID, family contacts and walk summaries",
                         isOn: model.cloudSharingEnabled)
-                .accessibilityHint("When on, uploads your Medical ID, family contacts, a summary of each walk with where it started and ended, and any hazard the cane detects, with its photo. The detailed trip log, your settings and anything you say stay on this phone. Off stops future uploads.")
+                .accessibilityHint("When on, uploads your Medical ID, family contacts, a summary of each walk with where it started and ended, and any hazard the cane spots, with its photo. Your detailed trip log, settings and anything you say stay on this phone. Turn off to stop future uploads.")
                 .disabled(!self.model.cloud.isConfigured)
             Text(self.model.cloud.isConfigured
                  ? (self.model.cloudSharingEnabled
-                    ? "Cloud sharing is on. Turn it off any time to stop future uploads."
+                    ? "Cloud sharing is on. Turn it off anytime to stop future uploads."
                     : "Cloud sharing is off. Medical ID, family contacts and walk summaries stay on this phone.")
                  : "Cloud sharing isn't set up, so everything stays on this phone.")
                 .font(CKFont.secondary)
@@ -94,7 +94,7 @@ struct ProfilePage: View {
         // Typed contact, else the one from this phone's Secrets.plist (review round Steps 67–68):
         // shown and dialled, never saved — the editor below still edits only the stored profile.
         let contact = model.medicalProfile.effectiveEmergencyContact
-        return CKCard(title: "EMERGENCY MEDICAL ID") {
+        return CKCard(title: "Emergency Medical ID") {
             // Profile Header
             HStack(spacing: CKSpacing.md) {
                 // Step 69.4: initials from the walker's own name (a person symbol before a name is
@@ -143,7 +143,7 @@ struct ProfilePage: View {
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: CKSpacing.xs) {
-                    Text("Blind · uses a white cane")
+                    Text("Blind, uses a white cane")
                         .font(CKFont.label)
                         .foregroundStyle(CKColor.textPrimary)
                     Text(p.emergencyNotes)
@@ -299,11 +299,11 @@ struct ProfilePage: View {
                         .foregroundStyle(CKColor.textSecondary)
 
                     HStack {
-                        Text(model.nav.route?.name ?? "Current Walk")
+                        Text(model.nav.route?.name ?? "Current walk")
                             .font(CKFont.label)
                             .foregroundStyle(CKColor.textPrimary)
                         Spacer()
-                        Text("\(Int(model.trip.elapsed / 60)) min elapsed")
+                        Text("\(Int(model.trip.elapsed / 60)) min so far")
                             .font(CKFont.secondary)
                             .foregroundStyle(CKColor.textSecondary)
                     }

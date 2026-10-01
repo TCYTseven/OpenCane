@@ -146,7 +146,7 @@ struct GuideCard: View {
                 // may miss things. Drawn only while `LowLightPolicy` says dark.
                 if model.lightState == .dark {
                     CKStatusPill(text: "Dark", tone: .warning, systemImage: "moon.fill",
-                                 spoken: "Low light; obstacle detection still works")
+                                 spoken: "Low light. Obstacle detection still works.")
                 }
             }
         }
@@ -338,7 +338,7 @@ struct GuideCard: View {
         CKBigButton(title: "Stop route", systemImage: "stop.fill", role: .destructive, layout: .tile,
                     hint: stopConfirmation.isArmed
                         ? "Confirms ending guidance when tapped again within 3 seconds"
-                        : "Arms route stop; tap again within 3 seconds to end guidance",
+                        : "Arms route stop. Tap again within 3 seconds to end guidance.",
                     value: stopConfirmation.isArmed ? "confirmation needed" : nil) {
             stopRoutePressed()
         }
@@ -381,7 +381,7 @@ struct GuideCard: View {
     /// VoiceOver sentence for the headphone pill: names the actual output device and whether
     /// head tracking is on, or says the beacon is paused with no headphones.
     private var headSpoken: String {
-        guard model.audioRoute.headphonesConnected else { return "No headphones connected; beacon paused" }
+        guard model.audioRoute.headphonesConnected else { return "No headphones connected. Beacon paused." }
         return model.head.isConnected ? "\(model.audioRoute.outputName), head tracking on"
                                       : "\(model.audioRoute.outputName), no head tracking"
     }

@@ -638,7 +638,7 @@ final class DepthEngine {
     fileprivate func sessionFailed(code: Int, message: String) {
         let hint: String
         switch ARError.Code(rawValue: code) {
-        case .cameraUnauthorized: hint = "Camera access denied — enable it in Settings"
+        case .cameraUnauthorized: hint = "Camera access denied. Enable it in Settings"
         case .sensorUnavailable, .sensorFailed: hint = "LiDAR sensor unavailable"
         case .unsupportedConfiguration: hint = "Unsupported AR configuration"
         default: hint = message

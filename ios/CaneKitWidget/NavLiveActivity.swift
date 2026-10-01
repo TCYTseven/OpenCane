@@ -142,7 +142,7 @@ private struct Glance {
             // Not live: say what the sensing is, never a hazard or a clear path.
             if state.sensing == .paused && !isStale {
                 symbol = "pause.circle.fill"; tint = IslandPalette.paused
-                word = "Obstacles paused — unlock"; compact = ""
+                word = "Obstacles paused until unlock"; compact = ""
                 spoken = "Obstacle warnings are paused until you unlock."
             } else {
                 symbol = "questionmark.circle"; tint = IslandPalette.ivoryDim
@@ -406,7 +406,7 @@ enum OpenCaneLinks {
 
 // MARK: - Pieces
 
-/// "N m" below 1000 m, "N.N km" from 1000 m; "—" for 0 (unknown / arrived). Dimmed when stale.
+/// "N m" below 1000 m, "N.N km" from 1000 m; "-" for 0 (unknown / arrived). Dimmed when stale.
 private struct DistanceText: View {
     let metres: Int
     let isStale: Bool
@@ -418,7 +418,7 @@ private struct DistanceText: View {
     }
 
     private var label: String {
-        if metres <= 0 { return "—" }
+        if metres <= 0 { return "-" }
         return metres >= 1000 ? String(format: "%.1f km", Double(metres) / 1000) : "\(metres) m"
     }
 }
@@ -453,7 +453,7 @@ private struct TrailingFigure: View {
             Image(systemName: "checkmark.seal.fill").foregroundStyle(IslandPalette.clear)
         case .stopped:
             // Same 1-based step as `progressLabel` (Muse M8: it showed one less than the step).
-            Text(state.stepCount > 0 ? "\(min(state.stepCount, state.stepIndex + 1))/\(state.stepCount)" : "—")
+            Text(state.stepCount > 0 ? "\(min(state.stepCount, state.stepIndex + 1))/\(state.stepCount)" : "-")
                 .foregroundStyle(IslandPalette.ivoryDim)
         default:
             DistanceText(metres: state.distanceM, isStale: isStale)

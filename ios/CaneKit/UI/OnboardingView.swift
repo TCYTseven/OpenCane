@@ -103,7 +103,7 @@ struct OnboardingView: View {
             Spacer()
             if OnboardingContent.showsSkip(page: page, count: pages.count) {
                 CKTextButton(title: "Skip",
-                             hint: "Skips the introduction and opens OpenCane. You can allow permissions when a feature needs them.") {
+                             hint: "Skips the intro and opens OpenCane. It asks for permissions when a feature needs them.") {
                     onFinish()
                 }
             }
@@ -162,7 +162,7 @@ struct OnboardingView: View {
         let isLast = page >= pages.count - 1
         return CKBigButton(title: OnboardingContent.primaryButtonTitle(page: page, count: pages.count),
                            systemImage: isLast ? "checkmark.circle.fill" : "arrow.right",
-                           hint: isLast ? "Finishes the introduction and opens OpenCane"
+                           hint: isLast ? "Finishes the intro and opens OpenCane"
                                         : "Goes to \(OnboardingContent.spokenPosition(page: page + 1, count: pages.count).lowercased())") {
             advance()
         }
@@ -241,8 +241,8 @@ struct PermissionsPanel: View {
                                 ? "Open Settings for \(row.title)"
                                 : "Allow \(row.title)")
             .accessibilityHint(state == .denied
-                               ? "Opens the Settings app, where you can turn this permission on"
-                               : "Shows the system permission alert")
+                               ? "Opens Settings so you can turn this on"
+                               : "Shows the permission prompt")
         }
     }
 }

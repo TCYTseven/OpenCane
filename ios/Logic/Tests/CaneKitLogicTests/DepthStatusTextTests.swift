@@ -27,7 +27,7 @@ struct DepthStatusTextTests {
     static let engineStrings = [
         "Depth idle", "No LiDAR / sceneDepth on this device", "Waiting for depth…", "Depth paused",
         "Depth resuming…", "Mesh classification on", "Mesh classification off (thermal)", "Depth OK",
-        "AR interrupted", "AR resumed", "AR error: Camera access denied — enable it in Settings",
+        "AR interrupted", "AR resumed", "AR error: Camera access denied. Enable it in Settings",
         "AR error: LiDAR sensor unavailable", "AR error: Unsupported AR configuration",
     ]
 
@@ -68,7 +68,7 @@ struct DepthStatusTextTests {
 
     /// A denied camera is fixed in Settings, not by reopening the app.
     @Test func deniedCameraPointsToSettings() {
-        let denied = DepthStatusText.display("AR error: Camera access denied — enable it in Settings")
+        let denied = DepthStatusText.display("AR error: Camera access denied. Enable it in Settings")
         #expect(denied.title == "Obstacle detection needs the camera")
         #expect(denied.detail == "Turn on Camera for OpenCane in the Settings app.")
         #expect(denied.tone == .problem)

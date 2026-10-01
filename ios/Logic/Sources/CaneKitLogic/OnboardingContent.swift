@@ -77,26 +77,26 @@ public enum OnboardingContent {
     public static let pages: [OnboardingPage] = [
         OnboardingPage(id: 0, systemImage: "iphone.gen3",
                        title: "Your iPhone, on your cane",
-                       body: "OpenCane turns the iPhone you already own into a smart cane attachment. Clip it to your white cane and it guides every walk.",
+                       body: "Clip the iPhone you already own to your white cane. OpenCane turns it into a guide for every walk.",
                        isPermissions: false),
         OnboardingPage(id: 1, systemImage: "dot.radiowaves.forward",
                        title: "Warnings above the cane tip",
-                       body: "LiDAR detects obstacles at waist and head height, which a cane tip misses. The cane taps before you reach them.",
+                       body: "LiDAR spots obstacles at waist and head height, the ones a cane tip misses. The cane taps before you reach them.",
                        isPermissions: false),
         OnboardingPage(id: 2, systemImage: "airpodspro",
                        title: "Feel and hear the way",
-                       body: "Haptics and spatial audio guide you to your destination. Turns and crossings are spoken before you reach them.",
+                       body: "Haptics and spatial audio get you where you're going. You hear each turn and crossing before you reach it.",
                        isPermissions: false),
         OnboardingPage(id: 3, systemImage: "checkmark.shield.fill",
                        title: "A few permissions",
-                       body: "OpenCane asks only for what guidance needs. You can change any of these later in the Settings app.",
+                       body: "OpenCane only asks for what it needs to guide you. Change any of these later in Settings.",
                        isPermissions: true),
     ]
 
     /// The rows on the permissions page, in the order they are shown.
     public static let permissions: [PermissionRow] = [
         PermissionRow(kind: .camera, systemImage: "camera.fill", title: "Camera and LiDAR",
-                      reason: "Detects obstacles ahead of you, including at head height."),
+                      reason: "Spots obstacles ahead, even at head height."),
         PermissionRow(kind: .location, systemImage: "location.fill", title: "Location",
                       reason: "Guides you along your route, turn by turn."),
         PermissionRow(kind: .microphone, systemImage: "mic.fill", title: "Microphone",

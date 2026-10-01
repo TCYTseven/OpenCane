@@ -172,7 +172,7 @@ final class FamilyAlerts {
 
     /// Records a tap that the 10 s spam guard refused, so the Settings row explains the silence.
     func noteThrottled(secondsRemaining: Int) {
-        lastStatus = "Too quick — try again in \(secondsRemaining) second\(secondsRemaining == 1 ? "" : "s")."
+        lastStatus = "Too soon. Try again in \(secondsRemaining) second\(secondsRemaining == 1 ? "" : "s")."
     }
 
     // MARK: Family contacts

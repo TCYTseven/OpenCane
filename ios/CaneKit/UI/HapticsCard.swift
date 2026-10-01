@@ -55,7 +55,7 @@ struct HapticsCard: View {
             // ⚠ test contract: switches["Silence haptics"].
             CKToggleRow(title: "Silence haptics", subtitle: "Warnings go to the watch and voice instead",
                         isOn: $model.hapticsSilenced,
-                        hint: "The phone stops vibrating; obstacle warnings go to the watch and are spoken instead")
+                        hint: "The phone stops vibrating. Obstacle warnings go to the watch and are spoken instead.")
             Text("Try a pattern").font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
             // ⚠ test contract: these titles become "Test <title lowercased> haptic".
             HStack(spacing: CKSpacing.sm) {
@@ -106,9 +106,9 @@ struct HapticsCard: View {
     /// that the natural voice is unreachable; otherwise the last line's engine and reason
     /// ("Voice: Natural voice · cached"), or the backend name before the first line.
     private var voicePillSpoken: String {
-        guard model.speech.naturalVoice != nil else { return "iPhone voice; the natural voice isn't set up" }
-        if model.speech.naturalVoiceUnavailable { return "iPhone voice; the natural voice isn't available right now" }
-        if model.speech.naturalVoiceOffline { return "Natural voice can't be reached; using the iPhone voice until the internet is back" }
+        guard model.speech.naturalVoice != nil else { return "iPhone voice. The natural voice isn't set up." }
+        if model.speech.naturalVoiceUnavailable { return "iPhone voice. The natural voice isn't available right now." }
+        if model.speech.naturalVoiceOffline { return "Can't reach the natural voice. Using the iPhone voice until you're back online." }
         if let last = model.speech.lastEngine {
             return "Voice: " + VoiceEngineChoice.describe(engine: last.engine, reason: last.reason)
         }

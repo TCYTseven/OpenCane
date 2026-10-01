@@ -114,11 +114,11 @@ struct LaneTile: View {
     let label: String
     /// Nearest distance in this cell in metres; non-finite means nothing seen.
     let distance: Float
-    /// False when the depth engine has no depth at all; the tile then shows "—" / NO DATA.
+    /// False when the depth engine has no depth at all; the tile then shows "--" / NO DATA.
     let hasData: Bool
     /// False when the camera cannot see this height band at the head-cue distance (Step 51:
     /// `LaneGrid.headCoverage` / `torsoCoverage`; e.g. the head band on a 45° cane mount). The tile
-    /// then shows "—" / NO COVER on the no-data fill — never CLEAR (`TileLevel.noCover`).
+    /// then shows "--" / NO COVER on the no-data fill — never CLEAR (`TileLevel.noCover`).
     var covered: Bool = true
 
     /// Ladder level from CaneKitLogic (thresholds live there, not in the UI).
@@ -143,11 +143,11 @@ struct LaneTile: View {
         .accessibilityHidden(true)
     }
 
-    /// Visible metres: "—" without data or coverage, "clear" at ≥ 4.5 m or non-finite, else "%.1f m".
+    /// Visible metres: "--" without data or coverage, "clear" at ≥ 4.5 m or non-finite, else "%.1f m".
     /// 4.5 m is a display cutoff, distinct from the 2.0 m colour threshold.
     private var text: String {
-        guard covered else { return "—" }
-        guard hasData else { return "—" }
+        guard covered else { return "--" }
+        guard hasData else { return "--" }
         guard distance.isFinite, distance < 4.5 else { return "clear" }
         return String(format: "%.1f m", distance)
     }

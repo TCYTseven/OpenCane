@@ -45,7 +45,7 @@ struct WatchCard: View {
             }
             CKToggleRow(title: "Also tap my wrist", subtitle: "Sends obstacle taps to the watch too",
                         isOn: $model.fallbackToWatch,
-                        hint: "Also taps the wrist for every obstacle; happens by itself if the phone can't vibrate")
+                        hint: "Taps your wrist for every obstacle too. If the phone can't vibrate, the watch taps anyway.")
             Text("Try a wrist tap").font(CKFont.secondary).foregroundStyle(CKColor.textSecondary)
             HStack(spacing: CKSpacing.sm) {
                 testButton("Left", "arrow.turn.up.left", .turnLeft)

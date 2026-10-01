@@ -44,7 +44,7 @@ public struct CKMedicalProfile: Codable, Sendable, Equatable {
     /// Existing profiles remain on-device and are never overwritten by this default.
     public static let standardDefault = CKMedicalProfile(
         name: "Not set",
-        emergencyNotes: "White cane user — add emergency notes",
+        emergencyNotes: "White cane user. Add emergency notes.",
         dateOfBirth: "Not set",
         bloodType: "Not set",
         height: "Not set",
