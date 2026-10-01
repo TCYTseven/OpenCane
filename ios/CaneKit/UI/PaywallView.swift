@@ -239,7 +239,7 @@ struct PaywallView: View {
         switch await model.store.purchase() {
         case .purchased:
             finish(via: "purchase")
-        case .cancelled:
+        case .cancelled, .alreadyPurchasing:
             break
         case .pending:
             model.premiumAwaitingApproval(from: request)

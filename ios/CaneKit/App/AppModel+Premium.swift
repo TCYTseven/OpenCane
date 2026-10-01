@@ -18,7 +18,7 @@
 //  band, so it never cuts a warning, a sign or a direction. Every Premium line (refusals, the
 //  voice path, a lapse) is `.scene` for the same reason (review round 69.7). `RootView` closes an
 //  open paywall the moment a walk starts and calls `reconcilePremium()` when one ends; an unlock
-//  that lands mid-walk waits for that call too (`pendingPremiumFeature`).
+//  that lands mid-walk waits for that call too (`pendingPremiumFeatures`).
 //
 //  A lapse is never silent and never permanent (review round 69.7): the switches it turns off are
 //  spoken (`PremiumGate.revokedLine`) and remembered (`revokedFeaturesKey`), and switched back on
@@ -55,6 +55,7 @@ extension AppModel {
 
     /// `UserDefaults` key of the features a lapse switched off, to switch back on with Premium.
     static let revokedFeaturesKey = "premiumRevokedFeatures"
+    static let pendingFeaturesKey = "premiumPendingFeatures"
 
     /// Wires `store.onAccessChanged` and configures RevenueCat. Idempotent. Caller: `RootView`'s
     /// launch task (before onboarding ends, so the cached subscription is known early).
@@ -117,15 +118,16 @@ extension AppModel {
         if PremiumGate.enablesNow(walkActive: isWalkActive) {
             setGatedValue(feature, true)
         } else {
-            pendingPremiumFeature = feature
+            pendingPremiumFeatures.insert(feature)
         }
     }
 
     /// The purchase is waiting for approval (Ask to Buy): remember the switch that opened the
-    /// paywall, so `reconcilePremium` turns it on when Premium arrives, even after the sheet closed.
+    /// paywall, so `reconcilePremium` turns it on when Premium arrives, even after the sheet closed
+    /// or the app was relaunched while a parent decides.
     func premiumAwaitingApproval(from request: PaywallRequest?) {
         guard let feature = request?.feature else { return }
-        pendingPremiumFeature = feature
+        pendingPremiumFeatures.insert(feature)
         logger.event("paywall", ["action": "awaiting_approval", "feature": feature.rawValue])
     }
 
@@ -137,9 +139,10 @@ extension AppModel {
         guard !isWalkActive else { return }
         premiumNotice = nil
         premiumNoticeFeature = nil
-        if let pending = pendingPremiumFeature, PremiumGate.spendsPending(access: store.access) {
-            pendingPremiumFeature = nil
-            if canDeliver(pending) { setGatedValue(pending, true) }
+        let pending = pendingPremiumFeatures
+        if !pending.isEmpty, PremiumGate.spendsPending(access: store.access) {
+            pendingPremiumFeatures = []
+            for feature in pending where canDeliver(feature) { setGatedValue(feature, true) }
         }
         if PremiumGate.revokesNow(access: store.access, walkActive: false) {
             var revoked = revokedFeatures
@@ -156,6 +159,18 @@ extension AppModel {
                 logger.event("premium_restored", ["feature": feature.rawValue])
             }
             revokedFeatures = []
+        }
+    }
+
+    /// Features waiting for Premium: an unlock that landed mid-walk, or a purchase waiting for
+    /// approval (persisted, so an approval that arrives after a relaunch still turns them on).
+    private var pendingPremiumFeatures: Set<PremiumFeature> {
+        get {
+            let raw = UserDefaults.standard.stringArray(forKey: Self.pendingFeaturesKey) ?? []
+            return Set(raw.compactMap(PremiumFeature.init(rawValue:)))
+        }
+        set {
+            UserDefaults.standard.set(newValue.map(\.rawValue).sorted(), forKey: Self.pendingFeaturesKey)
         }
     }
 

@@ -166,9 +166,6 @@ final class AppModel {
     /// Which switch `premiumNotice` belongs to (nil = the Settings Premium card), so the notice is
     /// shown once, under the control that was tapped (review round 69.7).
     var premiumNoticeFeature: PremiumFeature?
-    /// A feature unlocked by a purchase that finished mid-walk; switched on when the walk ends
-    /// (`PremiumGate.enablesNow`, review round 69.7).
-    var pendingPremiumFeature: PremiumFeature?
     /// The optional cloud mirror (Steps 45 / 60): after `cloudSharingEnabled`, only Medical ID,
     /// family contacts, trip summaries, hazards (+ photos) and family alerts leave the phone.
     /// Settings, the JSONL trip log, mobility, posts and conversations stay local. Inert when

@@ -73,6 +73,8 @@ enum PurchaseOutcome: Equatable {
     case cancelled
     /// Paid for but not active yet (Ask to Buy, a deferred payment).
     case pending
+    /// A purchase started by an earlier tap is still running; this tap did nothing.
+    case alreadyPurchasing
     /// The purchase failed; the message is shown.
     case failed(String)
 }
@@ -192,7 +194,7 @@ final class EntitlementManager {
     /// so a success unlocks at once, before the stream's copy arrives.
     func purchase() async -> PurchaseOutcome {
         guard let package else { return .failed("The price hasn't loaded yet.") }
-        guard !isPurchasing else { return .pending }
+        guard !isPurchasing else { return .alreadyPurchasing }
         isPurchasing = true
         defer { isPurchasing = false }
         do {
