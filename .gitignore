@@ -20,6 +20,9 @@ ios/CaneKit/Resources/Secrets.plist
 # macOS
 .DS_Store
 
+# Enola architecture snapshots (local paths in receipt.json / snapshot.meta.json)
+.enola/
+
 # PlatformIO / Arduino (stretch)
 firmware/**/.pio/
 ios/local.mk
