@@ -3334,7 +3334,7 @@ Purpose: a "camera", not a pass/fail suite — walks every reachable simulator s
 
 ### ios/project.yml (XcodeGen spec)
 
-Regenerate with `scripts/gen.sh`; `CaneKit.xcodeproj` is git-ignored and never hand-edited (regenerate only when `project.yml` changed — root `CLAUDE.md`).
+Regenerate with `scripts/gen.sh`; `CaneKit.xcodeproj` is git-ignored and never hand-edited (regenerate only when `project.yml` changed — root `AGENTS.md`).
 
 **options**: `bundleIdPrefix: com.aritro`, `deploymentTarget iOS 26.0 / watchOS 26.0`, `createIntermediateGroups`, `generateEmptyDirectories`, `xcodeVersion "26.0"`. **packages**: `CaneKitLogic` at `path: Logic`.
 

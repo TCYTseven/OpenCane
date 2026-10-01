@@ -10,7 +10,7 @@
 # in flight); extra arguments pass straight through to `swift test` (e.g. `--filter Crown`);
 # tests must stay within core Testing + Foundation or the CLT-only path breaks.
 #
-# Callers: `make test` (ios/Makefile) — the per-commit gate (AGENTS.md hard rule 10, CLAUDE.md). CI's
+# Callers: `make test` (ios/Makefile) — the per-commit gate (AGENTS.md hard rule 10). CI's
 # `logic-tests` job (.github/workflows/ci.yml, manual) runs plain `swift test` in a Linux swift:6.2
 # container instead of this script, so the suite must also build against Linux Foundation.
 # Tests: this script is the runner; the suite is ios/Logic/Tests/CaneKitLogicTests.

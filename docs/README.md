@@ -1,7 +1,7 @@
 # Docs index
 
 Every document in the repo, with when to read it. New here, or just pulled? Read the root
-[`README.md`](../README.md) (pitch, paywall, and [For the next agent](../README.md#for-the-next-agent)),
+[`README.md`](../README.md) (pitch, paywall, and [Contributing](../README.md#contributing)),
 then [`AGENTS.md`](../AGENTS.md), then [`ios/README.md`](../ios/README.md).
 Open [`CODE_REFERENCE.md`](CODE_REFERENCE.md) when you need a specific file or function.
 [`CHANGELOG.md`](../CHANGELOG.md) is the short submission note. The step log is `git log`.
@@ -18,7 +18,7 @@ screen layout and button labels, where the shipped code (and the tests that pin 
 
 ## Every doc
 
-Tracked Markdown (`git ls-files "*.md"`: 30 files) plus the one other hand-written doc in the repo
+Tracked Markdown plus the one other hand-written doc in the repo
 (`opencane-hardware-brief.html`). Nothing else in the repo is documentation; source files document
 themselves in their headers (AGENTS.md "How we engineer" 7).
 
@@ -30,9 +30,7 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 | [`AGENTS.md`](../AGENTS.md) | **Before your first edit, human or AI.** It has the hard rules (concurrency, iOS 26 APIs only, logic lives in `ios/Logic`, secrets, frozen bundle IDs, audio session, speech priorities (rule 8), accessibility-label contract (rule 9), per-commit gate (rule 10)), "How we engineer", the commands, the two false-green traps, the OpenSCAD traps and the "looks wrong but is deliberate" list. It wins every conflict. |
 | [`PRIVACY.md`](../PRIVACY.md) | Step 69: the privacy policy the app links to (Settings → About, the paywall). Lists every way data can leave the phone. Change it in the same commit as any new upload path. |
 | [`LICENSE`](../LICENSE) | MIT (Step 69). Not Markdown; listed so it is not missed. |
-| [`CLAUDE.md`](../CLAUDE.md) | You are Claude Code. It is the short version of `AGENTS.md`, loaded automatically. |
-| [`CHANGELOG.md`](../CHANGELOG.md) | Where this submission stands, and the on-device check for the film. The older step log is in git history. |
-| [`.jules/bolt.md`](../.jules/bolt.md) | You are touching SwiftUI views that observe the 30 Hz depth stream. One learning (Step 21): keep high-frequency observed properties in leaf views, not in `ContentView.body`. |
+| [`CHANGELOG.md`](../CHANGELOG.md) | Where this release stands and the on-device smoke check. The older step log is in git history. |
 | [`opencane-hardware-brief.html`](../opencane-hardware-brief.html) | You want the one-page hardware brief in a browser (added in the Step 21 bore-ring commit). For current print instructions use `hardware/3d_print_files/README.md` instead. |
 
 ### iOS app
@@ -53,8 +51,6 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 | [`docs/cue_design_v2.md`](cue_design_v2.md) | **Before changing when OpenCane buzzes or speaks.** The Step 35 research: what blind travellers need, where OpenCane violated it, and the proposed calmer cues. Numbers marked **[H]** are hypotheses. |
 | [`docs/auditory-load.md`](auditory-load.md) | You are adding or tuning any automatic sound. The Step 30 short research note on blind auditory overload, what OpenCane does about each point, and the open questions for tester walks. `cue_design_v2.md` is the later, fuller research. |
 | [`docs/handsfree.md`](handsfree.md) | **You are the walker, or setting the phone up for one.** Every spoken command, what the status answer means, the Settings path for the Action button (and why a locked phone asks to unlock first), what the AirPods stem and Back Tap cannot do, asking a question, and what still needs the screen. |
-| [`docs/DEMO_SCRIPT.md`](DEMO_SCRIPT.md) | Step 69: you are recording the two-minute Shipaton video (splash, onboarding, a walk, Hazard watch refused mid-walk, the paywall with the free month, a test purchase, the unlocked feature), with a pre-flight list and backups. |
-| [`docs/DEVPOST.md`](DEVPOST.md) | You are pasting the Shipaton submission. Tagline, about, how it was built, the free-month rule, and the recognition lines. No funding dollar amount. |
 | [`docs/devices_setup.md`](devices_setup.md) | Before touching the AirPods or the Apple Watch, and before the untethered demo: pairing, Spatial Audio off, the watch app, the voice cache, Guided Access, on-device vision and a symptom → fix table. |
 | [`docs/route_isr_cif.md`](route_isr_cif.md) | You are editing `route_isr_cif.json` or re-recording the route on foot. It covers the evidence for every waypoint, OSM node IDs, and which points are still unverified. |
 | [`docs/stress_test_plan.md`](stress_test_plan.md) | You are planning device and field tests: facts from the code that change how you test (§0), test levels, the device test matrix (D-tests), failure injection (F-tests), the blindfolded go/no-go checklist and the demo run sheet. |
@@ -102,7 +98,7 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 | **Voice commands, Siri, Action button, conversation** | `ios/CaneKit/App/AppIntents.swift`, `App/HandsFreeIntents.swift`, `ios/CaneKit/Conversation/` (`ConversationCoordinator`, `VoiceInputEngine`, `PostStore`), and the Logic side `ConversationModels.swift` / `FastPathIntentClassifier.swift` / `ConversationPrompt.swift` / `QuestionPrompt.swift` / `StatusSummary.swift`. The walker's view is [`handsfree.md`](handsfree.md). |
 | **Flashlight / both cameras** | `TorchSwitch.swift` and `LiveView.swift` (`BothCameras`, `FaceTrackingChange`) in `ios/Logic` (Step 34). |
 | **Secrets / API keys** | The template is `ios/Secrets.example.plist`. Real keys go only in `ios/CaneKit/Resources/Secrets.plist`, which is git-ignored: never commit or print it. The reader is `ios/CaneKit/Scene/Secrets.swift`. The key list is in [`ios/README.md` §4](../ios/README.md#4-secrets-and-permissions). |
-| **OpenCane Premium** | Gate: `ios/Logic/Sources/CaneKitLogic/Premium.swift`. Store: `ios/CaneKit/Store/EntitlementManager.swift` (free month only when `IntroEligibilityStatus.eligible`). Screen: `ios/CaneKit/UI/PaywallView.swift`. Walk lock: `ios/CaneKit/App/AppModel+Premium.swift`. Local product: `ios/StoreKit/OpenCane.storekit` (`opencane_premium_annual`, $49.99/year, free `P1M`). The paywall does not open during a walk. Film: [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). Paste sheet: [`DEVPOST.md`](DEVPOST.md). |
+| **OpenCane Premium** | Gate: `ios/Logic/Sources/CaneKitLogic/Premium.swift`. Store: `ios/CaneKit/Store/EntitlementManager.swift` (free month only when `IntroEligibilityStatus.eligible`). Screen: `ios/CaneKit/UI/PaywallView.swift`. Walk lock: `ios/CaneKit/App/AppModel+Premium.swift`. Local product: `ios/StoreKit/OpenCane.storekit` (`opencane_premium_annual`, $49.99/year, free `P1M`). The paywall does not open during a walk. |
 | **Testing** | See [`ios/README.md` §5](../ios/README.md#5-testing). Logic tests are in `ios/Logic/Tests/CaneKitLogicTests/` (`make test`; 965 `@Test` annotations in 74 files on the last recount; recount before quoting). UI tests, the screenshot tour and the Dynamic Island tour are in `ios/CaneKitUITests/` (`make uitest` runs all 13, `make tour` and `make island` one suite each). GPS-replay end-to-end runs through `ios/scripts/e2e.py` (`make e2e`). Automation is silent under `CANEKIT_MUTE=1` / `CANEKIT_UITEST=1`. |
 | **Accessibility labels the tests depend on** | `AGENTS.md` rule 9 lists them. The details are in `CODE_REFERENCE.md` → module `ui-tests-build` and `design.md` §9. |
 | **UI tokens and components** | `ios/CaneKit/UI/Theme.swift` (`CKColor`, `CKFont`, `CKBigButton`, …) and `ios/CaneKitWatch/WatchTheme.swift`. The spec is [`design.md`](design.md), which wins on token values. |
@@ -112,5 +108,5 @@ themselves in their headers (AGENTS.md "How we engineer" 7).
 | **Mount angle** | `MountTilt` in `ios/Logic/Sources/CaneKitLogic/LaneReport.swift`; live on the Mount card; derivation in `hardware/mount/DESIGN.md`. |
 | **Street View mock** | `ios/CaneKit/Depth/FrameReplay.swift`, `ios/scripts/streetview/`, `ios/scripts/vision_probe.swift`, `ios/scripts/sign_probe.swift`, `make uitest-streetview`, `make e2e SCENARIO=streetview`. Not the app: `ios/scripts/streetview_stim.py` (commit `d775d4b`, run by hand) is a stand-alone visualiser over the same frames with its own approximate navigation and template narration. |
 | **Project / targets / Info.plist / entitlements** | `ios/project.yml` (XcodeGen). Regenerate with `make gen` only when `project.yml` or the file list changed. Never hand-edit `CaneKit.xcodeproj`. |
-| **Open work** | Git history holds the old step checklist. What to film is [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md). |
+| **Open work** | Git history holds the old step checklist. Field testing: [`stress_test_plan.md`](stress_test_plan.md). |
 | **The knowledge graph** | `graphify-out/` at the repo root (`GRAPH_REPORT.md` lists the communities; `graph.html` opens in a browser; `graph.json` is the data). Ask it from the repo root with `graphify query "<question>"`, `graphify path "A" "B"` or `graphify explain "X"`. After code changes, refresh it with `graphify update .` (code only) or `/graphify . --update` in Claude Code. Install once with `uv tool install graphifyy` (the build Mac has graphifyy 0.9.44). |

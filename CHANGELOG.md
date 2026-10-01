@@ -10,4 +10,4 @@ This submission is Step 69: OpenCane Premium through RevenueCat, on top of the c
 
 ## Test on device
 
-Delete the app, then film [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md): splash, onboarding, a walk, Hazard watch refused mid-walk, the paywall after the walk stops, a test purchase, Hazard watch on.
+Fresh install: splash, onboarding, a walk, Hazard watch refused mid-walk, the paywall after the walk stops, a test purchase, Hazard watch on. See [`docs/stress_test_plan.md`](docs/stress_test_plan.md) for the full device matrix.

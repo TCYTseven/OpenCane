@@ -2,8 +2,7 @@
 
 Read this before touching the repo. `docs/CODE_REFERENCE.md` is the map of every file, type and
 function; `CHANGELOG.md` is the short submission note (the step log is in git history);
-`docs/devices_setup.md` is the AirPods + Apple Watch checklist; `docs/DEMO_SCRIPT.md` is the
-two-minute film. When you change code, update its module section in
+`docs/devices_setup.md` is the AirPods + Apple Watch checklist. When you change code, update its module section in
 `docs/CODE_REFERENCE.md` in the same commit — agents rely on it being true. When this file and the
 shipped code disagree, the code is the truth: fix this file (and say so in `CHANGELOG.md`).
 
@@ -64,7 +63,7 @@ target, path, scheme or bundle id, it is CaneKit. Two traps worth knowing:
 | `ios/project.yml`, `ios/scripts/gen.sh`, `ios/Makefile` | XcodeGen project + CLI build/test/install |
 | `ios/scripts/` | `test.sh` (`make test`), `e2e.py` (`make e2e`, asserts on the trip log), `cue_audit.py` (`make audit`, cue load of one walk), `sign_probe.swift` / `vision_probe.swift` (measure what Vision reads), `streetview/` (`frames.json` + git-ignored JPEGs for `SCENARIO=streetview`), `streetview_stim.py` (run by hand: a demo / dataset visualiser over the Street View frames with its own nav approximation and template narration — runs no CaneKit code, no Makefile target, no tests), `appicon.py`, `launchlogo.py` (Step 69: launch-screen logo + navy colour set from the app icon), `gen.sh` |
 | `ios/stretch/`, `ios/drafts/` | Not in any target. Old ESP32 BLE code and iOS 18 drafts. Leave alone. |
-| `docs/` | `README.md`, `CODE_REFERENCE.md`, `design.md`, `DEMO_SCRIPT.md`, `handsfree.md`, `devices_setup.md`, `cue_design_v2.md`, `UX.md`, `route_isr_cif.md`, `stress_test_plan.md` |
+| `docs/` | `README.md`, `CODE_REFERENCE.md`, `design.md`, `handsfree.md`, `devices_setup.md`, `cue_design_v2.md`, `UX.md`, `route_isr_cif.md`, `stress_test_plan.md` |
 | `hardware/mount/` | Phone-to-cane mount, screwed: design brief + parametric OpenSCAD (Sagar) |
 | `hardware/mount_screwless/` | Same job, **zero bought hardware**: collet clamp + dovetail modularity. `PRINTING.md` is the operator runbook — read it before sending anything to a printer (Sagar) |
 | `hardware/3d_print_files/` | Print runbook for the screwless mount; local `gcode/` + `stl/` after `scripts/build_stl.ps1` + `slice_gcode.ps1` (gitignored) |
@@ -498,7 +497,6 @@ bench has *disproved* must never sit in the file as though it were settled — m
   RevenueCat reports this Apple Account `IntroEligibilityStatus.eligible`
   (`EntitlementManager.freeTrialPeriod`). `.ineligible` and `.unknown` keep the charge-at-subscribe
   wording. `CANEKIT_PAYWALL_PREVIEW=1` is the screenshot tour only and forces the free month.
-  Paste-ready Shipaton text is `docs/DEVPOST.md`. The two-minute film is `docs/DEMO_SCRIPT.md`.
   Pinned by `PremiumGateTests`, `LaunchFlowTests`.
 
 ### Steps 34–37 and the rotation fix — do not "simplify" these

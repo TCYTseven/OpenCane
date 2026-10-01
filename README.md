@@ -48,9 +48,7 @@ insurance, an HSA/FSA or a vision rehabilitation program.
   <img src="docs/images/settings-premium.png" width="180" alt="Settings showing the free plan">
 </p>
 
-The Devpost frame (1179×2556, no device chrome) is [`docs/images/devpost-1179x2556.png`](docs/images/devpost-1179x2556.png). Paste-ready submission text is [`docs/DEVPOST.md`](docs/DEVPOST.md).
-The 1024 icon is [`docs/images/opencane-icon-1024.png`](docs/images/opencane-icon-1024.png).
-The two-minute demo flow is in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md).
+The 1024 App Store icon is [`docs/images/opencane-icon-1024.png`](docs/images/opencane-icon-1024.png).
 
 ## Hardware
 
@@ -172,8 +170,7 @@ Inside the repo the code is still called **CaneKit**: the Xcode project, targets
 module, the `ios/CaneKit/…` paths and the bundle id `com.aritro.canekit`. Only what a person sees
 or hears says OpenCane. [`AGENTS.md`](AGENTS.md) → "The name split" explains why.
 
-Start at this README, then [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) for the two-minute film.
-If you are about to change code, read [For the next agent](#for-the-next-agent) before you edit.
+If you are about to change code, read [Contributing](#contributing) before you edit.
 
 ## Recognition
 
@@ -182,7 +179,7 @@ If you are about to change code, read [For the next agent](#for-the-next-agent) 
 - The launch posts passed **100,000 impressions** on LinkedIn. **More than 100 schools** across the country have written in.
 - Funding is in place to keep building.
 
-## For the next agent
+## Contributing
 
 Read [`AGENTS.md`](AGENTS.md) before the first edit. It wins when documents disagree. The shipped
 code wins when a document disagrees with the code: fix the document in the same change.
@@ -198,12 +195,12 @@ code wins when a document disagrees with the code: fix the document in the same 
 
 | Path | What |
 |---|---|
-| [`AGENTS.md`](AGENTS.md) | **Read before editing.** Hard rules, "How we engineer", commands, and the deliberate behaviours that look like bugs. [`CLAUDE.md`](CLAUDE.md) is its short form. |
+| [`AGENTS.md`](AGENTS.md) | **Read before editing.** Hard rules, "How we engineer", commands, and the deliberate behaviours that look like bugs. |
 | [`docs/README.md`](docs/README.md) | Index of every doc with when to read it, plus a "Where do I find…" table |
 | [`docs/CODE_REFERENCE.md`](docs/CODE_REFERENCE.md) | Map of every file, type and function, with the data-flow diagram |
 | [`CHANGELOG.md`](CHANGELOG.md) | Where this submission stands. The step-by-step build log is in git history. |
 | [`ios/`](ios/) | The app (code name CaneKit, display name OpenCane): `CaneKit/` iPhone app, `CaneKitWatch/`, `CaneKitWidget/` Live Activity, `Shared/`, `Logic/` SwiftPM package (`CaneKitLogic`, every numeric decision + its unit tests), `CaneKitUITests/`, `project.yml` (XcodeGen), `Makefile`, `scripts/` (test, e2e, cue audit, probes). See [`ios/README.md`](ios/README.md). |
-| [`docs/`](docs/) | Design system, the two-minute demo script, hands-free guide, device setup, route evidence |
+| [`docs/`](docs/) | Design system, hands-free guide, device setup, route evidence, testing plans |
 | [`hardware/`](hardware/) | Physical kit: `mount_screwless/` (the live mount, OpenSCAD source), `3d_print_files/` (print runbook; G-code/STLs generated locally), `mount/` (screwed draft + tilt model), `cane_tip/` (printed rolling ball tip) |
 | [`scripts/`](scripts/) | Windows mount toolchain (PowerShell + Node): render STLs, slice G-code, verify the screwless mount |
 | `firmware/`, `cad/`, `ios/stretch/` | ESP32 grip firmware and OpenSCAD drafts. Stretch / legacy only. |
@@ -212,7 +209,6 @@ code wins when a document disagrees with the code: fix the document in the same 
 
 ## Links
 
-- [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md): the two-minute film
 - [`AGENTS.md`](AGENTS.md): rules for anyone editing the repo
 - [`ios/README.md`](ios/README.md): build, sign, secrets, testing, gotchas
 - [`docs/README.md`](docs/README.md): every doc, and where to find things
