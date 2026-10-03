@@ -296,19 +296,19 @@ Pay testers. Have a sighted spotter present. Always run a cane-only baseline fir
 - Apple HIG, Playing haptics: https://developer.apple.com/design/human-interface-guidelines/playing-haptics
 
 **Repo files cited** (read-only, nothing edited):
-- /Users/aritro/Downloads/54FoundersHack/AGENTS.md
-- /Users/aritro/Downloads/54FoundersHack/docs/design.md
-- /Users/aritro/Downloads/54FoundersHack/hardware/mount/DESIGN.md
-- /Users/aritro/Downloads/54FoundersHack/ios/Logic/Sources/CaneKitLogic/LaneMath.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/Logic/Sources/CaneKitLogic/CueDecider.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/Logic/Sources/CaneKitLogic/NavSupport.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/Logic/Sources/CaneKitLogic/SpeechLoadPolicy.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/CaneKit/Speech/ObstacleNamer.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/CaneKit/Speech/SpeechQueue.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/CaneKit/App/AppModel.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/CueDeciderTests.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/NavSupportTests.swift
-- /Users/aritro/Downloads/54FoundersHack/ios/Logic/Tests/CaneKitLogicTests/SpeechLoadPolicyTests.swift
+- AGENTS.md
+- docs/design.md
+- hardware/mount/DESIGN.md
+- ios/Logic/Sources/CaneKitLogic/LaneMath.swift
+- ios/Logic/Sources/CaneKitLogic/CueDecider.swift
+- ios/Logic/Sources/CaneKitLogic/NavSupport.swift
+- ios/Logic/Sources/CaneKitLogic/SpeechLoadPolicy.swift
+- ios/CaneKit/Speech/ObstacleNamer.swift
+- ios/CaneKit/Speech/SpeechQueue.swift
+- ios/CaneKit/App/AppModel.swift
+- ios/Logic/Tests/CaneKitLogicTests/CueDeciderTests.swift
+- ios/Logic/Tests/CaneKitLogicTests/NavSupportTests.swift
+- ios/Logic/Tests/CaneKitLogicTests/SpeechLoadPolicyTests.swift
 ## Addendum: measured on the field log (a field trip log)
 
 

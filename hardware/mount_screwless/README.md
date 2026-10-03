@@ -119,7 +119,7 @@ writes previews.
 **0.3 s**. One is a workable edit loop and the other is not. Download the portable
 zip from <https://files.openscad.org/snapshots/> and unzip into `%USERPROFILE%\Tools\`;
 the build script finds it there on its own. One is already unzipped at
-`C:\Users\sriva\Tools\OpenSCAD-2025.09.15\`.
+`%USERPROFILE%\Tools\OpenSCAD-2025.09.15\`.
 
 ## Printer
 
